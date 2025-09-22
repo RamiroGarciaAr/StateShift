@@ -1,0 +1,11 @@
+public sealed class JumpCommand : ICommand
+{
+    private readonly IJump jumpable;
+
+    public JumpCommand(IJump jumpable)
+    {
+        this.jumpable = jumpable;
+    }
+
+    public void Execute() => jumpable.Jump();
+}
