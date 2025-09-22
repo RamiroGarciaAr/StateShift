@@ -1,3 +1,4 @@
+using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -14,7 +15,7 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
 
     [Header("Movement Settings")]
     public float walkSpeed   = 30f;  
-    public float sprintSpeed = 45f;
+    public float sprintSpeed = 100f;
 
     [Header("Acceleration")]
     [SerializeField] private float groundAcceleration = 60f; 
@@ -34,7 +35,9 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
 
     private Rigidbody rb;
     private bool isGrounded;
+    private bool isSprinting;
     private bool jumpRequested;
+    private float currentMaxSpeed;
 
     void OnValidate()
     {
@@ -69,35 +72,52 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
                 rb.AddForce(Vector3.up * v, ForceMode.VelocityChange);
             }
         }
+        SpeedControl();
+
     }
+    void Update()
+{
+    if (isDebugModeOn)
+    {
+        Debug.Log($"Sprinting: {isSprinting}, Speed: {rb.velocity.magnitude:F2}");
+    }
+}
 
     // ===== IMovable / IJump =====
+
+    public void SetSprint(bool value) => isSprinting = value;
+
+    public void MovePlayer(Vector2 input)
+    {
+        currentMaxSpeed = isSprinting ? sprintSpeed : walkSpeed;
+        Move(input, currentMaxSpeed);
+    }
+
     public void Move(Vector3 inputAxis, float maxSpeed)
     {
-        // Dirección deseada relativa a cámara (solo yaw)
         Vector3 wishDir;
-        if (orientation != null)
-        {
-            Vector3 fwd   = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
-            Vector3 right = Vector3.ProjectOnPlane(orientation.right,   Vector3.up).normalized;
-            wishDir = right * inputAxis.x + fwd * inputAxis.y;
-        }
-        else
-        {
-            wishDir = new Vector3(inputAxis.x, 0f, inputAxis.y);
-        }
+
+        Vector3 fwd = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
+        Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
+        wishDir = right * inputAxis.x + fwd * inputAxis.y;
+    
         if (wishDir.sqrMagnitude > 1f) wishDir.Normalize();
 
-        Vector3 vel   = rb.velocity;
-        Vector3 velXZ = new Vector3(vel.x, 0f, vel.z);
 
-        Vector3 target = wishDir * maxSpeed;
 
-        float accel = isGrounded ? groundAcceleration : airAcceleration;
-        if (!isGrounded) target = Vector3.Lerp(velXZ, target, airControlFactor);
+        rb.AddForce(wishDir * maxSpeed, ForceMode.VelocityChange);
+    }
 
-        Vector3 delta = Vector3.ClampMagnitude(target - velXZ, accel * Time.fixedDeltaTime);
-        rb.AddForce(new Vector3(delta.x, 0f, delta.z), ForceMode.VelocityChange);
+
+    private void SpeedControl()
+    {
+        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        if (flatVel.magnitude > currentMaxSpeed)
+        {
+            Vector3 limitedVel = flatVel.normalized * currentMaxSpeed;
+            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y,limitedVel.z);
+
+        }
     }
 
     public void Jump() => jumpRequested = true;

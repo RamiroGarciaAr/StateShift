@@ -3420,7 +3420,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6814181587787474173, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: walkSpeed
-      value: 30
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6814181587787474173, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: groundDrag
@@ -3430,6 +3430,14 @@ PrefabInstance:
       propertyPath: orientation
       value: 
       objectReference: {fileID: 1821621316}
+    - target: {fileID: 6814181587787474173, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+      propertyPath: sprintSpeed
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6814181587787474173, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+      propertyPath: isDebugModeOn
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6814181587787474173, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: groundMask.m_Bits
       value: 8

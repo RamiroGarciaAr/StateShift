@@ -5,27 +5,26 @@ using UnityEngine.InputSystem;
 public class InputHandler : MonoBehaviour
 {
     private PlayerInput playerInput;
-    private InputAction moveAction,sprintAction,jumpAction,crouchAction;
+    private InputAction moveAction, sprintAction, jumpAction, crouchAction;
 
     private PlayerController controller;
 
     private Vector2 movementInput = Vector2.zero;
     private bool jumpPressedThisFrame;
+    private bool isSprinting;
 
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
         controller = GetComponent<PlayerController>();
     }
-
     private void OnEnable()
     {
-        
         if (playerInput.currentActionMap == null)
             playerInput.SwitchCurrentActionMap("Player");
 
-        moveAction = playerInput.actions["Movement"];
-        jumpAction = playerInput.actions["Jump"];
+        moveAction   = playerInput.actions["Movement"];
+        jumpAction   = playerInput.actions["Jump"];
         sprintAction = playerInput.actions["Sprint"];
 
         moveAction.performed += OnMovePerformed;
@@ -33,8 +32,12 @@ public class InputHandler : MonoBehaviour
 
         jumpAction.performed += OnJumpPerformed;
 
+        sprintAction.performed += ctx => controller.SetSprint(true);
+        sprintAction.canceled  += ctx => controller.SetSprint(false);
+
         moveAction.Enable();
         jumpAction.Enable();
+        sprintAction.Enable();
     }
 
     private void OnDisable()
@@ -42,7 +45,7 @@ public class InputHandler : MonoBehaviour
         if (moveAction != null)
         {
             moveAction.performed -= OnMovePerformed;
-            moveAction.canceled  -= OnMoveCanceled;
+            moveAction.canceled -= OnMoveCanceled;
             moveAction.Disable();
         }
 
@@ -55,14 +58,11 @@ public class InputHandler : MonoBehaviour
 
     private void FixedUpdate()
     {
-       
+
         if (controller != null)
         {
-            Vector3 fwd   = controller.orientation ? Vector3.ProjectOnPlane(controller.orientation.forward, Vector3.up).normalized : Vector3.forward;
-            Vector3 right = controller.orientation ? Vector3.ProjectOnPlane(controller.orientation.right,   Vector3.up).normalized : Vector3.right;
 
-
-            controller.Move(movementInput,40f);
+            controller.MovePlayer(movementInput);
 
             if (jumpPressedThisFrame)
             {
@@ -83,7 +83,8 @@ public class InputHandler : MonoBehaviour
 
     private void OnJumpPerformed(InputAction.CallbackContext ctx)
     {
-        Debug.Log("Yahooo!");
         controller.Jump();
     }
+
+    
 }
