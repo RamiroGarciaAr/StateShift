@@ -11,22 +11,20 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
 
     [Header("Drag")]
     public float groundDrag = 4f;
-    public float airDrag    = 0.1f;
+    public float airDrag = 0.1f;
 
     [Header("Movement Settings")]
-    public float walkSpeed   = 30f;  
+    public float walkSpeed = 30f;  
     public float sprintSpeed = 100f;
 
-    [Header("Acceleration")]
-    [SerializeField] private float groundAcceleration = 60f; 
-    [SerializeField] private float airAcceleration    = 24f; 
-    [SerializeField] private float airControlFactor   = 0.4f; 
+    [Header("Movement Strategy")]
+    [SerializeField] private VelocityMovementStrategy movementStrategy = new VelocityMovementStrategy();
 
     [Header("Jump")]
     [SerializeField] private float jumpHeight = 1.6f; 
 
     [Header("Ground Check")]
-    [SerializeField] private float groundCheckRadius   = 0.3f;
+    [SerializeField] private float groundCheckRadius = 0.3f;
     [SerializeField] private float groundCheckDistance = 0.5f; 
     [SerializeField] private LayerMask groundMask;             
 
@@ -54,7 +52,6 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
 
         if (groundMask == 0)
             groundMask = LayerMask.GetMask("Ground");
-
     }
 
     void FixedUpdate()
@@ -72,62 +69,56 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
                 rb.AddForce(Vector3.up * v, ForceMode.VelocityChange);
             }
         }
-        SpeedControl();
+    }
 
-    }
     void Update()
-{
-    if (isDebugModeOn)
     {
-        Debug.Log($"Sprinting: {isSprinting}, Speed: {rb.velocity.magnitude:F2}");
+        if (isDebugModeOn)
+        {
+            Debug.Log($"Sprinting: {isSprinting}, Speed: {rb.velocity.magnitude:F2}, Max: {currentMaxSpeed}");
+        }
     }
-}
 
     // ===== IMovable / IJump =====
-
     public void SetSprint(bool value) => isSprinting = value;
 
     public void MovePlayer(Vector2 input)
     {
         currentMaxSpeed = isSprinting ? sprintSpeed : walkSpeed;
-        Move(input, currentMaxSpeed);
+        
+        // Convertir input 2D a dirección 3D
+        Vector3 inputDirection = CalculateMovementDirection(input);
+        
+        // Aplicar movimiento usando la estrategia
+        movementStrategy.ApplyMovement(rb, inputDirection, currentMaxSpeed, isGrounded);
     }
 
     public void Move(Vector3 inputAxis, float maxSpeed)
     {
-        Vector3 wishDir;
-
-        Vector3 fwd = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
-        Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
-        wishDir = right * inputAxis.x + fwd * inputAxis.y;
-    
-        if (wishDir.sqrMagnitude > 1f) wishDir.Normalize();
-
-
-
-        rb.AddForce(wishDir * maxSpeed, ForceMode.VelocityChange);
+        Vector3 inputDirection = CalculateMovementDirection(new Vector2(inputAxis.x, inputAxis.z));
+        movementStrategy.ApplyMovement(rb, inputDirection, maxSpeed, isGrounded);
     }
 
-
-    private void SpeedControl()
+    private Vector3 CalculateMovementDirection(Vector2 input)
     {
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        if (flatVel.magnitude > currentMaxSpeed)
-        {
-            Vector3 limitedVel = flatVel.normalized * currentMaxSpeed;
-            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y,limitedVel.z);
-
-        }
+        Vector3 forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
+        Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
+        
+        Vector3 direction = right * input.x + forward * input.y;
+        
+        // Normalizar si la magnitud es mayor a 1 (input diagonal)
+        if (direction.sqrMagnitude > 1f) 
+            direction.Normalize();
+            
+        return direction;
     }
 
     public void Jump() => jumpRequested = true;
 
-    // ===== Ground check =====
+    // ===== Ground check (sin cambios) =====
     private void DoGroundCheck()
     {
         Vector3 center = (feet != null) ? feet.position : (rb.position + Vector3.down * groundCheckDistance);
-
-        // CheckSphere: más barato que SphereCast cuando solo te importa “¿estoy tocando suelo?”
         isGrounded = Physics.CheckSphere(center, groundCheckRadius, groundMask, QueryTriggerInteraction.Ignore);
 
         if (isDebugModeOn)
