@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     public float sprintSpeed = 100f;
 
     [Header("Movement Strategy")]
-    [SerializeField] private VelocityMovementStrategy movementStrategy = new VelocityMovementStrategy();
+    [SerializeField] private PlayerMovementStrategy movementStrategy = new();
 
     [Header("Jump")]
     [SerializeField] private float jumpHeight = 1.6f; 
@@ -69,6 +69,7 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
                 rb.AddForce(Vector3.up * v, ForceMode.VelocityChange);
             }
         }
+
     }
 
     void Update()
@@ -86,10 +87,7 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     {
         currentMaxSpeed = isSprinting ? sprintSpeed : walkSpeed;
         
-        // Convertir input 2D a dirección 3D
         Vector3 inputDirection = CalculateMovementDirection(input);
-        
-        // Aplicar movimiento usando la estrategia
         movementStrategy.ApplyMovement(rb, inputDirection, currentMaxSpeed, isGrounded);
     }
 
@@ -106,7 +104,6 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
         
         Vector3 direction = right * input.x + forward * input.y;
         
-        // Normalizar si la magnitud es mayor a 1 (input diagonal)
         if (direction.sqrMagnitude > 1f) 
             direction.Normalize();
             

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [System.Serializable]
-public class VelocityMovementStrategy : IMovementStrategy
+public class PlayerMovementStrategy : IMovementStrategy
 {
     [Header("Velocity Movement Settings")]
     [SerializeField] private float groundAcceleration = 60f;
