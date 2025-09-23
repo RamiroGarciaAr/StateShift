@@ -3,142 +3,197 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerJumpStrategy : IJumpStrategy
 {
-    [Header("Jump Settings")]
-    [SerializeField] private float minJumpHeight = 0.8f;
-    [SerializeField] private float maxJumpHeight = 2.5f;
-    [SerializeField] private float jumpHoldTime  = 0.4f;
-
-    [Header("Charge Mode")]
-    [SerializeField] private bool chargeOnRelease = true; 
-
-    [Header("Jump Cut Settings")]
-    [SerializeField] private float jumpCutMultiplier = 3f;
-    [SerializeField] private float jumpCutThreshold  = 0.5f;
-
-    [Header("Coyote Time & Jump Buffer")]
-    [SerializeField] private float coyoteTime     = 0.15f;
-    [SerializeField] private float jumpBufferTime = 0.10f;
-
-    // State
-    private bool  isJumpHeld;
-    private bool  isCharging;       
-    private bool  jumpExecuted;
-    private bool  canCutJump;
-    private float jumpHoldTimer;
+    [Header("Jump Heights")]
+    [SerializeField] private float minJumpHeight = 1.2f;
+    [SerializeField] private float maxJumpHeight = 2.8f;  
+    
+    [Header("Jump Timing")]
+    [SerializeField] private float jumpRiseTime = 0.3f;   
+    [SerializeField] private float minJumpTime = 0.08f;   
+    
+    [Header("Jump Feel")]
+    [SerializeField] private float jumpCutMultiplier = 2.5f; 
+    [SerializeField] private float fallGravityMultiplier = 2.2f;
+    [SerializeField] private float lowJumpMultiplier = 3f;       
+    
+    [Header("Coyote & Buffer")]
+    [SerializeField] private float coyoteTime = 0.12f;
+    [SerializeField] private float jumpBufferTime = 0.15f;
+    
+    // Estados internos
+    private bool isJumpHeld;
+    private bool isJumping;
+    private bool canCutJump;
+    private float jumpStartTime;
     private float lastGroundedTime;
     private float jumpBufferTimer;
+    private float originalGravityY;
+    private bool usingCustomGravity;
+    
+    // Cache para performance
+    private Rigidbody cachedRb;
 
     public void SetJumpHeld(bool held)
     {
+        bool wasHeld = isJumpHeld;
         isJumpHeld = held;
-
-        if (held)
+        
+        if (wasHeld && !held && CanCutJump())
         {
-            if (CanStartCharge())
-            {
-                isCharging     = true;
-                jumpHoldTimer  = 0f;         
-                jumpBufferTimer = jumpBufferTime; 
-            }
-        }
-        else
-        {
-            if (isCharging && !jumpExecuted)
-            {
-                ExecuteChargedJump(_rbCached);
-            }
-            isCharging = false;
-        }
-    }
-
-    private Rigidbody _rbCached;
-
-    public void UpdateJump(Rigidbody rb)
-    {
-        _rbCached = rb; 
-
-        // timers
-        if (jumpBufferTimer > 0f) jumpBufferTimer -= Time.fixedDeltaTime;
-
-        if (IsGroundedApprox(rb))
-            lastGroundedTime = Time.time;
-
-        if (isCharging && rb != null)
-        {
-            jumpHoldTimer += Time.fixedDeltaTime;
-            if (jumpHoldTimer > jumpHoldTime) jumpHoldTimer = jumpHoldTime;
-        }
-        if (canCutJump && rb.velocity.y > jumpCutThreshold && !isJumpHeld && jumpExecuted)
-        {
-            ApplyJumpCut(rb);
-            canCutJump = false;
-        }
-
-        // Reset al caer
-        if (rb.velocity.y <= 0f)
-        {
-            jumpExecuted = false;
-            canCutJump   = false;
+            ApplyJumpCut();
         }
     }
 
     public void ApplyJump(Rigidbody rb, float baseJumpHeight)
     {
-        if (!chargeOnRelease)
-            ExecuteImmediateJump(rb, baseJumpHeight);
-        else
-            _rbCached = rb; 
+        if (!CanExecuteJump(rb)) return;
+        
+        ExecuteJump(rb);
+    }
+
+    public void UpdateJump(Rigidbody rb)
+    {
+        cachedRb = rb;
+        UpdateTimers();
+        UpdateGroundedState(rb);
+        HandleJumpPhysics(rb);
+        ResetJumpStateOnLanding(rb);
     }
 
     public bool CanJump(bool isGrounded)
     {
-        if (isGrounded) { lastGroundedTime = Time.time; return true; }
-        bool coyoteOK = Time.time - lastGroundedTime <= coyoteTime;
-        bool bufferOK = jumpBufferTimer > 0f;
-        return (coyoteOK || bufferOK) && !jumpExecuted;
+        if (isGrounded) 
+        {
+            lastGroundedTime = Time.time;
+            return true;
+        }
+        bool coyoteTimeValid = Time.time - lastGroundedTime <= coyoteTime;
+        bool jumpBuffered = jumpBufferTimer > 0f;
+        
+        return (coyoteTimeValid || jumpBuffered) && !isJumping;
     }
-
-    // ===== Helpers =====
-    private bool CanStartCharge()
+    
+    private bool CanExecuteJump(Rigidbody rb)
     {
-        if (jumpExecuted) return false;
-        bool coyoteOK = Time.time - lastGroundedTime <= coyoteTime;
-        bool bufferOK = jumpBufferTimer > 0f;
-        return coyoteOK || bufferOK; 
+        bool groundedNow = IsGroundedApprox(rb);
+        if (!CanJump(groundedNow)) return false;
+        
+        if (!groundedNow)
+        {
+            jumpBufferTimer = jumpBufferTime;
+            return false;
+        }
+        
+        return true;
     }
-
-    private void ExecuteImmediateJump(Rigidbody rb, float height)
+    
+    private void ExecuteJump(Rigidbody rb)
     {
-        float v = Mathf.Sqrt(2f * Mathf.Abs(Physics.gravity.y) * height);
-        rb.velocity = new Vector3(rb.velocity.x, v, rb.velocity.z);
-        jumpExecuted = true;
-        canCutJump   = true;
-        jumpHoldTimer = 0f;
-    }
+        float initialVelocity = CalculateJumpVelocity(minJumpHeight);
+        rb.velocity = new Vector3(rb.velocity.x, initialVelocity, rb.velocity.z);
+        
+        isJumping = true;
+        canCutJump = false; 
+        jumpStartTime = Time.time;
+        jumpBufferTimer = 0f; 
 
-    private void ExecuteChargedJump(Rigidbody rb)
+        if (!usingCustomGravity)
+        {
+            originalGravityY = Physics.gravity.y;
+            usingCustomGravity = true;
+        }
+    }
+    
+    private void HandleJumpPhysics(Rigidbody rb)
     {
-        float t = Mathf.Clamp01(jumpHoldTimer / jumpHoldTime);
-        float height = Mathf.Lerp(minJumpHeight, maxJumpHeight, t);
+        if (!isJumping) return;
+        
+        float jumpTime = Time.time - jumpStartTime;
+        
 
-        float v = Mathf.Sqrt(2f * Mathf.Abs(Physics.gravity.y) * height);
-        rb.velocity = new Vector3(rb.velocity.x, v, rb.velocity.z);
+        if (!canCutJump && jumpTime >= minJumpTime)
+        {
+            canCutJump = true;
+        }
+        
+        if (isJumpHeld && rb.velocity.y > 0f && jumpTime < jumpRiseTime)
+        {
+            float progress = jumpTime / jumpRiseTime;
+            float targetHeight = Mathf.Lerp(minJumpHeight, maxJumpHeight, progress);
+            float targetVelocity = CalculateJumpVelocity(targetHeight);
+            
 
-        jumpExecuted  = true;
-        canCutJump    = true;
-        jumpHoldTimer = 0f;
-        jumpBufferTimer = 0f;
+            float currentVelocity = rb.velocity.y;
+            float adjustedVelocity = Mathf.Lerp(currentVelocity, targetVelocity, Time.fixedDeltaTime * 8f);
+            
+            rb.velocity = new Vector3(rb.velocity.x, adjustedVelocity, rb.velocity.z);
+        }
+        
+
+        if (rb.velocity.y < 0f)
+        {
+            ApplyFallGravity(rb);
+        }
     }
-
-    private void ApplyJumpCut(Rigidbody rb)
+    
+    private bool CanCutJump()
     {
-       
-        float cutForce = Physics.gravity.y * (jumpCutMultiplier - 1f);
-        rb.AddForce(Vector3.up * cutForce, ForceMode.Acceleration);
+        return isJumping && canCutJump && cachedRb != null && cachedRb.velocity.y > 0.1f;
     }
+    
+    private void ApplyJumpCut()
+    {
+        if (cachedRb == null) return;
+        
 
+        cachedRb.velocity = new Vector3(
+            cachedRb.velocity.x, 
+            cachedRb.velocity.y * (1f / jumpCutMultiplier), 
+            cachedRb.velocity.z
+        );
+        
+        float extraGravity = originalGravityY * (lowJumpMultiplier - 1f);
+        cachedRb.AddForce(Vector3.up * extraGravity, ForceMode.Acceleration);
+        
+        canCutJump = false;
+    }
+    
+    private void UpdateTimers()
+    {
+        if (jumpBufferTimer > 0f)
+            jumpBufferTimer -= Time.fixedDeltaTime;
+    }
+    
+    private void UpdateGroundedState(Rigidbody rb)
+    {
+        if (IsGroundedApprox(rb))
+            lastGroundedTime = Time.time;
+    }
+    
+    private void ResetJumpStateOnLanding(Rigidbody rb)
+    {
+        if (IsGroundedApprox(rb) || (isJumping && rb.velocity.y < -1f))
+        {
+            isJumping = false;
+            canCutJump = false;
+            usingCustomGravity = false;
+        }
+    }
+    
+    
+    private void ApplyFallGravity(Rigidbody rb)
+    {
+        float extraGravity = originalGravityY * (fallGravityMultiplier - 1f);
+        rb.AddForce(Vector3.up * extraGravity, ForceMode.Acceleration);
+    }
+    
+    private float CalculateJumpVelocity(float height)
+    {
+        return Mathf.Sqrt(2f * Mathf.Abs(Physics.gravity.y) * height);
+    }
+    
     private bool IsGroundedApprox(Rigidbody rb)
     {
-        return rb.velocity.y <= 0.01f; 
+        return Mathf.Abs(rb.velocity.y) <= 0.1f;
     }
 }
