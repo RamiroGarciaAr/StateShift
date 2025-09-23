@@ -11,22 +11,27 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
 
     [Header("Drag")]
     public float groundDrag = 4f;
-    public float airDrag = 0.1f;
+    public float airDrag    = 0.1f;
 
     [Header("Movement Settings")]
-    public float walkSpeed = 30f;  
+    public float walkSpeed   = 30f;  
     public float sprintSpeed = 100f;
 
     [Header("Movement Strategy")]
     [SerializeField] private PlayerMovementStrategy movementStrategy = new();
 
     [Header("Jump")]
-    [SerializeField] private float jumpHeight = 1.6f; 
+    [SerializeField] private float jumpHeight = 1.6f;
+    [SerializeField] private PlayerJumpStrategy jumpStrategy;
 
     [Header("Ground Check")]
-    [SerializeField] private float groundCheckRadius = 0.3f;
+    [SerializeField] private float groundCheckRadius   = 0.3f;
     [SerializeField] private float groundCheckDistance = 0.5f; 
     [SerializeField] private LayerMask groundMask;             
+
+    [Header("Ceiling Check")]
+    [SerializeField] private float ceilingCheckDistance = 0.3f; 
+    [SerializeField] private LayerMask ceilingMask;            
 
     [Header("Debug")]
     public bool isDebugModeOn = false;
@@ -41,8 +46,12 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     {
         if (groundMask == 0)
             groundMask = LayerMask.GetMask("Ground");
+        if (ceilingMask == 0)
+            ceilingMask = groundMask; // default razonable
+
         if (groundCheckRadius < 0.05f) groundCheckRadius = 0.05f;
         if (groundCheckDistance < groundCheckRadius) groundCheckDistance = groundCheckRadius + 0.05f;
+        if (ceilingCheckDistance < 0.05f) ceilingCheckDistance = 0.05f;
     }
 
     void Awake()
@@ -50,35 +59,26 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
-        if (groundMask == 0)
-            groundMask = LayerMask.GetMask("Ground");
+        if (groundMask == 0)  groundMask  = LayerMask.GetMask("Ground");
+        if (ceilingMask == 0) ceilingMask = groundMask;
+
+        jumpStrategy ??= new PlayerJumpStrategy(); 
     }
 
-    void FixedUpdate()
-    {
+    void FixedUpdate() {
         DoGroundCheck();
         rb.drag = isGrounded ? groundDrag : airDrag;
 
-        if (jumpRequested)
-        {
+        jumpStrategy.UpdateJump(rb);
+
+        if (jumpRequested) {
             jumpRequested = false;
-            if (isGrounded)
-            {
-                float v = Mathf.Sqrt(2f * Mathf.Abs(Physics.gravity.y) * jumpHeight);
-                rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-                rb.AddForce(Vector3.up * v, ForceMode.VelocityChange);
+            if (jumpStrategy.CanJump(isGrounded)) {       
+                jumpStrategy.ApplyJump(rb, jumpHeight);   
             }
         }
-
     }
 
-    void Update()
-    {
-        if (isDebugModeOn)
-        {
-            Debug.Log($"Sprinting: {isSprinting}, Speed: {rb.velocity.magnitude:F2}, Max: {currentMaxSpeed}");
-        }
-    }
 
     // ===== IMovable / IJump =====
     public void SetSprint(bool value) => isSprinting = value;
@@ -86,7 +86,6 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     public void MovePlayer(Vector2 input)
     {
         currentMaxSpeed = isSprinting ? sprintSpeed : walkSpeed;
-        
         Vector3 inputDirection = CalculateMovementDirection(input);
         movementStrategy.ApplyMovement(rb, inputDirection, currentMaxSpeed, isGrounded);
     }
@@ -100,19 +99,18 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     private Vector3 CalculateMovementDirection(Vector2 input)
     {
         Vector3 forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
-        Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
-        
+        Vector3 right   = Vector3.ProjectOnPlane(orientation.right,   Vector3.up).normalized;
         Vector3 direction = right * input.x + forward * input.y;
-        
-        if (direction.sqrMagnitude > 1f) 
-            direction.Normalize();
-            
+        if (direction.sqrMagnitude > 1f) direction.Normalize();
         return direction;
     }
 
     public void Jump() => jumpRequested = true;
 
-    // ===== Ground check (sin cambios) =====
+    public void SetJumpHeld(bool held) {
+        jumpStrategy?.SetJumpHeld(held);
+    }
+    // ===== Ground check =====
     private void DoGroundCheck()
     {
         Vector3 center = (feet != null) ? feet.position : (rb.position + Vector3.down * groundCheckDistance);
@@ -122,6 +120,23 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
         {
             Color c = isGrounded ? Color.green : Color.red;
             Debug.DrawLine(center, center + Vector3.up * 0.1f, c, 0f, false);
+        }
+    }
+
+    private void DoCeilingCheck()
+    {
+        Vector3 origin = rb.position + Vector3.up * 0.1f;
+        if (Physics.Raycast(origin, Vector3.up, ceilingCheckDistance, ceilingMask, QueryTriggerInteraction.Ignore))
+        {
+            // si vamos subiendo, frená en seco
+            if (rb.velocity.y > 0f)
+            {
+                rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            }
+        }
+        if (isDebugModeOn)
+        {
+            Debug.DrawRay(origin, Vector3.up * ceilingCheckDistance, Color.cyan, 0f, false);
         }
     }
 
