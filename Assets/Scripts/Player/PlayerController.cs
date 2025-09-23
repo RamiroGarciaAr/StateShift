@@ -27,11 +27,7 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     [Header("Ground Check")]
     [SerializeField] private float groundCheckRadius   = 0.3f;
     [SerializeField] private float groundCheckDistance = 0.5f; 
-    [SerializeField] private LayerMask groundMask;             
-
-    [Header("Ceiling Check")]
-    [SerializeField] private float ceilingCheckDistance = 0.3f; 
-    [SerializeField] private LayerMask ceilingMask;            
+    [SerializeField] private LayerMask groundMask;                     
 
     [Header("Debug")]
     public bool isDebugModeOn = false;
@@ -46,12 +42,10 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     {
         if (groundMask == 0)
             groundMask = LayerMask.GetMask("Ground");
-        if (ceilingMask == 0)
-            ceilingMask = groundMask; // default razonable
+
 
         if (groundCheckRadius < 0.05f) groundCheckRadius = 0.05f;
         if (groundCheckDistance < groundCheckRadius) groundCheckDistance = groundCheckRadius + 0.05f;
-        if (ceilingCheckDistance < 0.05f) ceilingCheckDistance = 0.05f;
     }
 
     void Awake()
@@ -60,7 +54,6 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
         rb.freezeRotation = true;
 
         if (groundMask == 0)  groundMask  = LayerMask.GetMask("Ground");
-        if (ceilingMask == 0) ceilingMask = groundMask;
 
         jumpStrategy ??= new PlayerJumpStrategy(); 
     }
@@ -122,24 +115,6 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
             Debug.DrawLine(center, center + Vector3.up * 0.1f, c, 0f, false);
         }
     }
-
-    private void DoCeilingCheck()
-    {
-        Vector3 origin = rb.position + Vector3.up * 0.1f;
-        if (Physics.Raycast(origin, Vector3.up, ceilingCheckDistance, ceilingMask, QueryTriggerInteraction.Ignore))
-        {
-            // si vamos subiendo, frená en seco
-            if (rb.velocity.y > 0f)
-            {
-                rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-            }
-        }
-        if (isDebugModeOn)
-        {
-            Debug.DrawRay(origin, Vector3.up * ceilingCheckDistance, Color.cyan, 0f, false);
-        }
-    }
-
     void OnDrawGizmosSelected()
     {
         if (!isDebugModeOn) return;
