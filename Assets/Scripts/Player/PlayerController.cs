@@ -1,7 +1,7 @@
-using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(PlatformRider))] // ✅ ahora obligatorio
 public class PlayerController : MonoBehaviour, IMovable, IJump
 {
     [Header("References")]
@@ -33,11 +33,11 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     [SerializeField] private float groundCheckDistance = 0.5f; 
     [SerializeField] private LayerMask groundMask;                     
 
-
     [Header("Debug")]
     public bool isDebugModeOn = false;
 
     private Rigidbody rb;
+    private PlatformRider rider;
     private bool isGrounded;
     private bool isSprinting;
     private bool jumpRequested;
@@ -48,7 +48,6 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
         if (groundMask == 0)
             groundMask = LayerMask.GetMask("Ground");
 
-
         if (groundCheckRadius < 0.05f) groundCheckRadius = 0.05f;
         if (groundCheckDistance < groundCheckRadius) groundCheckDistance = groundCheckRadius + 0.05f;
     }
@@ -58,17 +57,21 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
-        if (groundMask == 0)  groundMask  = LayerMask.GetMask("Ground");
+        rider = GetComponent<PlatformRider>();
+
+        if (groundMask == 0)  
+            groundMask = LayerMask.GetMask("Ground");
 
         jumpStrategy ??= new PlayerJumpStrategy(); 
     }
+
     void Update()
     {
         DoGroundCheck();
-        DoPlatformCheck();
     }
-    void FixedUpdate() {
 
+    void FixedUpdate() 
+    {
         rb.drag = isGrounded ? groundDrag : airDrag;
 
         jumpStrategy.UpdateJump(rb);
@@ -80,7 +83,6 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
             }
         }
     }
-
 
     // ===== IMovable / IJump =====
     public void SetSprint(bool value) => isSprinting = value;
@@ -112,6 +114,7 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     public void SetJumpHeld(bool held) {
         jumpStrategy?.SetJumpHeld(held);
     }
+
     // ===== Ground check =====
     private void DoGroundCheck()
     {
@@ -124,19 +127,7 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
             Debug.DrawLine(center, center + Vector3.up * 0.1f, c, 0f, false);
         }
     }
-    private bool DoPlatformCheck()
-    {
-        Vector3 center = (feet != null) ? feet.position : (rb.position + Vector3.down * groundCheckDistance);
-        if (Physics.SphereCast(center, groundCheckRadius, Vector3.down, out RaycastHit hit, 0.2f, groundMask, QueryTriggerInteraction.Ignore))
-        {
-            if (hit.collider != null && hit.collider.gameObject.CompareTag(PLATFORM_TAG))
-            {
-                Debug.Log("On Platform");
-                return true;
-            }
-        }
-        return false;
-    }
+
     void OnDrawGizmosSelected()
     {
         if (!isDebugModeOn) return;

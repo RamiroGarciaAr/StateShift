@@ -14,14 +14,19 @@ public class AudioManager : MonoBehaviour
             s.source.clip = s.clip;
             s.source.volume = s.volume;
             s.source.pitch = s.pitch;
+            //s.source.loop = s.loop;
         }
+    }
+    void Start()
+    {
+        Play("Flight");
     }
     public void Play(string name)
     {
         Sound s = Array.Find(sounds, sound => sound.Name == name);
         if (s == null)
         {
-            Debug.LogWarning("Sound: " + name + " not found!");
+            //Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
         s.source.Play();
