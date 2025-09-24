@@ -9,6 +9,10 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     [Tooltip("Punto desde el que se chequea el suelo. Si está vacío, se calcula en runtime.")]
     public Transform feet;
 
+    [SerializeField] private WallDetection wallDetection = new();
+
+    public const string PLATFORM_TAG = "MovingPlatform";
+
     [Header("Drag")]
     public float groundDrag = 4f;
     public float airDrag    = 0.1f;
@@ -28,6 +32,7 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     [SerializeField] private float groundCheckRadius   = 0.3f;
     [SerializeField] private float groundCheckDistance = 0.5f; 
     [SerializeField] private LayerMask groundMask;                     
+
 
     [Header("Debug")]
     public bool isDebugModeOn = false;
@@ -57,9 +62,13 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
 
         jumpStrategy ??= new PlayerJumpStrategy(); 
     }
-
-    void FixedUpdate() {
+    void Update()
+    {
         DoGroundCheck();
+        DoPlatformCheck();
+    }
+    void FixedUpdate() {
+
         rb.drag = isGrounded ? groundDrag : airDrag;
 
         jumpStrategy.UpdateJump(rb);
@@ -114,6 +123,19 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
             Color c = isGrounded ? Color.green : Color.red;
             Debug.DrawLine(center, center + Vector3.up * 0.1f, c, 0f, false);
         }
+    }
+    private bool DoPlatformCheck()
+    {
+        Vector3 center = (feet != null) ? feet.position : (rb.position + Vector3.down * groundCheckDistance);
+        if (Physics.SphereCast(center, groundCheckRadius, Vector3.down, out RaycastHit hit, 0.2f, groundMask, QueryTriggerInteraction.Ignore))
+        {
+            if (hit.collider != null && hit.collider.gameObject.CompareTag(PLATFORM_TAG))
+            {
+                Debug.Log("On Platform");
+                return true;
+            }
+        }
+        return false;
     }
     void OnDrawGizmosSelected()
     {

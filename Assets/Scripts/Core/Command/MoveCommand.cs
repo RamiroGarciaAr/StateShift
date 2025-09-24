@@ -15,4 +15,9 @@ public sealed class MoveCommand : ICommand
     {
         movable.Move(moveDir, maxSpeed);
     }
+
+    public void Undo()
+    {
+        throw new System.NotImplementedException();
+    }
 }

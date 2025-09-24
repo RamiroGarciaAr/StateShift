@@ -8,4 +8,9 @@ public sealed class JumpCommand : ICommand
     }
 
     public void Execute() => jumpable.Jump();
+
+    public void Undo()
+    {
+        throw new System.NotImplementedException();
+    }
 }
