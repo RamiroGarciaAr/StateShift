@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class InputHandler : MonoBehaviour
 {
     private PlayerInput playerInput;
-    private InputAction moveAction, sprintAction, jumpAction;
+    private InputAction moveAction, sprintAction, jumpAction, pauseAction;
 
     private PlayerController controller;
 
@@ -25,6 +25,7 @@ public class InputHandler : MonoBehaviour
         moveAction   = playerInput.actions["Movement"];
         jumpAction   = playerInput.actions["Jump"];
         sprintAction = playerInput.actions["Sprint"];
+        pauseAction  = playerInput.actions["Pause"];
 
         moveAction.performed += OnMovePerformed;
         moveAction.canceled  += OnMoveCanceled;
@@ -41,9 +42,12 @@ public class InputHandler : MonoBehaviour
         sprintAction.performed += ctx => controller.SetSprint(true);
         sprintAction.canceled  += ctx => controller.SetSprint(false);
 
+        pauseAction.performed += OnPausePerformed;
+
         moveAction.Enable();
         jumpAction.Enable();
         sprintAction.Enable();
+        pauseAction.Enable();
     }
 
     private void OnDisable()
@@ -85,5 +89,10 @@ public class InputHandler : MonoBehaviour
     {
         controller.Jump();
         jumpPressedThisFrame = true;
+    }
+
+    private void OnPausePerformed(InputAction.CallbackContext ctx)
+    {
+        EventsManager.Instance.ActionGamePause(true);
     }
 }
