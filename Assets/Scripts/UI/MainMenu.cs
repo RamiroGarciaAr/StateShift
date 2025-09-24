@@ -5,6 +5,7 @@ public class MainMenu : MonoBehaviour
 {
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _quitButton;
+    [SerializeField] private Button _testButton;
 
     [SerializeField] private string _gameScene;
 
@@ -12,6 +13,7 @@ public class MainMenu : MonoBehaviour
     {
         _playButton.onClick.AddListener(OnPlay);
         _quitButton.onClick.AddListener(OnQuit);
+        _testButton.onClick.AddListener(() => SceneLoader.OpenLoadingScene("PlayerTesting"));
     }
 
     public void OnPlay()
