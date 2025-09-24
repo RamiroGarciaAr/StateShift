@@ -5,9 +5,12 @@ using UnityEngine.InputSystem;
 public class InputHandler : MonoBehaviour
 {
     private PlayerInput playerInput;
-    private InputAction moveAction, sprintAction, jumpAction, pauseAction;
+    private InputAction moveAction, sprintAction, jumpAction, pauseAction, interactAction;
+    
 
     private PlayerController controller;
+    private PlayerInteractor interactor;
+
 
     private Vector2 movementInput = Vector2.zero;
     private bool jumpPressedThisFrame;
@@ -15,7 +18,8 @@ public class InputHandler : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
-        controller  = GetComponent<PlayerController>();
+        controller = GetComponent<PlayerController>();
+        interactor = GetComponent<PlayerInteractor>();
     }
     private void OnEnable()
     {
@@ -26,6 +30,7 @@ public class InputHandler : MonoBehaviour
         jumpAction   = playerInput.actions["Jump"];
         sprintAction = playerInput.actions["Sprint"];
         pauseAction  = playerInput.actions["Pause"];
+        interactAction= playerInput.actions["Interact"];
 
         moveAction.performed += OnMovePerformed;
         moveAction.canceled  += OnMoveCanceled;
@@ -43,6 +48,10 @@ public class InputHandler : MonoBehaviour
         sprintAction.canceled  += ctx => controller.SetSprint(false);
 
         pauseAction.performed += OnPausePerformed;
+
+        interactAction.performed += ctx => {
+            if (interactor != null) interactor.TryInteract(gameObject);
+        };
 
         moveAction.Enable();
         jumpAction.Enable();
