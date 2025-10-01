@@ -34,7 +34,7 @@ public class WallDetection : MonoBehaviour
     [SerializeField] private float wallNormalOffset = 0.1f; // Separación de la pared para evitar self-collision
     [SerializeField] private float heightCheckBuffer = 1f;  // Buffer extra para verificación de altura
 
-    private RaycastHit[] raycastHits = new RaycastHit[1];
+    private readonly RaycastHit[] raycastHits = new RaycastHit[1];
 
     public WallHitInfo DetectCurrentWall(Transform player, Vector3 wallNormal)
     {
