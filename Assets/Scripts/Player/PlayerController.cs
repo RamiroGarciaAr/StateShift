@@ -1,7 +1,6 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(PlatformRider))] // ✅ ahora obligatorio
 public class PlayerController : MonoBehaviour, IMovable, IJump
 {
     [Header("References")]
@@ -9,39 +8,82 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     [Tooltip("Punto desde el que se chequea el suelo. Si está vacío, se calcula en runtime.")]
     public Transform feet;
 
-    [SerializeField] private WallDetection wallDetection = new();
-
-    public const string PLATFORM_TAG = "MovingPlatform";
-
     [Header("Drag")]
     public float groundDrag = 4f;
-    public float airDrag    = 0.1f;
+    public float airDrag = 0.1f;
 
     [Header("Movement Settings")]
-    public float walkSpeed   = 30f;  
+    public float walkSpeed = 30f;
     public float sprintSpeed = 100f;
 
-    [Header("Movement Strategy")]
-    [SerializeField] private PlayerMovementStrategy movementStrategy = new();
+    [Header("Movement Physics")]
+    [SerializeField] private float groundAcceleration = 60f;
+    [SerializeField] private float airAcceleration = 24f;
+    [SerializeField] private float airControlFactor = 0.4f;
 
-    [Header("Jump")]
-    [SerializeField] private float jumpHeight = 1.6f;
-    [SerializeField] private PlayerJumpStrategy jumpStrategy;
+    [Header("Jump Settings")]
+    [SerializeField] private float minJumpHeight = 1.2f;
+    [SerializeField] private float maxJumpHeight = 2.8f;
+    [SerializeField] private float jumpRiseTime = 0.3f;
+    [SerializeField] private float minJumpTime = 0.08f;
+
+    [Header("Jump Feel")]
+    [SerializeField] private float jumpCutMultiplier = 2.5f;
+    [SerializeField] private float fallGravityMultiplier = 2.2f;
+    [SerializeField] private float lowJumpMultiplier = 3f;
+
+    [Header("Coyote & Buffer")]
+    [SerializeField] private float coyoteTime = 0.12f;
+    [SerializeField] private float jumpBufferTime = 0.15f;
 
     [Header("Ground Check")]
-    [SerializeField] private float groundCheckRadius   = 0.3f;
-    [SerializeField] private float groundCheckDistance = 0.5f; 
-    [SerializeField] private LayerMask groundMask;                     
+    [SerializeField] private float groundCheckRadius = 0.3f;
+    [SerializeField] private float groundCheckDistance = 0.5f;
+    [SerializeField] private LayerMask groundMask;
 
     [Header("Debug")]
     public bool isDebugModeOn = false;
 
+    // State Machine
+    private StateMachine<PlayerStateType> stateMachine;
+
+    // Componentes
     private Rigidbody rb;
-    private PlatformRider rider;
+
+
+    // Estado interno
     private bool isGrounded;
     private bool isSprinting;
+    private bool isJumpHeld;
+    private Vector2 moveInput;
     private bool jumpRequested;
-    private float currentMaxSpeed;
+    
+    // Timers
+    private float lastGroundedTime;
+    private float jumpBufferTimer;
+
+    // Properties públicas para los estados
+    public Rigidbody Rb => rb;
+    public Transform Orientation => orientation;
+    public float GroundDrag => groundDrag;
+    public float AirDrag => airDrag;
+    public float WalkSpeed => walkSpeed;
+    public float SprintSpeed => sprintSpeed;
+    public float GroundAcceleration => groundAcceleration;
+    public float AirAcceleration => airAcceleration;
+    public float AirControlFactor => airControlFactor;
+    public float MinJumpHeight => minJumpHeight;
+    public float MaxJumpHeight => maxJumpHeight;
+    public float JumpRiseTime => jumpRiseTime;
+    public float MinJumpTime => minJumpTime;
+    public float JumpCutMultiplier => jumpCutMultiplier;
+    public float FallGravityMultiplier => fallGravityMultiplier;
+    public float LowJumpMultiplier => lowJumpMultiplier;
+    public bool IsGrounded => isGrounded;
+    public bool IsSprinting => isSprinting;
+    public bool IsJumpHeld => isJumpHeld;
+    public Vector2 MoveInput => moveInput;
+    public bool IsDebugModeOn => isDebugModeOn;
 
     void OnValidate()
     {
@@ -56,70 +98,53 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-
-        rider = GetComponent<PlatformRider>();
-
-        if (groundMask == 0)  
+        if (groundMask == 0)
             groundMask = LayerMask.GetMask("Ground");
 
-        jumpStrategy ??= new PlayerJumpStrategy(); 
+        InitializeStateMachine();
+    }
+
+    private void InitializeStateMachine()
+    {
+        stateMachine = new StateMachine<PlayerStateType>();
+
+        // Registrar todos los estados
+        stateMachine.RegisterState(PlayerStateType.Idle, new PlayerIdleState(this));
+        stateMachine.RegisterState(PlayerStateType.Walking, new PlayerWalkingState(this));
+        stateMachine.RegisterState(PlayerStateType.Jumping, new PlayerJumpingState(this));
+        stateMachine.RegisterState(PlayerStateType.Falling, new PlayerFallingState(this));
+
+        // Inicializar en Idle
+        stateMachine.Initialize(PlayerStateType.Idle);
     }
 
     void Update()
     {
         DoGroundCheck();
-    }
+        UpdateTimers();
+        stateMachine.Update();
 
-    void FixedUpdate() 
-    {
-        rb.drag = isGrounded ? groundDrag : airDrag;
-
-        jumpStrategy.UpdateJump(rb);
-
-        if (jumpRequested) {
-            jumpRequested = false;
-            if (jumpStrategy.CanJump(isGrounded)) {       
-                jumpStrategy.ApplyJump(rb, jumpHeight);   
-            }
+        // Debug
+        if (isDebugModeOn)
+        {
+            Debug.Log($"Current State: {stateMachine.CurrentStateType}");
         }
     }
 
-    // ===== IMovable / IJump =====
-    public void SetSprint(bool value) => isSprinting = value;
-
-    public void MovePlayer(Vector2 input)
+    void FixedUpdate()
     {
-        currentMaxSpeed = isSprinting ? sprintSpeed : walkSpeed;
-        Vector3 inputDirection = CalculateMovementDirection(input);
-        movementStrategy.ApplyMovement(rb, inputDirection, currentMaxSpeed, isGrounded);
+        HandleJumpRequest();
+        stateMachine.FixedUpdate();
     }
 
-    public void Move(Vector3 inputAxis, float maxSpeed)
-    {
-        Vector3 inputDirection = CalculateMovementDirection(new Vector2(inputAxis.x, inputAxis.z));
-        movementStrategy.ApplyMovement(rb, inputDirection, maxSpeed, isGrounded);
-    }
-
-    private Vector3 CalculateMovementDirection(Vector2 input)
-    {
-        Vector3 forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
-        Vector3 right   = Vector3.ProjectOnPlane(orientation.right,   Vector3.up).normalized;
-        Vector3 direction = right * input.x + forward * input.y;
-        if (direction.sqrMagnitude > 1f) direction.Normalize();
-        return direction;
-    }
-
-    public void Jump() => jumpRequested = true;
-
-    public void SetJumpHeld(bool held) {
-        jumpStrategy?.SetJumpHeld(held);
-    }
-
-    // ===== Ground check =====
+    // ===== Ground Check =====
     private void DoGroundCheck()
     {
         Vector3 center = (feet != null) ? feet.position : (rb.position + Vector3.down * groundCheckDistance);
         isGrounded = Physics.CheckSphere(center, groundCheckRadius, groundMask, QueryTriggerInteraction.Ignore);
+
+        if (isGrounded)
+            lastGroundedTime = Time.time;
 
         if (isDebugModeOn)
         {
@@ -128,6 +153,81 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
         }
     }
 
+    // ===== Timers =====
+    private void UpdateTimers()
+    {
+        if (jumpBufferTimer > 0f)
+            jumpBufferTimer -= Time.deltaTime;
+    }
+
+    // ===== Jump Handling =====
+    private void HandleJumpRequest()
+    {
+        if (!jumpRequested) return;
+
+        jumpRequested = false;
+
+        // Coyote time check
+        bool canJumpFromCoyote = Time.time - lastGroundedTime <= coyoteTime;
+
+        if (isGrounded || canJumpFromCoyote)
+        {
+            // Cambiar al estado de salto
+            ChangeState(PlayerStateType.Jumping);
+        }
+        else
+        {
+            // Buffer el salto
+            jumpBufferTimer = jumpBufferTime;
+        }
+    }
+
+    // Check del buffer en los estados que tocan suelo
+    public bool HasJumpBuffered()
+    {
+        return jumpBufferTimer > 0f;
+    }
+
+    public void ConsumeJumpBuffer()
+    {
+        jumpBufferTimer = 0f;
+    }
+
+    // ===== IMovable / IJump =====
+    public void SetSprint(bool value) => isSprinting = value;
+
+    public void MovePlayer(Vector2 input)
+    {
+        moveInput = input;
+    }
+
+    public void Move(Vector3 inputAxis, float maxSpeed)
+    {
+        moveInput = new Vector2(inputAxis.x, inputAxis.z);
+    }
+
+    public void Jump()
+    {
+        jumpRequested = true;
+    }
+
+    public void SetJumpHeld(bool held)
+    {
+        isJumpHeld = held;
+    }
+
+    // ===== State Machine Control =====
+    public void ChangeState(PlayerStateType newState)
+    {
+        stateMachine.ChangeState(newState);
+    }
+
+    public PlayerStateType GetCurrentState()
+    {
+        return stateMachine.CurrentStateType;
+    }
+
+    // ===== Gizmos =====
     void OnDrawGizmosSelected()
     {
         if (!isDebugModeOn) return;
