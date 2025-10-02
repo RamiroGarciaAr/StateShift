@@ -59,9 +59,24 @@ public class PlayerFallingState : PlayerStateBase
         if (IsGrounded)
         {
             if (MoveInput.sqrMagnitude > 0.01f)
-                Context.ChangeState(PlayerStateType.Walking);
+            {
+                if (IsSprinting)
+                    Context.ChangeState(PlayerStateType.Sprinting);
+                else
+                    Context.ChangeState(PlayerStateType.Walking);
+            }
             else
+            {
                 Context.ChangeState(PlayerStateType.Idle);
+            }
+            return;
+        }
+
+        // Si detecta una pared y hay input de movimiento → WallRunning
+        WallRunHit wallHit = Context.DetectWall();
+        if (wallHit.hit && MoveInput.sqrMagnitude > 0.1f)
+        {
+            Context.ChangeState(PlayerStateType.WallRunning);
             return;
         }
 

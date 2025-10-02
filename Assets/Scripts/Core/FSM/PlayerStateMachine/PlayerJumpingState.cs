@@ -1,4 +1,6 @@
 using UnityEngine;
+
+
 public class PlayerJumpingState : PlayerStateBase
 {
     private float jumpStartTime;
@@ -105,13 +107,28 @@ public class PlayerJumpingState : PlayerStateBase
             return;
         }
 
+        // Si detecta una pared → WallRunning
+        WallRunHit wallHit = Context.DetectWall();
+        if (wallHit.hit && MoveInput.sqrMagnitude > 0.1f)
+        {
+            Context.ChangeState(PlayerStateType.WallRunning);
+            return;
+        }
+
         // Si toca el suelo mientras salta (techo bajo)
         if (IsGrounded)
         {
             if (MoveInput.sqrMagnitude > 0.01f)
-                Context.ChangeState(PlayerStateType.Walking);
+            {
+                if (IsSprinting)
+                    Context.ChangeState(PlayerStateType.Sprinting);
+                else
+                    Context.ChangeState(PlayerStateType.Walking);
+            }
             else
+            {
                 Context.ChangeState(PlayerStateType.Idle);
+            }
         }
     }
 

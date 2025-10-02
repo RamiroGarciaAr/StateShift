@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class PlayerWalkingState : PlayerStateBase
+public class PlayerSprintingState : PlayerStateBase
 {
-    public PlayerWalkingState(PlayerController context) : base(context) { }
+    public PlayerSprintingState(PlayerController context) : base(context) { }
 
     public override void OnEnter()
     {
         if (Context.IsDebugModeOn)
-            Log("Entering Walking State");
+            Log("Entering Sprinting State");
     }
 
     public override void OnUpdate()
@@ -20,28 +20,27 @@ public class PlayerWalkingState : PlayerStateBase
         // Aplicar drag en suelo
         rb.drag = Context.GroundDrag;
         
-        // Aplicar movimiento
+        // Aplicar movimiento con velocidad de sprint
         if (MoveInput.sqrMagnitude > 0.01f)
         {
             Vector3 direction = CalculateMovementDirection(MoveInput);
-            float maxSpeed = IsSprinting ? SprintSpeed : WalkSpeed;
-            ApplyMovement(direction, maxSpeed, GroundAcceleration);
+            ApplyMovement(direction, SprintSpeed, GroundAcceleration);
         }
     }
 
     public override void CheckTransitions()
     {
-        // Si empieza a sprintar → Sprinting
-        if (IsSprinting && IsGrounded && MoveInput.sqrMagnitude > 0.01f)
-        {
-            Context.ChangeState(PlayerStateType.Sprinting);
-            return;
-        }
-
         // Si no hay input → Idle
         if (MoveInput.sqrMagnitude <= 0.01f && IsGrounded)
         {
             Context.ChangeState(PlayerStateType.Idle);
+            return;
+        }
+
+        // Si deja de sprintar → Walking
+        if (!IsSprinting && IsGrounded && MoveInput.sqrMagnitude > 0.01f)
+        {
+            Context.ChangeState(PlayerStateType.Walking);
             return;
         }
 
@@ -59,6 +58,6 @@ public class PlayerWalkingState : PlayerStateBase
     public override void OnExit()
     {
         if (Context.IsDebugModeOn)
-            Log("Exiting Walking State");
+            Log("Exiting Sprinting State");
     }
 }

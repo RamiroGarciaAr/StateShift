@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(PlatformRider))]
 public class PlayerController : MonoBehaviour, IMovable, IJump
 {
     [Header("References")]
@@ -36,6 +37,20 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     [SerializeField] private float coyoteTime = 0.12f;
     [SerializeField] private float jumpBufferTime = 0.15f;
 
+    [Header("Wall Running")]
+    [SerializeField] private float wallRunSpeed = 35f;
+    [SerializeField] private float wallRunAcceleration = 50f;
+    [SerializeField] private float wallRunDrag = 0.5f;
+    [SerializeField] private float wallStickForce = 20f;
+    [SerializeField] private float wallRunGravityMultiplier = 0.3f;
+    [SerializeField] private float maxWallRunTime = 2f;
+    [SerializeField] private float minWallRunSpeed = 5f;
+    [SerializeField] private float maxWallRunFallSpeed = 3f;
+    [SerializeField] private float wallRunExitBoost = 5f;
+    [SerializeField] private float wallCheckDistance = 0.7f;
+    [SerializeField] private float minWallRunHeight = 1f;
+    [SerializeField] private LayerMask wallMask;
+
     [Header("Ground Check")]
     [SerializeField] private float groundCheckRadius = 0.3f;
     [SerializeField] private float groundCheckDistance = 0.5f;
@@ -49,7 +64,7 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
 
     // Componentes
     private Rigidbody rb;
-
+    private PlatformRider rider;
 
     // Estado interno
     private bool isGrounded;
@@ -79,6 +94,15 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     public float JumpCutMultiplier => jumpCutMultiplier;
     public float FallGravityMultiplier => fallGravityMultiplier;
     public float LowJumpMultiplier => lowJumpMultiplier;
+    public float WallRunSpeed => wallRunSpeed;
+    public float WallRunAcceleration => wallRunAcceleration;
+    public float WallRunDrag => wallRunDrag;
+    public float WallStickForce => wallStickForce;
+    public float WallRunGravityMultiplier => wallRunGravityMultiplier;
+    public float MaxWallRunTime => maxWallRunTime;
+    public float MinWallRunSpeed => minWallRunSpeed;
+    public float MaxWallRunFallSpeed => maxWallRunFallSpeed;
+    public float WallRunExitBoost => wallRunExitBoost;
     public bool IsGrounded => isGrounded;
     public bool IsSprinting => isSprinting;
     public bool IsJumpHeld => isJumpHeld;
@@ -90,6 +114,9 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
         if (groundMask == 0)
             groundMask = LayerMask.GetMask("Ground");
 
+        if (wallMask == 0)
+            wallMask = LayerMask.GetMask("Wall");
+
         if (groundCheckRadius < 0.05f) groundCheckRadius = 0.05f;
         if (groundCheckDistance < groundCheckRadius) groundCheckDistance = groundCheckRadius + 0.05f;
     }
@@ -98,8 +125,14 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+
+        rider = GetComponent<PlatformRider>();
+
         if (groundMask == 0)
             groundMask = LayerMask.GetMask("Ground");
+
+        if (wallMask == 0)
+            wallMask = LayerMask.GetMask("Wall");
 
         InitializeStateMachine();
     }
@@ -111,8 +144,10 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
         // Registrar todos los estados
         stateMachine.RegisterState(PlayerStateType.Idle, new PlayerIdleState(this));
         stateMachine.RegisterState(PlayerStateType.Walking, new PlayerWalkingState(this));
+        stateMachine.RegisterState(PlayerStateType.Sprinting, new PlayerSprintingState(this));
         stateMachine.RegisterState(PlayerStateType.Jumping, new PlayerJumpingState(this));
         stateMachine.RegisterState(PlayerStateType.Falling, new PlayerFallingState(this));
+        stateMachine.RegisterState(PlayerStateType.WallRunning, new PlayerWallRunningState(this));
 
         // Inicializar en Idle
         stateMachine.Initialize(PlayerStateType.Idle);
@@ -225,6 +260,45 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
     public PlayerStateType GetCurrentState()
     {
         return stateMachine.CurrentStateType;
+    }
+
+    // ===== Wall Detection =====
+    public WallRunHit DetectWall()
+    {
+        // Verificar que no esté en el suelo (debe estar en el aire)
+        if (isGrounded)
+            return WallRunHit.NoHit();
+
+        // Verificar altura mínima
+        if (transform.position.y < minWallRunHeight)
+            return WallRunHit.NoHit();
+
+        // Verificar velocidad mínima horizontal
+        Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        if (horizontalVelocity.magnitude < minWallRunSpeed)
+            return WallRunHit.NoHit();
+
+        // Raycast a la derecha
+        if (Physics.Raycast(transform.position, orientation.right, out RaycastHit rightHit, wallCheckDistance, wallMask))
+        {
+            // Verificar que la pared sea aproximadamente vertical
+            if (Vector3.Dot(rightHit.normal, Vector3.up) < 0.1f && Vector3.Dot(rightHit.normal, Vector3.up) > -0.1f)
+            {
+                return new WallRunHit(true, rightHit.normal, rightHit.point, true, rightHit.distance);
+            }
+        }
+
+        // Raycast a la izquierda
+        if (Physics.Raycast(transform.position, -orientation.right, out RaycastHit leftHit, wallCheckDistance, wallMask))
+        {
+            // Verificar que la pared sea aproximadamente vertical
+            if (Vector3.Dot(leftHit.normal, Vector3.up) < 0.1f && Vector3.Dot(leftHit.normal, Vector3.up) > -0.1f)
+            {
+                return new WallRunHit(true, leftHit.normal, leftHit.point, false, leftHit.distance);
+            }
+        }
+
+        return WallRunHit.NoHit();
     }
 
     // ===== Gizmos =====
