@@ -11,6 +11,8 @@ public class PlayerMovement : MonoBehaviour, IControllable
     [SerializeField] private float speedMultiplier;
     [Range(0, 1)]
     [SerializeField] private float movementSmoothing = .1f;
+    [SerializeField] private float airMovementAcceleration = .5f;
+
 
     [Header("Jump and Gravity")]
     [SerializeField] private float jumpForce = 5;
@@ -157,7 +159,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
         if (!IsGrounded)
         {
             var curVelXZ = new Vector3(currentVelocity.x, 0, currentVelocity.z);
-           // moveVec = Vector3.MoveTowards(curVelXZ, moveVec, _airMovementAcceleration * Time.fixedDeltaTime);
+            moveVec = Vector3.MoveTowards(curVelXZ, moveVec, airMovementAcceleration * Time.fixedDeltaTime);
         }
 
         var velocityY = Vector3.zero;

@@ -5,14 +5,12 @@ namespace Entities.Controllers
 {
     public class PlayerController : Controller
     {
-        [SerializeField] private InputActionAsset _inputActions;
         private PlayerInput _playerInput;
-        private InputAction _moveAction, _jumpAction;
+        private InputAction _moveAction, _jumpAction, _sprintAction;
         private Vector2 _movementInput = Vector2.zero;
 
         private void Awake()
         {
-            // Asignar el Controllable (asumiendo que PlayerMovement está en el mismo GameObject)
             Controllable = GetComponent<IControllable>();
             _playerInput = GetComponent<PlayerInput>();
             
@@ -29,26 +27,19 @@ namespace Entities.Controllers
 
             _moveAction = _playerInput.actions["Movement"];
             _jumpAction = _playerInput.actions["Jump"];
+            _sprintAction = _playerInput.actions["Sprint"];
 
             _moveAction.Enable();
             _jumpAction.Enable();
-            
-            // Suscribirse a los eventos de salto
-            _jumpAction.performed += OnJumpPerformed;
-            _jumpAction.canceled += OnJumpCanceled;
+            _sprintAction.Enable();
+
         }
 
         private void OnDisable()
         {
             _moveAction?.Disable();
             _jumpAction?.Disable();
-            
-            // Desuscribirse de los eventos
-            if (_jumpAction != null)
-            {
-                _jumpAction.performed -= OnJumpPerformed;
-                _jumpAction.canceled -= OnJumpCanceled;
-            }
+            _sprintAction?.Disable();
         }
 
         private void Update()
@@ -76,19 +67,10 @@ namespace Entities.Controllers
             }
 
             Controllable.Move(direction);
+
+            if (_jumpAction.WasPressedThisFrame()) Controllable.Jump();
+            Controllable.SetHoldingJump(_jumpAction.IsPressed());
         }
 
-        private void OnJumpPerformed(InputAction.CallbackContext context)
-        {
-            Controllable?.Jump();
-        }
-
-        private void OnJumpCanceled(InputAction.CallbackContext context)
-        {
-            if (Controllable is PlayerMovement playerMovement)
-            {
-                playerMovement.SetHoldingJump(false);
-            }
-        }
     }
 }
