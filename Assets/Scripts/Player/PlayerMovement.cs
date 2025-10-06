@@ -1,4 +1,5 @@
 using System;
+using Core;
 using Strategies;
 using UnityEngine;
 
@@ -7,8 +8,13 @@ public class PlayerMovement : MonoBehaviour, IControllable
 {
     #region Fields
     [Header("Movement")]
-    [SerializeField] private float speed;
-    [SerializeField] private float speedMultiplier;
+    [SerializeField] private float baseSpeed = 5f;
+
+    // ==== Speed Multipliers =====
+    private float speedMultiplier;
+    [SerializeField] private float sprintSpeedMultiplier = 2;
+    [SerializeField] private float walkSpeedMultiplier = 1;
+    [SerializeField] private float crouchSpeedMultiplier = 0.5f;
     [Range(0, 1)]
     [SerializeField] private float movementSmoothing = .1f;
     [SerializeField] private float airMovementAcceleration = .5f;
@@ -32,13 +38,26 @@ public class PlayerMovement : MonoBehaviour, IControllable
     private Vector2 _rawMoveDir, _smoothMoveDir, _smoothMoveDirVelocity;
     private bool _jumpInputDown;
     private bool _jumpInputHeld;
+    private MovementState _currentMovementState = MovementState.Walking;
     #endregion
 
     #region Properties
     // ===== Movement =====
-    public float Speed { get => speed; set => speed = value; }
-    public float SpeedMultiplier { get => speedMultiplier; set => speedMultiplier = value; }
+    public float Speed { get => baseSpeed; set => baseSpeed = value; }
     public float MovementSmoothing { get => movementSmoothing; set => movementSmoothing = value; }
+    private float CurrentSpeed
+    {
+        get
+        {
+            return _currentMovementState switch
+            {
+                MovementState.Sprinting => baseSpeed * sprintSpeedMultiplier,
+                MovementState.Walking => baseSpeed * walkSpeedMultiplier,
+                MovementState.Crouching => baseSpeed * crouchSpeedMultiplier,
+                _ => baseSpeed
+            };
+        }
+    }
     // ===== Jump =====
     public float JumpForce { get => jumpForce; set => jumpForce = value; }
     public bool IsHoldingJump { get; private set; }
@@ -147,15 +166,19 @@ public class PlayerMovement : MonoBehaviour, IControllable
     {
         _rawMoveDir = direction.sqrMagnitude > 1 ? direction.normalized : direction;
     }
+    public void SetMovementState(MovementState state)
+    {
+       _currentMovementState = state;
+    }
     private void UpdateMovement()
     {
         if (_rb.GetAccumulatedForce().sqrMagnitude > 0) IsGrounded = false;
-            
+
         if (IsGrounded) _rb.MovePosition(Vector3.MoveTowards(_rb.position, GroundPoint, Time.fixedDeltaTime * 1f));
 
         var currentVelocity = _rb.velocity;
 
-        var moveVec = Vector3.ProjectOnPlane(new Vector3(_smoothMoveDir.x, 0, _smoothMoveDir.y), GroundNormal) * (Speed * SpeedMultiplier);
+        var moveVec = Vector3.ProjectOnPlane(new Vector3(_smoothMoveDir.x, 0, _smoothMoveDir.y), GroundNormal) * CurrentSpeed;
         if (!IsGrounded)
         {
             var curVelXZ = new Vector3(currentVelocity.x, 0, currentVelocity.z);
@@ -176,18 +199,18 @@ public class PlayerMovement : MonoBehaviour, IControllable
                 appliedGravity = Vector3.up * (Physics.gravity.y * gravityMultiplier * Time.fixedDeltaTime);
             }
 
-                velocityY += Vector3.up * currentVelocity.y + appliedGravity;
-            }
-            else if (_jumpInputDown)
-            {
-                velocityY = Vector3.up * jumpForce;
-                _jumpInputDown = false;
-
-               // OnJump?.Invoke();
-            }
-
-            _rb.velocity = moveVec + velocityY + GroundVelocity;
+            velocityY += Vector3.up * currentVelocity.y + appliedGravity;
         }
+        else if (_jumpInputDown)
+        {
+            velocityY = Vector3.up * jumpForce;
+            _jumpInputDown = false;
+
+            // OnJump?.Invoke();
+        }
+
+        _rb.velocity = moveVec + velocityY + GroundVelocity;
+    }
 
 
     private void ModifyColliderHeight()
@@ -208,5 +231,6 @@ public class PlayerMovement : MonoBehaviour, IControllable
     {
         _rawMoveDir = Vector2.zero;
     }
+
 
 }

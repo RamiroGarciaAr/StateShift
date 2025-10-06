@@ -1,6 +1,7 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
 using Strategies;
+using Core;
 namespace Entities.Controllers
 {
     public class PlayerController : Controller
@@ -70,6 +71,11 @@ namespace Entities.Controllers
 
             if (_jumpAction.WasPressedThisFrame()) Controllable.Jump();
             Controllable.SetHoldingJump(_jumpAction.IsPressed());
+
+            if (_sprintAction.IsPressed())
+                Controllable.SetMovementState(MovementState.Sprinting);
+            else
+                Controllable.SetMovementState(MovementState.Walking);
         }
 
     }
