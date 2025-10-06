@@ -10,7 +10,7 @@ namespace Entities.Controllers
         private InputAction _moveAction, _jumpAction, _sprintAction;
         private Vector2 _movementInput = Vector2.zero;
 
-        private void Awake()
+        protected override void Awake()
         {
             Controllable = GetComponent<IControllable>();
             _playerInput = GetComponent<PlayerInput>();

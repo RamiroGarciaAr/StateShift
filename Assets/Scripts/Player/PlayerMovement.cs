@@ -101,8 +101,6 @@ public class PlayerMovement : MonoBehaviour, IControllable
         UpdateMovement();
         ClearInput();
     }
-
-
     protected virtual void OnDrawGizmosSelected()
     {
         if (Application.isPlaying) return;
@@ -161,7 +159,6 @@ public class PlayerMovement : MonoBehaviour, IControllable
     {
         _jumpInputHeld = holding;
     }
-
     public void Move(Vector2 direction)
     {
         _rawMoveDir = direction.sqrMagnitude > 1 ? direction.normalized : direction;
@@ -211,8 +208,6 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
         _rb.velocity = moveVec + velocityY + GroundVelocity;
     }
-
-
     private void ModifyColliderHeight()
     {
         if (LegHeight >= collider.height)
