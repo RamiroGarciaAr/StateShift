@@ -2,7 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(PlatformRider))]
-public class PlayerController : MonoBehaviour, IMovable, IJump
+public class PlayerController_Legacy : MonoBehaviour, IMovable, IJump
 {
     [Header("References")]
     public Transform orientation;
@@ -134,24 +134,8 @@ public class PlayerController : MonoBehaviour, IMovable, IJump
         if (wallMask == 0)
             wallMask = LayerMask.GetMask("Wall");
 
-        InitializeStateMachine();
     }
 
-    private void InitializeStateMachine()
-    {
-        stateMachine = new StateMachine<PlayerStateType>();
-
-        // Registrar todos los estados
-        stateMachine.RegisterState(PlayerStateType.Idle, new PlayerIdleState(this));
-        stateMachine.RegisterState(PlayerStateType.Walking, new PlayerWalkingState(this));
-        stateMachine.RegisterState(PlayerStateType.Sprinting, new PlayerSprintingState(this));
-        stateMachine.RegisterState(PlayerStateType.Jumping, new PlayerJumpingState(this));
-        stateMachine.RegisterState(PlayerStateType.Falling, new PlayerFallingState(this));
-        stateMachine.RegisterState(PlayerStateType.WallRunning, new PlayerWallRunningState(this));
-
-        // Inicializar en Idle
-        stateMachine.Initialize(PlayerStateType.Idle);
-    }
 
     void Update()
     {

@@ -6,19 +6,13 @@ public class InputHandler : MonoBehaviour
 {
     private PlayerInput playerInput;
     private InputAction moveAction, sprintAction, jumpAction, pauseAction, interactAction;
-    
-
-    private PlayerController controller;
     private PlayerInteractor interactor;
-
-
     private Vector2 movementInput = Vector2.zero;
     private bool jumpPressedThisFrame;
 
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
-        controller = GetComponent<PlayerController>();
         interactor = GetComponent<PlayerInteractor>();
     }
     private void OnEnable()
@@ -39,13 +33,13 @@ public class InputHandler : MonoBehaviour
         jumpAction.performed += OnJumpPerformed;
        
        jumpAction.performed += ctx => {
-            controller.Jump();            
-            controller.SetJumpHeld(true);
+          //  controller.Jump();            
+          //  controller.SetJumpHeld(true);
         };
-        jumpAction.canceled  += ctx => controller.SetJumpHeld(false);
+        //jumpAction.canceled  += ctx => controller.SetJumpHeld(false);
 
-        sprintAction.performed += ctx => controller.SetSprint(true);
-        sprintAction.canceled  += ctx => controller.SetSprint(false);
+        //sprintAction.performed += ctx => controller.SetSprint(true);
+        //sprintAction.canceled  += ctx => controller.SetSprint(false);
 
         pauseAction.performed += OnPausePerformed;
 
@@ -70,33 +64,21 @@ public class InputHandler : MonoBehaviour
         if (jumpAction != null)
         {
             jumpAction.performed -= OnJumpPerformed;
-            // Quitar también los handlers anónimos
-            jumpAction.performed -= ctx => controller.SetJumpHeld(true);
-            jumpAction.canceled  -= ctx => controller.SetJumpHeld(false);
+            //jumpAction.performed -= ctx => controller.SetJumpHeld(true);
+            //jumpAction.canceled  -= ctx => controller.SetJumpHeld(false);
             jumpAction.Disable();
         }
         if (sprintAction != null) sprintAction.Disable();
     }
 
-    private void FixedUpdate()
-    {
-        if (controller != null)
-        {
-            controller.MovePlayer(movementInput);
 
-            if (jumpPressedThisFrame)
-            {
-                jumpPressedThisFrame = false;
-            }
-        }
-    }
 
     private void OnMovePerformed(InputAction.CallbackContext ctx) => movementInput = ctx.ReadValue<Vector2>();
     private void OnMoveCanceled (InputAction.CallbackContext ctx) => movementInput = Vector2.zero;
 
     private void OnJumpPerformed(InputAction.CallbackContext ctx)
     {
-        controller.Jump();
+      //  controller.Jump();
         jumpPressedThisFrame = true;
     }
 

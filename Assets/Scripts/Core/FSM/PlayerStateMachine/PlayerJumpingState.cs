@@ -7,7 +7,7 @@ public class PlayerJumpingState : PlayerStateBase
     private bool canCutJump;
     private float originalGravityY;
 
-    public PlayerJumpingState(PlayerController context) : base(context) { }
+    public PlayerJumpingState(PlayerController_Legacy context) : base(context) { }
 
     public override void OnEnter()
     {

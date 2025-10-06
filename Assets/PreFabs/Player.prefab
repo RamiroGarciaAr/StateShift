@@ -117,9 +117,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3130340792650396895}
   - component: {fileID: 7686486979658587214}
-  - component: {fileID: 5424039196901243602}
-  - component: {fileID: 6814181587787474173}
   - component: {fileID: 8385160106023303043}
+  - component: {fileID: 3306734593851655564}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -176,41 +175,35 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 2fb1c894-3e74-4002-929c-46651345b71a
     m_ActionName: Player/Movement[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: dd8b8e6f-89dd-4228-ae35-c79133946055
+    m_ActionName: Player/Sprint[/Keyboard/shift]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0beb6cb8-96c7-4387-97a6-c0e643b1dc91
+    m_ActionName: Player/Crouch[/Keyboard/leftCtrl]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 77a1a389-7e96-45bb-80d6-45a0d4a00981
+    m_ActionName: Player/Aim[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: bd251861-0356-4b72-88d5-d14b61319a1c
+    m_ActionName: Player/Shoot[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ce6d4de1-db4c-4318-8e1d-26c5b07d3f3d
+    m_ActionName: Player/Pause[/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 939b28eb-bad3-46fa-a86e-00f7afcd3350
+    m_ActionName: Player/Interact[/Keyboard/e]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &5424039196901243602
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8737292798387105240}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1956a03a28054c4096d8920168fe8f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  controller: {fileID: 0}
---- !u!114 &6814181587787474173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8737292798387105240}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8bce4ac094babe4ab9d4b492b4af034, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  walkSpeed: 15
-  orientation: {fileID: 0}
-  groundAcceleration: 10
-  airAcceleration: 5
-  airControlFactor: 0.4
 --- !u!54 &8385160106023303043
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -238,3 +231,25 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &3306734593851655564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 522121f967d24f9478ec3379ee582c81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 5
+  speedMultiplier: 1
+  movementSmoothing: 0.1
+  jumpForce: 5
+  groundCheckDistance: 0.1
+  legHeight: 0.5
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  collider: {fileID: 1020874024964740700}

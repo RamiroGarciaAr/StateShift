@@ -1,7 +1,7 @@
 using UnityEngine;
 public class PlayerIdleState : PlayerStateBase
 {
-    public PlayerIdleState(PlayerController context) : base(context) { }
+    public PlayerIdleState(PlayerController_Legacy context) : base(context) { }
 
     public override void OnEnter()
     {

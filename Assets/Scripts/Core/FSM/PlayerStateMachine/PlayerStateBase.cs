@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class PlayerStateBase : BaseState<PlayerController>
+public abstract class PlayerStateBase : BaseState<PlayerController_Legacy>
 {
     protected Rigidbody rb => Context.Rb;
     protected Transform orientation => Context.Orientation;
@@ -19,7 +19,7 @@ public abstract class PlayerStateBase : BaseState<PlayerController>
     protected Vector2 MoveInput => Context.MoveInput;
     protected bool IsGrounded => Context.IsGrounded;
 
-    protected PlayerStateBase(PlayerController context) : base(context) { }
+    protected PlayerStateBase(PlayerController_Legacy context) : base(context) { }
 
     protected Vector3 CalculateMovementDirection(Vector2 input)
     {

@@ -5,7 +5,7 @@ public class PlayerFallingState : PlayerStateBase
 {
     private float originalGravityY;
 
-    public PlayerFallingState(PlayerController context) : base(context) { }
+    public PlayerFallingState(PlayerController_Legacy context) : base(context) { }
 
     public override void OnEnter()
     {

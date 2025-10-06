@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerSprintingState : PlayerStateBase
 {
-    public PlayerSprintingState(PlayerController context) : base(context) { }
+    public PlayerSprintingState(PlayerController_Legacy context) : base(context) { }
 
     public override void OnEnter()
     {

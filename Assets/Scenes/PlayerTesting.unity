@@ -7007,6 +7007,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3306734593851655564, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+      propertyPath: groundLayerMask.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6814181587787474173, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: feet
       value: 
@@ -7135,7 +7139,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6814181587787474173, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+    - {fileID: 5424039196901243602, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+    - {fileID: 20698574142368019, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3130340792650396895, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
@@ -7143,7 +7150,7 @@ PrefabInstance:
       addedObject: {fileID: 882781849}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8737292798387105240, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
-      insertIndex: 4
+      insertIndex: 2
       addedObject: {fileID: 1536974336}
   m_SourcePrefab: {fileID: 100100000, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
 --- !u!1 &1714559921
@@ -9211,11 +9218,6 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: c461f944af74fbb4d94b6459ea299405, type: 3}
     loop: 0
     volume: 1
-    pitch: 1
-  - Name: Flight
-    clip: {fileID: 8300000, guid: 0236b2e03a5fc5246b9ea2e05b109791, type: 3}
-    loop: 1
-    volume: 0.392
     pitch: 1
 --- !u!4 &1962698643
 Transform:

@@ -10,7 +10,7 @@ public class PlayerWallRunningState : PlayerStateBase
     private bool isWallRight;
     private float wallRunTimer;
     
-    public PlayerWallRunningState(PlayerController context) : base(context) { }
+    public PlayerWallRunningState(PlayerController_Legacy context) : base(context) { }
 
     public override void OnEnter()
     {

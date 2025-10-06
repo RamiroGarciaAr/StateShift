@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerWalkingState : PlayerStateBase
 {
-    public PlayerWalkingState(PlayerController context) : base(context) { }
+    public PlayerWalkingState(PlayerController_Legacy context) : base(context) { }
 
     public override void OnEnter()
     {
