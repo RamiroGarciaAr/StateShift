@@ -38,6 +38,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
     private Vector2 _rawMoveDir, _smoothMoveDir, _smoothMoveDirVelocity;
     private bool _jumpInputDown;
     private bool _jumpInputHeld;
+
     private MovementState _currentMovementState = MovementState.Walking;
     #endregion
 
@@ -93,6 +94,10 @@ public class PlayerMovement : MonoBehaviour, IControllable
     protected virtual void Awake()
     {
         _rb = GetComponent<Rigidbody>();
+    }
+    private void Start()
+    {
+        ModifyColliderHeight();
     }
     protected virtual void FixedUpdate()
     {

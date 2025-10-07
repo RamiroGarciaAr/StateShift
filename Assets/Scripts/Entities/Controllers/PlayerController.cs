@@ -4,17 +4,20 @@ using Strategies;
 using Core;
 namespace Entities.Controllers
 {
+    [RequireComponent(typeof(PlayerCrouch))]
     public class PlayerController : Controller
     {
         private PlayerInput _playerInput;
-        private InputAction _moveAction, _jumpAction, _sprintAction;
+        private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction;
+        private PlayerCrouch _playerCrouch;
         private Vector2 _movementInput = Vector2.zero;
-
+        private bool _wantToCrouch = false;
         protected override void Awake()
         {
             Controllable = GetComponent<IControllable>();
             _playerInput = GetComponent<PlayerInput>();
-            
+            _playerCrouch = GetComponent<PlayerCrouch>();
+
             if (Controllable == null)
             {
                 Debug.LogError("No se encontró un componente IControllable en " + gameObject.name, this);
@@ -29,9 +32,11 @@ namespace Entities.Controllers
             _moveAction = _playerInput.actions["Movement"];
             _jumpAction = _playerInput.actions["Jump"];
             _sprintAction = _playerInput.actions["Sprint"];
+            _crouchAction = _playerInput.actions["Crouch"];
 
             _moveAction.Enable();
             _jumpAction.Enable();
+            _crouchAction.Enable();
             _sprintAction.Enable();
 
         }
@@ -40,6 +45,7 @@ namespace Entities.Controllers
         {
             _moveAction?.Disable();
             _jumpAction?.Disable();
+            _crouchAction?.Disable();
             _sprintAction?.Disable();
         }
 
@@ -69,10 +75,14 @@ namespace Entities.Controllers
 
             Controllable.Move(direction);
 
+            _wantToCrouch = _crouchAction != null && _crouchAction.IsPressed();
+            _playerCrouch.SetCrouching(_wantToCrouch);
+
             if (_jumpAction.WasPressedThisFrame()) Controllable.Jump();
             Controllable.SetHoldingJump(_jumpAction.IsPressed());
-
-            if (_sprintAction.IsPressed())
+            if (_wantToCrouch)
+                Controllable.SetMovementState(MovementState.Crouching);
+            else if (_sprintAction.IsPressed())
                 Controllable.SetMovementState(MovementState.Sprinting);
             else
                 Controllable.SetMovementState(MovementState.Walking);
