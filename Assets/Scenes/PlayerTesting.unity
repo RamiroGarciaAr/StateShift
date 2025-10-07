@@ -6416,7 +6416,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   crouchHeightMultiplier: 0.5
-  crouchTransitionSpeed: 5
+  crouchTransitionSpeed: 12
   cameraTarget: {fileID: 898270945}
 --- !u!136 &1536974346
 CapsuleCollider:

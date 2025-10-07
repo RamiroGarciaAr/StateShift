@@ -82,7 +82,7 @@ namespace Entities.Controllers
             Controllable.SetHoldingJump(_jumpAction.IsPressed());
             if (_wantToCrouch)
                 Controllable.SetMovementState(MovementState.Crouching);
-            else if (_sprintAction.IsPressed())
+            else if (_sprintAction.IsPressed() && !_wantToCrouch)
                 Controllable.SetMovementState(MovementState.Sprinting);
             else
                 Controllable.SetMovementState(MovementState.Walking);
