@@ -7989,9 +7989,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38c419aefd69b134fb4f2df2ca4996bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseFOV: 60
+  baseFOV: 90
   maxFOVIncrease: 20
   fovTransitionSpeed: 5
+  speedThreshold: 7
   maxSpeedForFOV: 15
   fovCurve:
     serializedVersion: 2
@@ -8019,8 +8020,6 @@ MonoBehaviour:
     m_RotationOrder: 4
   ignoreVerticalVelocity: 1
   velocitySmoothing: 0.1
-  targetRigidbody: {fileID: 0}
-  showDebugInfo: 0
 --- !u!1 &1909332486
 GameObject:
   m_ObjectHideFlags: 0
