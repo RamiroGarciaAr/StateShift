@@ -83,15 +83,12 @@ namespace Entities.Controllers
             if (Controllable == null) return;
 
             Vector2 movementInput = _moveAction.ReadValue<Vector2>();
-
             Vector2 direction = CalculateCameraRelativeDirection(movementInput);
 
             UpdateContext(direction);
-            
             _stateMachine.Update();
 
             Controllable.Move(direction);
-
             HandleJump();
         }
 
