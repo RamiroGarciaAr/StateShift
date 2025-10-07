@@ -2,30 +2,56 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using Strategies;
 using Core;
+
 namespace Entities.Controllers
 {
-    [RequireComponent(typeof(PlayerSlide))]
     [RequireComponent(typeof(PlayerCrouch))]
+    [RequireComponent(typeof(PlayerSlide))]
     public class PlayerController : Controller
     {
         private PlayerInput _playerInput;
         private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction;
-        private PlayerCrouch _playerCrouch;
-        private PlayerSlide _playerSlide;
-        private Vector2 _movementInput = Vector2.zero;
-        private bool _wantToCrouch = false;
-        private bool _wasSprinting = false;
+        
+        // State Machine
+        private StateMachine<MovementState> _stateMachine;
+        private PlayerMovementContext _context;
+        
         protected override void Awake()
         {
             Controllable = GetComponent<IControllable>();
             _playerInput = GetComponent<PlayerInput>();
-            _playerCrouch = GetComponent<PlayerCrouch>();
-            _playerSlide = GetComponent<PlayerSlide>();
 
             if (Controllable == null)
             {
                 Debug.LogError("No se encontró un componente IControllable en " + gameObject.name, this);
             }
+
+            InitializeStateMachine();
+        }
+
+        private void InitializeStateMachine()
+        {
+            // Crear contexto
+            _context = new PlayerMovementContext
+            {
+                Controllable = Controllable,
+                PlayerCrouch = GetComponent<PlayerCrouch>(),
+                PlayerSlide = GetComponent<PlayerSlide>(),
+                Rigidbody = GetComponent<Rigidbody>()
+            };
+
+            // Crear state machine
+            _stateMachine = new StateMachine<MovementState>();
+            _context.StateMachine = _stateMachine;
+
+            // Registrar estados
+            _stateMachine.RegisterState(MovementState.Walking, new WalkingState(_context));
+            _stateMachine.RegisterState(MovementState.Sprinting, new SprintingState(_context));
+            _stateMachine.RegisterState(MovementState.Crouching, new CrouchingState(_context));
+            _stateMachine.RegisterState(MovementState.Sliding, new SlidingState(_context));
+
+            // Inicializar en Walking
+            _stateMachine.Initialize(MovementState.Walking);
         }
 
         private void OnEnable()
@@ -42,7 +68,6 @@ namespace Entities.Controllers
             _jumpAction.Enable();
             _crouchAction.Enable();
             _sprintAction.Enable();
-
         }
 
         private void OnDisable()
@@ -57,9 +82,26 @@ namespace Entities.Controllers
         {
             if (Controllable == null) return;
 
-            _movementInput = _moveAction.ReadValue<Vector2>();
-            Vector2 direction;
+            Vector2 movementInput = _moveAction.ReadValue<Vector2>();
 
+            Vector2 direction = CalculateCameraRelativeDirection(movementInput);
+
+            UpdateContext(direction);
+            
+            _stateMachine.Update();
+
+            Controllable.Move(direction);
+
+            HandleJump();
+        }
+
+        private void FixedUpdate()
+        {
+            _stateMachine?.FixedUpdate();
+        }
+
+        private Vector2 CalculateCameraRelativeDirection(Vector2 input)
+        {
             var cam = Camera.main;
             if (cam != null)
             {
@@ -70,77 +112,37 @@ namespace Entities.Controllers
                 var forwardXZ = new Vector2(camForward.x, camForward.z).normalized;
                 var rightXZ = new Vector2(camRight.x, camRight.z).normalized;
 
-                direction = forwardXZ * _movementInput.y + rightXZ * _movementInput.x;
-            }
-            else
-            {
-                direction = _movementInput;
-            }
-
-            Controllable.Move(direction);
-
-                        _wantToCrouch = _crouchAction != null && _crouchAction.IsPressed();
-            bool isSprinting = _sprintAction.IsPressed();
-            
-            // Detectar transición de sprint a crouch para hacer slide
-            if (_wantToCrouch && _wasSprinting && !_playerSlide.IsSliding)
-            {
-                bool slideStarted = _playerSlide.TryStartSlide();
-                
-                if (slideStarted)
-                {
-                    _playerCrouch.SetCrouching(true);
-                    Controllable.SetMovementState(MovementState.Sliding);
-                }
-                else
-                {
-                    // Si no tiene suficiente velocidad, solo agacharse
-                    _playerCrouch.SetCrouching(true);
-                    Controllable.SetMovementState(MovementState.Crouching);
-                }
-            }
-            else if (_playerSlide.IsSliding)
-            {
-                // Mantener estado de slide hasta que termine
-                Controllable.SetMovementState(MovementState.Sliding);
-                
-                // Si el jugador deja de presionar crouch durante el slide, cancelarlo
-                if (!_wantToCrouch)
-                {
-                    _playerSlide.CancelSlide();
-                    _playerCrouch.SetCrouching(false);
-                }
-            }
-            else if (_wantToCrouch)
-            {
-                _playerCrouch.SetCrouching(true);
-                Controllable.SetMovementState(MovementState.Crouching);
-            }
-            else
-            {
-                _playerCrouch.SetCrouching(false);
-                
-                if (isSprinting)
-                    Controllable.SetMovementState(MovementState.Sprinting);
-                else
-                    Controllable.SetMovementState(MovementState.Walking);
+                return forwardXZ * input.y + rightXZ * input.x;
             }
             
-            // Actualizar estado de sprint previo
-            _wasSprinting = isSprinting && !_wantToCrouch;
+            return input;
+        }
 
+        private void UpdateContext(Vector2 direction)
+        {
+            _context.MovementInput = direction;
+            _context.WantsToCrouch = _crouchAction != null && _crouchAction.IsPressed();
+            _context.WantsToSprint = _sprintAction != null && _sprintAction.IsPressed();
+            _context.WantsToJump = _jumpAction != null && _jumpAction.WasPressedThisFrame();
+        }
+
+        private void HandleJump()
+        {
             if (_jumpAction.WasPressedThisFrame())
             {
-                // Cancelar slide si está activo y el jugador salta
-                if (_playerSlide.IsSliding)
-                {
-                    _playerSlide.CancelSlide();
-                }
                 Controllable.Jump();
             }
             
             Controllable.SetHoldingJump(_jumpAction.IsPressed());
         }
 
+        // Debug helper (opcional)
+        private void OnGUI()
+        {
+            if (_stateMachine != null)
+            {
+                GUI.Label(new Rect(10, 10, 200, 20), $"Estado: {_stateMachine.CurrentStateType}");
+            }
+        }
     }
 }

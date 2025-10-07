@@ -77,7 +77,7 @@ public class PlayerSlide : MonoBehaviour
         }
     }
 
-    private void EndSlide()
+    public void EndSlide()
     {
         _isSliding = false;
         _slideTimer = 0f;
