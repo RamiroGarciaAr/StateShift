@@ -4,19 +4,23 @@ using Strategies;
 using Core;
 namespace Entities.Controllers
 {
+    [RequireComponent(typeof(PlayerSlide))]
     [RequireComponent(typeof(PlayerCrouch))]
     public class PlayerController : Controller
     {
         private PlayerInput _playerInput;
         private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction;
         private PlayerCrouch _playerCrouch;
+        private PlayerSlide _playerSlide;
         private Vector2 _movementInput = Vector2.zero;
         private bool _wantToCrouch = false;
+        private bool _wasSprinting = false;
         protected override void Awake()
         {
             Controllable = GetComponent<IControllable>();
             _playerInput = GetComponent<PlayerInput>();
             _playerCrouch = GetComponent<PlayerCrouch>();
+            _playerSlide = GetComponent<PlayerSlide>();
 
             if (Controllable == null)
             {
@@ -75,17 +79,67 @@ namespace Entities.Controllers
 
             Controllable.Move(direction);
 
-            _wantToCrouch = _crouchAction != null && _crouchAction.IsPressed();
-            _playerCrouch.SetCrouching(_wantToCrouch);
-
-            if (_jumpAction.WasPressedThisFrame()) Controllable.Jump();
-            Controllable.SetHoldingJump(_jumpAction.IsPressed());
-            if (_wantToCrouch)
+                        _wantToCrouch = _crouchAction != null && _crouchAction.IsPressed();
+            bool isSprinting = _sprintAction.IsPressed();
+            
+            // Detectar transición de sprint a crouch para hacer slide
+            if (_wantToCrouch && _wasSprinting && !_playerSlide.IsSliding)
+            {
+                bool slideStarted = _playerSlide.TryStartSlide();
+                
+                if (slideStarted)
+                {
+                    _playerCrouch.SetCrouching(true);
+                    Controllable.SetMovementState(MovementState.Sliding);
+                }
+                else
+                {
+                    // Si no tiene suficiente velocidad, solo agacharse
+                    _playerCrouch.SetCrouching(true);
+                    Controllable.SetMovementState(MovementState.Crouching);
+                }
+            }
+            else if (_playerSlide.IsSliding)
+            {
+                // Mantener estado de slide hasta que termine
+                Controllable.SetMovementState(MovementState.Sliding);
+                
+                // Si el jugador deja de presionar crouch durante el slide, cancelarlo
+                if (!_wantToCrouch)
+                {
+                    _playerSlide.CancelSlide();
+                    _playerCrouch.SetCrouching(false);
+                }
+            }
+            else if (_wantToCrouch)
+            {
+                _playerCrouch.SetCrouching(true);
                 Controllable.SetMovementState(MovementState.Crouching);
-            else if (_sprintAction.IsPressed() && !_wantToCrouch)
-                Controllable.SetMovementState(MovementState.Sprinting);
+            }
             else
-                Controllable.SetMovementState(MovementState.Walking);
+            {
+                _playerCrouch.SetCrouching(false);
+                
+                if (isSprinting)
+                    Controllable.SetMovementState(MovementState.Sprinting);
+                else
+                    Controllable.SetMovementState(MovementState.Walking);
+            }
+            
+            // Actualizar estado de sprint previo
+            _wasSprinting = isSprinting && !_wantToCrouch;
+
+            if (_jumpAction.WasPressedThisFrame())
+            {
+                // Cancelar slide si está activo y el jugador salta
+                if (_playerSlide.IsSliding)
+                {
+                    _playerSlide.CancelSlide();
+                }
+                Controllable.Jump();
+            }
+            
+            Controllable.SetHoldingJump(_jumpAction.IsPressed());
         }
 
     }

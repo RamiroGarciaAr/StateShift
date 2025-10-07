@@ -4,10 +4,11 @@ using UnityEngine;
 
 namespace Core
 {
-    public enum MovementState 
+    public enum MovementState
     {
         Walking,
         Sprinting,
-        Crouching
+        Crouching,
+        Sliding
     }
 }

@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
     [SerializeField] private float sprintSpeedMultiplier = 2;
     [SerializeField] private float walkSpeedMultiplier = 1;
     [SerializeField] private float crouchSpeedMultiplier = 0.5f;
+    [SerializeField] private float slideSpeedMultiplier = 0.3f; // Control mínimo durante slide
     [Range(0, 1)]
     [SerializeField] private float movementSmoothing = .1f;
     [SerializeField] private float airMovementAcceleration = .5f;
@@ -55,6 +56,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
                 MovementState.Sprinting => baseSpeed * sprintSpeedMultiplier,
                 MovementState.Walking => baseSpeed * walkSpeedMultiplier,
                 MovementState.Crouching => baseSpeed * crouchSpeedMultiplier,
+                MovementState.Sliding => baseSpeed * slideSpeedMultiplier,
                 _ => baseSpeed
             };
         }
@@ -151,11 +153,15 @@ public class PlayerMovement : MonoBehaviour, IControllable
     }
     private void SmoothInput()
     {
+        // Durante el slide, reducir el smoothing del input para dar menos control
+        float smoothingValue = _currentMovementState == MovementState.Sliding ? 
+            movementSmoothing * 3f : movementSmoothing;
+            
         _smoothMoveDir = Vector2.SmoothDamp(
                         _smoothMoveDir,
                         _rawMoveDir,
                         ref _smoothMoveDirVelocity,
-                        movementSmoothing,
+                        smoothingValue,
                         Mathf.Infinity,
                         Time.fixedDeltaTime
                     );
@@ -184,11 +190,33 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
         var currentVelocity = _rb.velocity;
 
-        var moveVec = Vector3.ProjectOnPlane(new Vector3(_smoothMoveDir.x, 0, _smoothMoveDir.y), GroundNormal) * CurrentSpeed;
-        if (!IsGrounded)
+        // Durante el slide, PlayerSlide maneja la velocidad horizontal
+        // Solo aplicamos un pequeño control direccional
+        Vector3 moveVec;
+        if (_currentMovementState == MovementState.Sliding && IsGrounded)
         {
-            var curVelXZ = new Vector3(currentVelocity.x, 0, currentVelocity.z);
-            moveVec = Vector3.MoveTowards(curVelXZ, moveVec, airMovementAcceleration * Time.fixedDeltaTime);
+            // Permitir pequeños ajustes direccionales durante el slide
+            moveVec = Vector3.ProjectOnPlane(
+                new Vector3(_smoothMoveDir.x, 0, _smoothMoveDir.y), 
+                GroundNormal
+            ) * CurrentSpeed;
+            
+            // Mezclar con la velocidad actual para mantener el momentum del slide
+            Vector3 currentHorizontal = new Vector3(currentVelocity.x, 0, currentVelocity.z);
+            moveVec = Vector3.Lerp(currentHorizontal, moveVec, 0.1f);
+        }
+        else
+        {
+            moveVec = Vector3.ProjectOnPlane(
+                new Vector3(_smoothMoveDir.x, 0, _smoothMoveDir.y), 
+                GroundNormal
+            ) * CurrentSpeed;
+            
+            if (!IsGrounded)
+            {
+                var curVelXZ = new Vector3(currentVelocity.x, 0, currentVelocity.z);
+                moveVec = Vector3.MoveTowards(curVelXZ, moveVec, airMovementAcceleration * Time.fixedDeltaTime);
+            }
         }
 
         var velocityY = Vector3.zero;
@@ -214,8 +242,19 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
             // OnJump?.Invoke();
         }
-        Vector3 groundVel = (GroundRigidbody != null) ? GroundVelocity : Vector3.zero;
-        _rb.velocity = moveVec + velocityY + groundVel;
+        
+        // Solo aplicar la velocidad calculada si no estamos en slide
+        // (PlayerSlide maneja su propia física)
+        if (_currentMovementState != MovementState.Sliding)
+        {
+            Vector3 groundVel = (GroundRigidbody != null) ? GroundVelocity : Vector3.zero;
+            _rb.velocity = moveVec + velocityY + groundVel;
+        }
+        else
+        {
+            // Durante el slide, solo actualizar la velocidad vertical
+            _rb.velocity = new Vector3(_rb.velocity.x, velocityY.y, _rb.velocity.z);
+        }
     }
     private void ModifyColliderHeight()
     {
@@ -235,6 +274,4 @@ public class PlayerMovement : MonoBehaviour, IControllable
     {
         _rawMoveDir = Vector2.zero;
     }
-
-
 }
