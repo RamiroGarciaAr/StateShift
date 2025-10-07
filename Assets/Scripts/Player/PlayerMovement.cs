@@ -94,6 +94,10 @@ public class PlayerMovement : MonoBehaviour, IControllable
     protected virtual void Awake()
     {
         _rb = GetComponent<Rigidbody>();
+
+        _rb.freezeRotation = true;
+        _rb.interpolation = RigidbodyInterpolation.Interpolate;
+        _rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
     }
     private void Start()
     {
@@ -210,8 +214,8 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
             // OnJump?.Invoke();
         }
-
-        _rb.velocity = moveVec + velocityY + GroundVelocity;
+        Vector3 groundVel = (GroundRigidbody != null) ? GroundVelocity : Vector3.zero;
+        _rb.velocity = moveVec + velocityY + groundVel;
     }
     private void ModifyColliderHeight()
     {
