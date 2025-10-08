@@ -8115,9 +8115,9 @@ MonoBehaviour:
   wallJumpSideForce: 7
   wallJumpForwardForce: 5
   wallCheckDistance: 0.7
-  minJumpHeight: 1
+  minJumpHeight: 2
   minSpeedToWallRun: 3
-  wallRunCooldown: 0.3
+  wallRunCooldown: 0.1
 --- !u!1001 &1679783848
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8434,7 +8434,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1282003927643546999, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
       propertyPath: near clip plane
-      value: 0.3
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 2156013499722745741, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
       propertyPath: m_Name
@@ -8516,6 +8516,10 @@ PrefabInstance:
       propertyPath: m_LookAt
       value: 
       objectReference: {fileID: 898270945}
+    - target: {fileID: 7373526210127252237, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
+      propertyPath: m_Lens.NearClipPlane
+      value: 0.01
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
