@@ -10,21 +10,26 @@ namespace Core
         Walking,
         Sprinting,
         Crouching,
-        Sliding
+        Sliding,
+        WallRunning
     }
-    public class PlayerMovementContext
-    {
-        public IControllable Controllable;
-        public PlayerCrouch PlayerCrouch;
-        public PlayerSlide PlayerSlide;
-        public Rigidbody Rigidbody;
-        public StateMachine<MovementState> StateMachine;
-
-        // Inputs
-        public bool WantsToCrouch;
-        public bool WantsToSprint;
-        public bool WantsToJump;
-        public Vector2 MovementInput;
-    }
+public class PlayerMovementContext
+{
+    // Referencias a componentes
+    public IControllable Controllable { get; set; }
+    public PlayerMovement PlayerMovement { get; set; }  
+    public PlayerCrouch PlayerCrouch { get; set; }
+    public PlayerSlide PlayerSlide { get; set; }
+    public PlayerWallRun PlayerWallRun { get; set; }  
+    public Rigidbody Rigidbody { get; set; }
     
+    // State Machine
+    public StateMachine<MovementState> StateMachine { get; set; }
+    
+    // Input States
+    public Vector2 MovementInput { get; set; }
+    public bool WantsToSprint { get; set; }
+    public bool WantsToCrouch { get; set; }
+    public bool WantsToJump { get; set; }
+}
 }

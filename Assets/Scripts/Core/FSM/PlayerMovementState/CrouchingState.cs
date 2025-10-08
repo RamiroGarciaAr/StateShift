@@ -1,5 +1,6 @@
-using Core;
 
+using Core;
+using UnityEngine;
 
 public class CrouchingState : BaseState<PlayerMovementContext>
     {
@@ -17,11 +18,11 @@ public class CrouchingState : BaseState<PlayerMovementContext>
             if (!Context.WantsToCrouch)
             {
                 // Decidir a qué estado ir
-                if (Context.WantsToSprint)
+                if (Context.WantsToSprint && Context.PlayerCrouch.CanStandUp())
                 {
                     Context.StateMachine.ChangeState(MovementState.Sprinting);
                 }
-                else
+                else if (Context.PlayerCrouch.CanStandUp())
                 {
                     Context.StateMachine.ChangeState(MovementState.Walking);
                 }
@@ -29,8 +30,8 @@ public class CrouchingState : BaseState<PlayerMovementContext>
             }
         }
 
-        public override void OnExit()
-        {
-            Context.PlayerCrouch.SetCrouching(false);
-        }
+    public override void OnExit()
+    {
+        Context.PlayerCrouch.SetCrouching(false);       
     }
+}

@@ -7,6 +7,7 @@ namespace Entities.Controllers
 {
     [RequireComponent(typeof(PlayerCrouch))]
     [RequireComponent(typeof(PlayerSlide))]
+    [RequireComponent(typeof(PlayerWallRun))]  
     public class PlayerController : Controller
     {
         private PlayerInput _playerInput;
@@ -31,12 +32,16 @@ namespace Entities.Controllers
 
         private void InitializeStateMachine()
         {
+            var playerMovement = GetComponent<PlayerMovement>();
+            
             // Crear contexto
             _context = new PlayerMovementContext
             {
                 Controllable = Controllable,
+                PlayerMovement = playerMovement,          
                 PlayerCrouch = GetComponent<PlayerCrouch>(),
                 PlayerSlide = GetComponent<PlayerSlide>(),
+                PlayerWallRun = GetComponent<PlayerWallRun>(),  
                 Rigidbody = GetComponent<Rigidbody>()
             };
 
@@ -49,6 +54,7 @@ namespace Entities.Controllers
             _stateMachine.RegisterState(MovementState.Sprinting, new SprintingState(_context));
             _stateMachine.RegisterState(MovementState.Crouching, new CrouchingState(_context));
             _stateMachine.RegisterState(MovementState.Sliding, new SlidingState(_context));
+            _stateMachine.RegisterState(MovementState.WallRunning, new WallRunningState(_context)); 
 
             // Inicializar en Walking
             _stateMachine.Initialize(MovementState.Walking);
@@ -133,12 +139,13 @@ namespace Entities.Controllers
             Controllable.SetHoldingJump(_jumpAction.IsPressed());
         }
 
-        // Debug helper (opcional)
+        // Debug helper - Ahora muestra más información
         private void OnGUI()
         {
             if (_stateMachine != null)
             {
                 GUI.Label(new Rect(10, 10, 200, 20), $"Estado: {_stateMachine.CurrentStateType}");
+                
             }
         }
     }

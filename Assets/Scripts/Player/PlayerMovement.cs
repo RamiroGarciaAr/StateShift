@@ -11,11 +11,11 @@ public class PlayerMovement : MonoBehaviour, IControllable
     [SerializeField] private float baseSpeed = 5f;
 
     // ==== Speed Multipliers =====
-    private float speedMultiplier;
     [SerializeField] private float sprintSpeedMultiplier = 2;
     [SerializeField] private float walkSpeedMultiplier = 1;
     [SerializeField] private float crouchSpeedMultiplier = 0.5f;
     [SerializeField] private float slideSpeedMultiplier = 0.3f; // Control mínimo durante slide
+    [SerializeField] private float wallRunSpeedMultiplier = 1.2f;
     [Range(0, 1)]
     [SerializeField] private float movementSmoothing = .1f;
     [SerializeField] private float airMovementAcceleration = .5f;
@@ -57,6 +57,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
                 MovementState.Walking => baseSpeed * walkSpeedMultiplier,
                 MovementState.Crouching => baseSpeed * crouchSpeedMultiplier,
                 MovementState.Sliding => baseSpeed * slideSpeedMultiplier,
+                MovementState.WallRunning => baseSpeed * wallRunSpeedMultiplier,
                 _ => baseSpeed
             };
         }
@@ -189,29 +190,26 @@ public class PlayerMovement : MonoBehaviour, IControllable
         if (IsGrounded) _rb.MovePosition(Vector3.MoveTowards(_rb.position, GroundPoint, Time.fixedDeltaTime * 1f));
 
         var currentVelocity = _rb.velocity;
-
-        // Durante el slide, PlayerSlide maneja la velocidad horizontal
-        // Solo aplicamos un pequeño control direccional
         Vector3 moveVec;
+        
         if (_currentMovementState == MovementState.Sliding && IsGrounded)
         {
-            // Permitir pequeños ajustes direccionales durante el slide
+          
             moveVec = Vector3.ProjectOnPlane(
-                new Vector3(_smoothMoveDir.x, 0, _smoothMoveDir.y), 
+                new Vector3(_smoothMoveDir.x, 0, _smoothMoveDir.y),
                 GroundNormal
             ) * CurrentSpeed;
-            
-            // Mezclar con la velocidad actual para mantener el momentum del slide
+
             Vector3 currentHorizontal = new Vector3(currentVelocity.x, 0, currentVelocity.z);
             moveVec = Vector3.Lerp(currentHorizontal, moveVec, 0.1f);
         }
         else
         {
             moveVec = Vector3.ProjectOnPlane(
-                new Vector3(_smoothMoveDir.x, 0, _smoothMoveDir.y), 
+                new Vector3(_smoothMoveDir.x, 0, _smoothMoveDir.y),
                 GroundNormal
             ) * CurrentSpeed;
-            
+
             if (!IsGrounded)
             {
                 var curVelXZ = new Vector3(currentVelocity.x, 0, currentVelocity.z);
