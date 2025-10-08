@@ -128,8 +128,6 @@ public class PlayerWallRun : MonoBehaviour
         _currentSpeed = Mathf.Max(horizontalVel.magnitude, wallRunSpeed * 0.7f);
 
         _rb.velocity = new Vector3(_rb.velocity.x, Mathf.Max(_rb.velocity.y, 2f), _rb.velocity.z);
-        
-        Debug.Log($"Wall Run Started - Speed: {_currentSpeed}");
     }
 
     private void WallRunningMovement()
@@ -166,8 +164,7 @@ public class PlayerWallRun : MonoBehaviour
         IsWallRunning = false;
         _rb.useGravity = true;
         _cooldownTimer = wallRunCooldown;
-        
-        Debug.Log("Wall Run Stopped");
+    
     }
 
     public void WallJump()
@@ -188,10 +185,7 @@ public class PlayerWallRun : MonoBehaviour
                                         _currentSpeed * 1.2f);
 
         _rb.velocity = Vector3.zero;
-        _rb.AddForce(jumpDirection * jumpMagnitude, ForceMode.Impulse);
-
-        Debug.Log($"Wall Jump! Momentum: {_currentSpeed}");
-        
+        _rb.AddForce(jumpDirection * jumpMagnitude, ForceMode.Impulse);       
         StopWallRun();
     }
 }

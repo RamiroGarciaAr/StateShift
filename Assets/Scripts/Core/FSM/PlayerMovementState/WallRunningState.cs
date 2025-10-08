@@ -9,7 +9,6 @@ public class WallRunningState : BaseState<PlayerMovementContext>
     {
         Context.Controllable.SetMovementState(MovementState.WallRunning);
         Context.PlayerWallRun.StartWallRun();
-        Debug.Log("Entered Wall Running State");
     }
 
     public override void OnUpdate()
@@ -61,8 +60,6 @@ public class WallRunningState : BaseState<PlayerMovementContext>
         {
             Context.PlayerWallRun.StopWallRun();
         }
-
-        Debug.Log("Exited Wall Running State");
     }
 
     private void ExitToAppropriateState()
@@ -83,7 +80,7 @@ public class WallRunningState : BaseState<PlayerMovementContext>
                 Context.StateMachine.ChangeState(MovementState.Walking);
             }
         }
-        else if (!Context.PlayerWallRun.CanWallRun() && !Context.WantsToSprint)
+        else 
         {
             // Si está en el aire, volver a sprinting (mantendrá el estado hasta aterrizar)
             Context.StateMachine.ChangeState(Context.WantsToSprint ? MovementState.Sprinting : MovementState.Walking);
