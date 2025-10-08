@@ -28,14 +28,15 @@ public class SprintingState : BaseState<PlayerMovementContext>
             }
             return;
         }
+
+        // Transición a WallRunning cuando está en el aire y tiene una pared
         if (!Context.PlayerMovement.IsGrounded)
         {
-            Debug.Log("AIR");
-            if (Context.PlayerWallRun.HasWall)
+            if (Context.PlayerWallRun.CanWallRun())
             {
-                Debug.Log("Should Start WallRunning");
+                Debug.Log("Starting WallRunning from Sprinting");
                 Context.StateMachine.ChangeState(MovementState.WallRunning);
-                
+                return;
             }
         }
 
@@ -46,5 +47,5 @@ public class SprintingState : BaseState<PlayerMovementContext>
             return;
         }
     }
-
 }
+

@@ -3624,7 +3624,7 @@ GameObject:
   - component: {fileID: 767841945}
   - component: {fileID: 767841944}
   - component: {fileID: 767841943}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5665,6 +5665,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Killzone
       objectReference: {fileID: 0}
+    - target: {fileID: 2952210890729009973, guid: 06d1ad01edcda7847861b30ba7528a7d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7077985960727216987, guid: 06d1ad01edcda7847861b30ba7528a7d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 14.05
@@ -7568,6 +7572,33 @@ MonoBehaviour:
   slideDecelerationRate: 5
   minSlideSpeed: 2
   slideSpeedThreshold: 7
+--- !u!114 &1536974348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1536974335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4daee954d607a92489cdd305403c5060, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  wallRunSpeed: 12
+  wallRunAcceleration: 10
+  maxWallRunTime: 1.5
+  wallStickForce: 15
+  gravityCounterForce: 15
+  wallJumpUpForce: 3
+  wallJumpSideForce: 7
+  wallJumpForwardForce: 5
+  wallCheckDistance: 0.7
+  minJumpHeight: 1
+  minSpeedToWallRun: 3
+  wallRunCooldown: 0.3
 --- !u!1001 &1679783848
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7789,6 +7820,9 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8737292798387105240, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       insertIndex: 3
+      addedObject: {fileID: 1536974346}
+    - targetCorrespondingSourceObject: {fileID: 8737292798387105240, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+      insertIndex: 4
       addedObject: {fileID: 1536974336}
     - targetCorrespondingSourceObject: {fileID: 8737292798387105240, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       insertIndex: -1
@@ -7798,10 +7832,10 @@ PrefabInstance:
       addedObject: {fileID: 1536974341}
     - targetCorrespondingSourceObject: {fileID: 8737292798387105240, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1536974346}
+      addedObject: {fileID: 1536974347}
     - targetCorrespondingSourceObject: {fileID: 8737292798387105240, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1536974347}
+      addedObject: {fileID: 1536974348}
   m_SourcePrefab: {fileID: 100100000, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
 --- !u!1 &1714559921
 GameObject:
@@ -7966,6 +8000,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5583302822191927768, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1871609378}
+    - targetCorrespondingSourceObject: {fileID: 5583302822191927768, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1871609379}
   m_SourcePrefab: {fileID: 100100000, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
 --- !u!4 &1821621316 stripped
 Transform:
@@ -8020,6 +8057,27 @@ MonoBehaviour:
     m_RotationOrder: 4
   ignoreVerticalVelocity: 1
   velocitySmoothing: 0.1
+--- !u!114 &1871609379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871609373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf144aa6d46beed43ac8e052542974d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  virtualCamera: {fileID: 0}
+  cameraTilt: 12
+  tiltSpeed: 10
+  fovIncrease: 10
+  fovSpeed: 8
+  enableShake: 1
+  shakeAmplitude: 0.3
+  shakeFrequency: 1.5
+  wallRun: {fileID: 1536974348}
 --- !u!1 &1909332486
 GameObject:
   m_ObjectHideFlags: 0
