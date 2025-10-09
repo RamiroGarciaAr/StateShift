@@ -246,7 +246,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
         if (_currentMovementState != MovementState.Sliding)
         {
             Vector3 groundVel = (GroundRigidbody != null) ? GroundVelocity : Vector3.zero;
-            _rb.velocity = moveVec + velocityY + groundVel;
+            _rb.velocity = moveVec + velocityY + groundVel; // _rb.AddfForce(moveVec + velocityY + groundVel)
         }
         else
         {
