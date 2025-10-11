@@ -8001,6 +8001,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 671104371516151746, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+      propertyPath: _originalHeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 671104371516151746, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+      propertyPath: _originalCenter.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1649251067494085485, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: playerCam
       value: 
