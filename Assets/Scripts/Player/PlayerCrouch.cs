@@ -9,8 +9,8 @@ public class PlayerCrouch : MonoBehaviour
     [SerializeField] private float crouchTransitionSpeed = 10f;
     [SerializeField] private Transform cameraTarget;
     private CapsuleCollider _collider;
-    private float _originalHeight;
-    private Vector3 _originalCenter;
+    [SerializeField] private float _originalHeight;
+    [SerializeField] private Vector3 _originalCenter;
     private Vector3 _originalCameraLocalPosition;
     private float _targetHeight;
     private Vector3 _targetCenter;
@@ -22,8 +22,6 @@ public class PlayerCrouch : MonoBehaviour
     }
     private void Start()
     {
-        _originalHeight = _collider.height;
-        _originalCenter = _collider.center;
         _targetHeight = _originalHeight;
         _targetCenter = _originalCenter;
 
