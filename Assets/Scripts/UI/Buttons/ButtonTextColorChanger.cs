@@ -1,47 +1,76 @@
-using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
-public class ButtonTextColorChanger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ButtonTextColorChanger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
+    [Header("Colors")]
+    [SerializeField] private Color normalColor = Color.cyan;
+    [SerializeField] private Color selectedColor = Color.black;
+
+    [Header("References")]
+    [SerializeField] private List<ButtonTextColorChanger> otherButtons;
+
     private TextMeshProUGUI _buttonText;
     private Button _button;
     private bool _isSelected = false;
-    [Header("Text Colors")]
-    [SerializeField] private Color normalColor = Color.cyan;
-    [SerializeField] private Color selectedColor = Color.black;
+
+    public bool IsSelected => _isSelected;
 
     void Awake()
     {
         _buttonText = GetComponentInChildren<TextMeshProUGUI>();
         if (_buttonText == null)
-        {
-            Debug.LogError("Could not Find text in the Button Componenet");
-        }
+            Debug.LogError("Could not find TextMeshProUGUI in children of button.");
+
         _button = GetComponent<Button>();
-        _buttonText.color = normalColor;
     }
 
-    private void ResetColor()
+    void Start()
     {
-        _buttonText.color = selectedColor;
+        SetColor(normalColor);
     }
 
-    void Update()
-    {
-        //if (_isSelected) _buttonText.color = selectedColor;
-    }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _buttonText.color = selectedColor;
+        if (!_isSelected)
+            SetColor(selectedColor);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        _buttonText.color = normalColor;
+        if (!_isSelected)
+            SetColor(normalColor);
     }
 
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        SelectThisButton();
+    }
+
+    private void SelectThisButton()
+    {
+        // Deseleccionar todos los demás
+        foreach (var btn in otherButtons)
+            btn.Deselect();
+
+        // Seleccionar este
+        _isSelected = true;
+        SetColor(selectedColor);
+    }
+
+    private void Deselect()
+    {
+        _isSelected = false;
+        SetColor(normalColor);
+    }
+
+    private void SetColor(Color color)
+    {
+        if (_buttonText != null)
+            _buttonText.color = color;
+    }
 }
