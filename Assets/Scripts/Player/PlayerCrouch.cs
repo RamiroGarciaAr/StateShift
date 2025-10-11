@@ -8,7 +8,7 @@ public class PlayerCrouch : MonoBehaviour
     [SerializeField] private float crouchHeightMultiplier = 0.5f;
     [SerializeField] private float crouchTransitionSpeed = 10f;
     [SerializeField] private Transform cameraTarget;
-    private CapsuleCollider _collider;
+    [SerializeField] private CapsuleCollider _collider;
     private float _originalHeight;
     private Vector3 _originalCenter;
     private Vector3 _originalCameraLocalPosition;
