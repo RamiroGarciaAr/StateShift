@@ -27,6 +27,7 @@ namespace Managers
         public GameObject GetPooledObject()
         {
             GameObject gameObject = _pool[_nextIndex];
+            gameObject.SetActive(false);
 
             _nextIndex++;
             if (_nextIndex == _pool.Length) _nextIndex = 0;
