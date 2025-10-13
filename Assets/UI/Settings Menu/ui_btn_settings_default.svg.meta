@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7fa40286d9d785d49960f067eff21bcd
+guid: 9625bac7c73978c46b106c0b6c09a4b3
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -17,7 +17,7 @@ ScriptedImporter:
   generatePhysicsShape: 0
   viewportOptions: 0
   preserveViewport: 0
-  advancedMode: 1
+  advancedMode: 0
   predefinedResolutionIndex: 1
   targetResolution: 1080
   resolutionMultiplier: 1
@@ -35,20 +35,20 @@ ScriptedImporter:
   filterMode: 1
   sampleCount: 4
   preserveSVGImageAspect: 0
-  useSVGPixelsPerUnit: 1
+  useSVGPixelsPerUnit: 0
   spriteData:
     TessellationDetail: 0
     SpriteRect:
-      name: State=Hover
+      name: 
       originalName: 
-      pivot: {x: 0.30117646, y: 0.3}
+      pivot: {x: 0, y: 0}
       alignment: 0
-      border: {x: 0, y: 0, z: 0, w: 26}
+      border: {x: 0, y: 0, z: 0, w: 0}
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 425
-        height: 65
-      spriteID: ddce615c2ae08674e9c41ff6619d1593
+        width: 0
+        height: 0
+      spriteID: ca513b57440411049bf02a26757cbdd9
     PhysicsOutlines: []
