@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,12 +6,16 @@ public class UIAnimationManager : MonoBehaviour
 {
     [Header("Animator")]
     [SerializeField] private Animator animator;
+    
     [Header("Button Mappings")]
     [SerializeField] private List<TriggerMapping> triggerMappings;
 
     [Header("Back (Esc) Configuration")]
     [SerializeField] private string escTriggerName = "ShowMenu";
     [SerializeField] private bool isEscAllowed = true;
+
+    [Header("Button Reset")]
+    [SerializeField] private List<ButtonTextColorChanger> buttonsToReset;
 
     private void OnEnable()
     {
@@ -29,14 +31,28 @@ public class UIAnimationManager : MonoBehaviour
             }
         }
     }
+
+    private void OnDisable()
+    {
+        // Limpiar listeners
+        foreach (TriggerMapping mapping in triggerMappings)
+        {
+            if (mapping.button != null)
+            {
+                string trigger = mapping.triggerName;
+                mapping.button.onClick.RemoveListener(() => SetTrigger(trigger));
+            }
+        }
+    }
+
     private void Update()
     {
-   
         if (isEscAllowed && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             SetTrigger(escTriggerName);
         }
     }
+
     public void ActivateTrigger(string triggerName)
     {
         SetTrigger(triggerName);
@@ -48,7 +64,20 @@ public class UIAnimationManager : MonoBehaviour
         {
             animator.SetTrigger(triggerName);
             Debug.Log($"Trigger activado: {triggerName}");
+            
+            // Resetear todos los botones a color normal
+            ResetAllButtons();
         }
     }
 
+    private void ResetAllButtons()
+    {
+        foreach (var button in buttonsToReset)
+        {
+            if (button != null)
+            {
+                button.ResetToNormal();
+            }
+        }
+    }
 }

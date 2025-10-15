@@ -4413,6 +4413,13 @@ MonoBehaviour:
     triggerName: ShowSettings
   escTriggerName: ShowMenu
   isEscAllowed: 1
+  buttonsToReset:
+  - {fileID: 206022919}
+  - {fileID: 476317772}
+  - {fileID: 1327859033}
+  - {fileID: 1201332106}
+  - {fileID: 47403874}
+  - {fileID: 900331415}
 --- !u!4 &442590526
 Transform:
   m_ObjectHideFlags: 0

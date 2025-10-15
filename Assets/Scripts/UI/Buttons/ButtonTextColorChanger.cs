@@ -78,6 +78,19 @@ public class ButtonTextColorChanger : MonoBehaviour,
         SetColor(_isHovered ? hoverColor : normalColor);
     }
 
+    public void ResetToNormal()
+    {
+        _isSelected = false;
+        _isHovered = false;
+        SetColor(normalColor);
+        
+        // También deseleccionar en el EventSystem
+        if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject == gameObject)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
+    }
+
     private void SetColor(Color c)
     {
         if (_buttonText != null)
