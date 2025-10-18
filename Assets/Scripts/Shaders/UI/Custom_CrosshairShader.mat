@@ -29,17 +29,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DashCount: 4
+    - _DashCount: 8
     - _DashFill: 1
     - _DashSoftness: 0
     - _GlowIntensity: 2.45
     - _GlowWidth: 0.031
-    - _InnerRadius: 0.296
+    - _InnerRadius: 0.2
     - _OuterRadius: 0.3
     - _OutlineThickness: 0.02
     - _Rotation: 166
     - _Spread: 0
-    - _Thickness: 0.0491
+    - _Thickness: 0.05
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _GlowColor: {r: 1, g: 1, b: 1, a: 1}
