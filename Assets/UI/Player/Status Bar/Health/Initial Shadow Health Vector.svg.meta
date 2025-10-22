@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 26e05ebea2e17364693e4d5edfe4cb36
+guid: 3d049166dd63bd24a9c3e0082b8eab13
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -32,10 +32,10 @@ ScriptedImporter:
   textureWidth: 256
   textureHeight: 256
   wrapMode: 1
-  filterMode: 1
-  sampleCount: 4
+  filterMode: 2
+  sampleCount: 8
   preserveSVGImageAspect: 0
-  useSVGPixelsPerUnit: 0
+  useSVGPixelsPerUnit: 1
   spriteData:
     TessellationDetail: 0
     SpriteRect:
@@ -50,5 +50,5 @@ ScriptedImporter:
         y: 0
         width: 0
         height: 0
-      spriteID: 44234fe9541a5e547b40c39221e1e40e
+      spriteID: b18c436ec4e226d4c976960fbf9fbe51
     PhysicsOutlines: []

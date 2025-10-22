@@ -9,7 +9,7 @@ public class SpeedLinesController : MonoBehaviour
     
     [Header("Speed Settings")]
     public float speedThreshold = 6.0f;
-    public float maxSpeed = 20.0f; // Velocidad a la cual el efecto está al máximo
+    public float maxSpeed = 20.0f; 
     
     [Header("Emission Settings")]
     public float minEmissionRate = 10f;
