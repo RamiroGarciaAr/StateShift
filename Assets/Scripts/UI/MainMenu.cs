@@ -13,12 +13,12 @@ public class MainMenu : MonoBehaviour
     {
         _playButton.onClick.AddListener(OnPlay);
         _quitButton.onClick.AddListener(OnQuit);
-        _testButton.onClick.AddListener(() => SceneLoader.SwitchSceneAsync("PlayerTesting"));
+        _testButton.onClick.AddListener(() => SceneLoader.OpenLoadingScene("PlayerTesting"));
     }
 
     public void OnPlay()
     {
-        SceneLoader.SwitchSceneAsync(_gameScene);
+        SceneLoader.OpenLoadingScene(_gameScene);
     }
 
     public void OnQuit()

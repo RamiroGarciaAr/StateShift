@@ -39,11 +39,11 @@ public class GameManager : MonoBehaviour
 
     public void GameExitListener()
     {
-        SceneLoader.SwitchSceneAsync("MainMenuScene");
+        SceneLoader.OpenLoadingScene("MainMenuScene");
     }
 
     public void GameRestartListener()
     {
-        SceneLoader.ReloadSceneAsync();
+        SceneLoader.OpenLoadingScene("SampleScene");
     }
 }

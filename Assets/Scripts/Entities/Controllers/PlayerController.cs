@@ -16,7 +16,7 @@ namespace Entities.Controllers
         // State Machine
         private StateMachine<MovementState> _stateMachine;
         private PlayerMovementContext _context;
-
+        
         protected override void Awake()
         {
             Controllable = GetComponent<IControllable>();
@@ -27,10 +27,6 @@ namespace Entities.Controllers
                 Debug.LogError("No se encontró un componente IControllable en " + gameObject.name, this);
             }
 
-
-        }
-        private void Start()
-        {
             InitializeStateMachine();
         }
 
