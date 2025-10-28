@@ -1,11 +1,18 @@
 using System;
 using Core;
+using Core.Events;
 using Strategies;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour, IControllable
 {
+    #region Events
+    public event PlayerLandingEvent OnPlayerLanded;
+    public event PlayerJumpingEvent OnPlayerJumped;
+    #endregion
+
     #region Fields
     [Header("Movement")]
     [SerializeField] private float baseSpeed = 5f;
@@ -39,6 +46,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
     private Vector2 _rawMoveDir, _smoothMoveDir, _smoothMoveDirVelocity;
     private bool _jumpInputDown;
     private bool _jumpInputHeld;
+    private float _lastAirVelocityY;
 
     private MovementState _currentMovementState = MovementState.Walking;
     #endregion
@@ -133,14 +141,20 @@ public class PlayerMovement : MonoBehaviour, IControllable
         var ray = new Ray(origin, Vector3.down);
 
         WasGrounded = IsGrounded;
+        if (!IsGrounded) _lastAirVelocityY = _rb.velocity.y;
 
         if (Physics.Raycast(ray, out var hit, maxDistance, groundLayerMask) && !hit.collider.isTrigger)
         {
-                Debug.DrawLine(origin, origin + Vector3.down * maxDistance, Color.green);
+            Debug.DrawLine(origin, origin + Vector3.down * maxDistance, Color.green);
 
-                IsGrounded = true;
-                GroundPoint = hit.point;
-                GroundNormal = hit.normal;
+            IsGrounded = true;
+            GroundPoint = hit.point;
+            GroundNormal = hit.normal;
+
+            if (!WasGrounded && IsGrounded)
+            {
+                HandleLanding();
+            }
         }
         else
         {
@@ -151,6 +165,20 @@ public class PlayerMovement : MonoBehaviour, IControllable
             GroundNormal = Vector3.up;
             GroundRigidbody = null;
         }
+    }
+    private void HandleJump()
+    {
+        var jumpData = new PlayerJumpingEventArgs(jumpForce: jumpForce);
+        OnPlayerJumped?.Invoke(jumpData);
+    }
+    private void HandleLanding()
+    {        
+        var landingData = new PlayerLandingEventArgs(
+            fallVelocity: Mathf.Abs(_lastAirVelocityY),
+            landingPoint: GroundPoint,
+            landingNormal: GroundNormal
+        );
+        OnPlayerLanded?.Invoke(landingData);
     }
     private void SmoothInput()
     {
@@ -238,7 +266,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
             velocityY = Vector3.up * jumpForce;
             _jumpInputDown = false;
 
-            // OnJump?.Invoke();
+            HandleJump();
         }
         
         // Solo aplicar la velocidad calculada si no estamos en slide
@@ -246,7 +274,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
         if (_currentMovementState != MovementState.Sliding)
         {
             Vector3 groundVel = (GroundRigidbody != null) ? GroundVelocity : Vector3.zero;
-            _rb.velocity = moveVec + velocityY + groundVel;
+            _rb.velocity = moveVec + velocityY + groundVel; // _rb.AddfForce(moveVec + velocityY + groundVel)
         }
         else
         {

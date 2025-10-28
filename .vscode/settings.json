@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "StateShift.sln"
+    "dotnet.defaultSolution": "StateShift.sln",
 }
