@@ -32,9 +32,10 @@ public class SprintingState : BaseState<PlayerMovementContext>
         // Transición a WallRunning cuando está en el aire y tiene una pared
         if (!Context.PlayerMovement.IsGrounded)
         {
-            
+            Debug.Log("Air");
             if (Context.PlayerWallRun.CanWallRun())
             {
+                Debug.Log("Can Wall Run");
                 Context.StateMachine.ChangeState(MovementState.WallRunning);
                 return;
             }

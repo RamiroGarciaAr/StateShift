@@ -1,21 +1,5 @@
 {
   "dependencies": {
-    "com.coffee.ui-particle": {
-      "version": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.11.3",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.ugui": "1.0.0",
-        "com.unity.modules.particlesystem": "1.0.0"
-      },
-      "hash": "c54f63cb18a22382215b142b63e232f0f86fff58"
-    },
-    "com.unity.2d.sprite": {
-      "version": "1.0.0",
-      "depth": 1,
-      "source": "builtin",
-      "dependencies": {}
-    },
     "com.unity.cinemachine": {
       "version": "2.10.5",
       "depth": 0,
@@ -101,15 +85,6 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
-    "com.unity.postprocessing": {
-      "version": "3.4.0",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.modules.physics": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
     "com.unity.probuilder": {
       "version": "5.2.4",
       "depth": 0,
@@ -178,25 +153,6 @@
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
       }
-    },
-    "com.unity.vectorgraphics": {
-      "version": "2.0.0-preview.25",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.ugui": "1.0.0",
-        "com.unity.2d.sprite": "1.0.0",
-        "com.unity.modules.ui": "1.0.0",
-        "com.unity.modules.physics": "1.0.0",
-        "com.unity.modules.animation": "1.0.0",
-        "com.unity.modules.physics2d": "1.0.0",
-        "com.unity.modules.uielements": "1.0.0",
-        "com.unity.modules.imageconversion": "1.0.0",
-        "com.unity.modules.unitywebrequest": "1.0.0",
-        "com.unity.modules.unitywebrequestwww": "1.0.0",
-        "com.unity.modules.unitywebrequesttexture": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
     },
     "com.unity.visualscripting": {
       "version": "1.9.4",
