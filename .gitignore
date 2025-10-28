@@ -97,5 +97,5 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
-Assets/Scenes/MainMenuScene/LightingData.asset.meta
 Assets/Scenes/MainMenuScene/LightingData.asset
+Assets/Scenes/MainMenuScene/LightingData.asset.meta

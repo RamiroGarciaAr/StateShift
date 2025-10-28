@@ -8,20 +8,20 @@ public class PlayerCrouch : MonoBehaviour
     [SerializeField] private float crouchHeightMultiplier = 0.5f;
     [SerializeField] private float crouchTransitionSpeed = 10f;
     [SerializeField] private Transform cameraTarget;
-    [SerializeField] private CapsuleCollider _collider;
-    private float _originalHeight;
-    private Vector3 _originalCenter;
+    private CapsuleCollider _collider;
+    [SerializeField] private float _originalHeight;
+    [SerializeField] private Vector3 _originalCenter;
     private Vector3 _originalCameraLocalPosition;
     private float _targetHeight;
     private Vector3 _targetCenter;
     private bool _isCrouching;
     public bool IsCrouching => _isCrouching;
-
     private void Awake()
     {
         _collider = GetComponent<CapsuleCollider>();
-        _originalHeight = _collider.height;
-        _originalCenter = _collider.center;
+    }
+    private void Start()
+    {
         _targetHeight = _originalHeight;
         _targetCenter = _originalCenter;
 
