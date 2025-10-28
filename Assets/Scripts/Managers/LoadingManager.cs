@@ -16,9 +16,9 @@ public class LoadingManager : MonoBehaviour
 
     private void Update()
     {
-        float progress = _loadingOperation.progress;
+        float progress = Mathf.Clamp01(_loadingOperation.progress / 0.9f);
 
         _progressBar.value = progress;
-        _progressText.text = $"{progress}%";
+        _progressText.text = $"{progress * 100}%";
     }
 }
