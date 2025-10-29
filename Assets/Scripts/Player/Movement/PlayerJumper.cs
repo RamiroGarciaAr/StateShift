@@ -55,10 +55,6 @@ public class PlayerJumper : MonoBehaviour
         _jumpInputHeld = holding;
     }
 
-    /// <summary>
-    /// Apply jump force if a jump was requested.
-    /// Returns the vertical velocity to apply.
-    /// </summary>
     public Vector3 ProcessJump()
     {
         if (_jumpInputDown && _groundChecker.IsGrounded)
@@ -74,10 +70,6 @@ public class PlayerJumper : MonoBehaviour
         return Vector3.zero;
     }
 
-    /// <summary>
-    /// Calculate and apply gravity based on current state.
-    /// Returns the vertical velocity with gravity applied.
-    /// </summary>
     public Vector3 ApplyGravity(float currentVerticalVelocity)
     {
         if (_groundChecker.IsGrounded)
@@ -98,14 +90,5 @@ public class PlayerJumper : MonoBehaviour
         }
 
         return Vector3.up * currentVerticalVelocity + appliedGravity;
-    }
-
-    /// <summary>
-    /// Clear jump input. Call this at the end of FixedUpdate.
-    /// </summary>
-    public void ClearJumpInput()
-    {
-        // El input down se limpia cuando se ejecuta el salto
-        // Aquí podrías agregar lógica adicional si es necesario
     }
 }

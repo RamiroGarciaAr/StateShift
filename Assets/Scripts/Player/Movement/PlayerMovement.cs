@@ -175,7 +175,6 @@ public class PlayerMovement : MonoBehaviour, IControllable
         {
             return jumpVelocity;
         }
-
         // Si no saltamos, aplicar gravedad
         return _playerJumper.ApplyGravity(currentVerticalVelocity);
     }
@@ -184,15 +183,16 @@ public class PlayerMovement : MonoBehaviour, IControllable
     {
         if (_currentMovementState != MovementState.Sliding)
         {
-            Vector3 groundVel = (_groundChecker.GroundRigidbody != null) 
-                ? _groundChecker.GroundVelocity 
-                : Vector3.zero;
-            
-            _rb.velocity = horizontalVelocity + verticalVelocity + groundVel;
+            Vector3 groundVel = (_groundChecker.GroundRigidbody != null) ? _groundChecker.GroundVelocity : Vector3.zero;
+
+            _rb.velocity = horizontalVelocity + groundVel;
+            _rb.velocity += verticalVelocity;
+            //_rb.AddForce((horizontalVelocity + groundVel) / 10,ForceMode.VelocityChange);
         }
         else
         {
             // Durante el slide, solo actualizar la velocidad vertical
+            Debug.Log("SLIDE!!");
             _rb.velocity = new Vector3(_rb.velocity.x, verticalVelocity.y, _rb.velocity.z);
         }
     }
@@ -200,6 +200,5 @@ public class PlayerMovement : MonoBehaviour, IControllable
     private void ClearInput()
     {
         _rawMoveDir = Vector2.zero;
-        _playerJumper.ClearJumpInput();
     }
 }
