@@ -139,7 +139,6 @@ public class GroundChecker : MonoBehaviour
         if (IsOnSlope)
         {
             SlopeDir = Vector3.ProjectOnPlane(Vector3.down, GroundNormal).normalized;
-            Debug.Log("ON SLOPE");
         }
         else SlopeDir = Vector3.zero;
     }

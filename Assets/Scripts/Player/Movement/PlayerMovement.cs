@@ -76,22 +76,27 @@ public class PlayerMovement : MonoBehaviour, IControllable
         _rb.freezeRotation = true;
         _rb.interpolation = RigidbodyInterpolation.Interpolate;
         _rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
     }
 
     protected virtual void FixedUpdate()
     {
         _groundChecker.CheckGround();
         SmoothInput();
+        UpdateSlopeDrag();
         UpdateMovement();
         ClearInput();
+
+        
+
     }
     #endregion
 
     private void SmoothInput()
     {
-        float smoothingValue = _currentMovementState == MovementState.Sliding ? 
+        float smoothingValue = _currentMovementState == MovementState.Sliding ?
             movementSmoothing * 3f : movementSmoothing;
-            
+
         _smoothMoveDir = Vector2.SmoothDamp(
             _smoothMoveDir,
             _rawMoveDir,
@@ -119,27 +124,70 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
     public void SetMovementState(MovementState state)
     {
-       _currentMovementState = state;
+        _currentMovementState = state;
     }
 
     private void UpdateMovement()
     {
-        if (_groundChecker.IsGrounded) 
+        if (_groundChecker.IsGrounded && _rb.drag < 1f) 
         {
             _rb.MovePosition(Vector3.MoveTowards(_rb.position, _groundChecker.GroundPoint, Time.fixedDeltaTime * 1f));
         }
 
         var currentVelocity = _rb.velocity;
-        Vector3 moveVec = CalculateHorizontalMovement(currentVelocity);
         Vector3 velocityY = CalculateVerticalMovement(currentVelocity.y);
 
+        // Si estamos deslizando, PlayerSlide.cs se encarga del horizontal.
+        // PlayerMovement solo se encarga de la gravedad/salto.
+        if (_currentMovementState == MovementState.Sliding)
+        {
+            _rb.velocity = new Vector3(currentVelocity.x, velocityY.y, currentVelocity.z);
+            return; // Salta el resto de la lógica horizontal
+        }
+
+        // Lógica de movimiento normal para todos los demás estados
+        Vector3 moveVec = CalculateHorizontalMovement(currentVelocity);
         ApplyFinalVelocity(moveVec, velocityY);
+    }
+    private void UpdateSlopeDrag()
+    {
+        // No aplicar drag si estamos en el aire
+        if (!_groundChecker.IsGrounded)
+        {
+            _rb.drag = 0f;
+            return;
+        }
+
+        // No aplicar drag si estamos en medio de un slide
+        if (_currentMovementState == MovementState.Sliding)
+        {
+            // El drag del slide se controla en PlayerSlide.cs
+            return; 
+        }
+
+        // Si nos estamos moviendo (input del jugador), no aplicar drag
+        if (_rawMoveDir.sqrMagnitude > 0.01f)
+        {
+            _rb.drag = 0f;
+            return;
+        }
+
+        // Si estamos quietos, en el suelo, y no deslizando:
+        // Aplicar drag alto solo si estamos en una pendiente para "frenar"
+        if (_groundChecker.IsOnWalkableSlope)
+        {
+            _rb.drag = 10f; // Freno de mano
+        }
+        else
+        {
+            _rb.drag = 0f; // Sin freno en suelo plano
+        }
     }
 
     private Vector3 CalculateHorizontalMovement(Vector3 currentVelocity)
     {
         Vector3 moveVec;
-        
+
         if (_currentMovementState == MovementState.Sliding && _groundChecker.IsGrounded)
         {
             moveVec = Vector3.ProjectOnPlane(
@@ -175,26 +223,25 @@ public class PlayerMovement : MonoBehaviour, IControllable
         {
             return jumpVelocity;
         }
+        if (_groundChecker.IsGrounded)
+        {
+            return Vector3.zero;
+        }
         // Si no saltamos, aplicar gravedad
         return _playerJumper.ApplyGravity(currentVerticalVelocity);
     }
 
     private void ApplyFinalVelocity(Vector3 horizontalVelocity, Vector3 verticalVelocity)
     {
-        if (_currentMovementState != MovementState.Sliding)
-        {
-            Vector3 groundVel = (_groundChecker.GroundRigidbody != null) ? _groundChecker.GroundVelocity : Vector3.zero;
+        // Esta lógica ahora se aplica a todos los estados MENOS al slide
+        // (porque UpdateMovement hace 'return' antes de llamar a esto)
 
-            _rb.velocity = horizontalVelocity + groundVel;
-            _rb.velocity += verticalVelocity;
-            //_rb.AddForce((horizontalVelocity + groundVel) / 10,ForceMode.VelocityChange);
-        }
-        else
-        {
-            // Durante el slide, solo actualizar la velocidad vertical
-            Debug.Log("SLIDE!!");
-            _rb.velocity = new Vector3(_rb.velocity.x, verticalVelocity.y, _rb.velocity.z);
-        }
+        Vector3 groundVel = (_groundChecker.GroundRigidbody != null) ? _groundChecker.GroundVelocity : Vector3.zero;
+
+        _rb.velocity = horizontalVelocity + groundVel;
+        _rb.velocity += verticalVelocity;
+
+        // ELIMINA EL BLOQUE 'else' QUE ESTABA AQUÍ
     }
 
     private void ClearInput()
