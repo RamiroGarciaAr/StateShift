@@ -78,31 +78,6 @@ public class PlayerMovement : MonoBehaviour, IControllable
         _rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
     }
 
-    private void Start()
-    {
-        // Suscribirse a eventos
-        _groundChecker.OnLanded += HandleLanding;
-        _playerJumper.OnJumped += HandleJump;
-    }
-
-    private void OnDestroy()
-    {
-        if (_groundChecker != null)
-        {
-            _groundChecker.OnLanded -= HandleLanding;
-        }
-        
-        if (_playerJumper != null)
-        {
-            _playerJumper.OnJumped -= HandleJump;
-        }
-    }
-
-    private void Update()
-    {
-        Debug.Log(_groundChecker.GroundNormal);
-    }
-
     protected virtual void FixedUpdate()
     {
         _groundChecker.CheckGround();
@@ -111,22 +86,6 @@ public class PlayerMovement : MonoBehaviour, IControllable
         ClearInput();
     }
     #endregion
-
-    private void HandleJump(PlayerJumpingEventArgs jumpData)
-    {
-        //@TODO: SOUNDS
-    }
-
-    private void HandleLanding()
-    {        
-        var landingData = new PlayerLandingEventArgs(
-            fallVelocity: Mathf.Abs(_groundChecker.LastAirVelocityY),
-            landingPoint: _groundChecker.GroundPoint,
-            landingNormal: _groundChecker.GroundNormal
-        );
-        //@TODO: SOUNDS
-       
-    }
 
     private void SmoothInput()
     {
