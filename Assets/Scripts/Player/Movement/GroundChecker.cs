@@ -1,5 +1,6 @@
 using UnityEngine;
-
+using System;
+using Unity.VisualScripting;
 [RequireComponent(typeof(Rigidbody))]
 public class GroundChecker : MonoBehaviour
 {
@@ -7,6 +8,10 @@ public class GroundChecker : MonoBehaviour
     [SerializeField] private float groundCheckDistance = 0.1f;
     [SerializeField] private float legHeight = 0.5f;
     [SerializeField] private LayerMask groundLayerMask;
+
+    [Header("Slope Detection")]
+    [SerializeField] private float maxSlopeAngle = 45f;
+    [SerializeField] private float minSlopeAngle = 5f;
     
     [Header("References")]
     [SerializeField] private CapsuleCollider capsuleCollider;
@@ -21,6 +26,11 @@ public class GroundChecker : MonoBehaviour
     public Vector3 GroundNormal { get; private set; }
     public Vector3 GroundPoint { get; private set; }
     public float LastAirVelocityY => _lastAirVelocityY;
+
+    public bool IsOnSlope { get; private set; }
+    public bool IsOnWalkableSlope { get; private set; }
+    public float SlopeAngle { get; private set; }
+    public Vector3 SlopeDir { get; private set; }
     
     public Vector3 GroundVelocity
     {
@@ -46,8 +56,10 @@ public class GroundChecker : MonoBehaviour
     #endregion
 
     #region Events
-    public event System.Action OnLanded;
-    public event System.Action OnLeftGround;
+    public event Action OnLanded;
+    public event Action OnLeftGround;
+    public event Action OnEnteredSlope;
+    public event Action OnExitedSlope;
     #endregion
 
     private void Awake()
@@ -72,7 +84,8 @@ public class GroundChecker : MonoBehaviour
         var ray = new Ray(origin, Vector3.down);
 
         WasGrounded = IsGrounded;
-        if (!IsGrounded) 
+        bool wasOnSlope = IsOnSlope;
+        if (!IsGrounded)
         {
             _lastAirVelocityY = _rb.velocity.y;
         }
@@ -85,6 +98,11 @@ public class GroundChecker : MonoBehaviour
             GroundPoint = hit.point;
             GroundNormal = hit.normal;
             GroundRigidbody = hit.rigidbody;
+
+            CalculateSlopeInfo();
+
+            if (!wasOnSlope && IsOnSlope) OnEnteredSlope?.Invoke();
+            else if (wasOnSlope && !IsOnSlope) OnExitedSlope?.Invoke();
 
             // Detectar aterrizaje
             if (!WasGrounded && IsGrounded)
@@ -107,7 +125,23 @@ public class GroundChecker : MonoBehaviour
             {
                 OnLeftGround?.Invoke();
             }
+            if (wasOnSlope) OnExitedSlope?.Invoke();
         }
+    }
+
+    private void CalculateSlopeInfo()
+    {
+        SlopeAngle = Vector3.Angle(Vector3.up, GroundNormal);
+        IsOnSlope = SlopeAngle >= minSlopeAngle && SlopeAngle > 0.1f;
+
+        IsOnWalkableSlope = IsOnSlope && SlopeAngle <= maxSlopeAngle;
+
+        if (IsOnSlope)
+        {
+            SlopeDir = Vector3.ProjectOnPlane(Vector3.down, GroundNormal).normalized;
+            Debug.Log("ON SLOPE");
+        }
+        else SlopeDir = Vector3.zero;
     }
 
     private void ModifyColliderHeight()
