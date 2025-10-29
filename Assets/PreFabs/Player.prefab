@@ -118,7 +118,13 @@ GameObject:
   - component: {fileID: 3130340792650396895}
   - component: {fileID: 7686486979658587214}
   - component: {fileID: 8385160106023303043}
+  - component: {fileID: 8652396224484625696}
+  - component: {fileID: 2580716373554534634}
   - component: {fileID: 3306734593851655564}
+  - component: {fileID: 1711803125929489633}
+  - component: {fileID: 3770684798369094975}
+  - component: {fileID: 4172790948691735389}
+  - component: {fileID: 9165824952976219975}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -231,6 +237,46 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!136 &8652396224484625696
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &2580716373554534634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9022fab1cac45242b4262cf0cf8e4b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCam: {fileID: 0}
+  maxDistance: 3
+  interactMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &3306734593851655564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,13 +289,92 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 522121f967d24f9478ec3379ee582c81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  speedMultiplier: 1
+  baseSpeed: 5
+  sprintSpeedMultiplier: 2
+  walkSpeedMultiplier: 1
+  crouchSpeedMultiplier: 0.5
+  slideSpeedMultiplier: 0.3
+  wallRunSpeedMultiplier: 1.2
   movementSmoothing: 0.1
+  airMovementAcceleration: 0.5
   jumpForce: 5
+  gravityMultiplier: 2
+  jumpingGravityMultiplier: 1
   groundCheckDistance: 0.1
   legHeight: 0.5
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 0
   collider: {fileID: 1020874024964740700}
+--- !u!114 &1711803125929489633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86dd0bed9f96f28439af24adc916bc59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3770684798369094975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e85f30a839a41624db2cfec9676fe8b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  crouchHeightMultiplier: 0.5
+  crouchTransitionSpeed: 12
+  cameraTarget: {fileID: 0}
+  _collider: {fileID: 8652396224484625696}
+--- !u!114 &4172790948691735389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52795896da8c6774889f81768c0b8cb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slideForce: 15
+  slideDuration: 1
+  slideDecelerationRate: 5
+  minSlideSpeed: 2
+  slideSpeedThreshold: 7
+--- !u!114 &9165824952976219975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4daee954d607a92489cdd305403c5060, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  wallRunSpeed: 12
+  wallRunAcceleration: 10
+  maxWallRunTime: 1.5
+  wallStickForce: 15
+  gravityCounterForce: 15
+  wallJumpUpForce: 3
+  wallJumpSideForce: 7
+  wallJumpForwardForce: 5
+  wallCheckDistance: 0.7
+  minJumpHeight: 2
+  minSpeedToWallRun: 3
+  wallRunCooldown: 0.1
