@@ -87,8 +87,6 @@ public class PlayerMovement : MonoBehaviour, IControllable
         UpdateMovement();
         ClearInput();
 
-        
-
     }
     #endregion
 
@@ -137,15 +135,11 @@ public class PlayerMovement : MonoBehaviour, IControllable
         var currentVelocity = _rb.velocity;
         Vector3 velocityY = CalculateVerticalMovement(currentVelocity.y);
 
-        // Si estamos deslizando, PlayerSlide.cs se encarga del horizontal.
-        // PlayerMovement solo se encarga de la gravedad/salto.
         if (_currentMovementState == MovementState.Sliding)
         {
             _rb.velocity = new Vector3(currentVelocity.x, velocityY.y, currentVelocity.z);
-            return; // Salta el resto de la lógica horizontal
+            return;
         }
-
-        // Lógica de movimiento normal para todos los demás estados
         Vector3 moveVec = CalculateHorizontalMovement(currentVelocity);
         ApplyFinalVelocity(moveVec, velocityY);
     }
@@ -159,21 +153,15 @@ public class PlayerMovement : MonoBehaviour, IControllable
         }
 
         // No aplicar drag si estamos en medio de un slide
-        if (_currentMovementState == MovementState.Sliding)
-        {
-            // El drag del slide se controla en PlayerSlide.cs
-            return; 
-        }
+        if (_currentMovementState == MovementState.Sliding) return; 
 
-        // Si nos estamos moviendo (input del jugador), no aplicar drag
+
         if (_rawMoveDir.sqrMagnitude > 0.01f)
         {
             _rb.drag = 0f;
             return;
         }
 
-        // Si estamos quietos, en el suelo, y no deslizando:
-        // Aplicar drag alto solo si estamos en una pendiente para "frenar"
         if (_groundChecker.IsOnWalkableSlope)
         {
             _rb.drag = 10f; // Freno de mano
@@ -233,15 +221,11 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
     private void ApplyFinalVelocity(Vector3 horizontalVelocity, Vector3 verticalVelocity)
     {
-        // Esta lógica ahora se aplica a todos los estados MENOS al slide
-        // (porque UpdateMovement hace 'return' antes de llamar a esto)
 
         Vector3 groundVel = (_groundChecker.GroundRigidbody != null) ? _groundChecker.GroundVelocity : Vector3.zero;
 
         _rb.velocity = horizontalVelocity + groundVel;
         _rb.velocity += verticalVelocity;
-
-        // ELIMINA EL BLOQUE 'else' QUE ESTABA AQUÍ
     }
 
     private void ClearInput()

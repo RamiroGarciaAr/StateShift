@@ -13676,12 +13676,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4172790948691735389, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+      propertyPath: slideImpulse
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 4172790948691735389, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: slopeSlideForce
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4294365468466229228, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: jumpForce
-      value: 7
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4294365468466229228, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+      propertyPath: gravityMultiplier
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 6814181587787474173, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: feet

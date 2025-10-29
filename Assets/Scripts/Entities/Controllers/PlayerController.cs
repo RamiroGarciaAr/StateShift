@@ -7,11 +7,13 @@ namespace Entities.Controllers
 {
     [RequireComponent(typeof(PlayerCrouch))]
     [RequireComponent(typeof(PlayerSlide))]
-    [RequireComponent(typeof(PlayerWallRun))]  
+    [RequireComponent(typeof(PlayerWallRun))]
+    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(PlayerMovement))]
     public class PlayerController : Controller
     {
         private PlayerInput _playerInput;
-        private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction;
+        private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction,_grappleAction,_dashAction;
         
         // State Machine
         private StateMachine<MovementState> _stateMachine;
@@ -69,11 +71,15 @@ namespace Entities.Controllers
             _jumpAction = _playerInput.actions["Jump"];
             _sprintAction = _playerInput.actions["Sprint"];
             _crouchAction = _playerInput.actions["Crouch"];
+            _dashAction = _playerInput.actions["Dash"];
+            _grappleAction = _playerInput.actions["Grapple"];
 
             _moveAction.Enable();
             _jumpAction.Enable();
             _crouchAction.Enable();
             _sprintAction.Enable();
+            _dashAction.Enable();
+            _grappleAction.Enable();
         }
 
         private void OnDisable()
@@ -82,6 +88,8 @@ namespace Entities.Controllers
             _jumpAction?.Disable();
             _crouchAction?.Disable();
             _sprintAction?.Disable();
+            _dashAction?.Disable();
+            _grappleAction?.Disable();
         }
 
         private void Update()
@@ -96,6 +104,11 @@ namespace Entities.Controllers
 
             Controllable.Move(direction);
             HandleJump();
+
+            if (_context.WantsToGrapple)
+            {
+                Debug.Log("Grapple");
+            }
         }
 
         private void FixedUpdate()
@@ -127,6 +140,8 @@ namespace Entities.Controllers
             _context.WantsToCrouch = _crouchAction != null && _crouchAction.IsPressed();
             _context.WantsToSprint = _sprintAction != null && _sprintAction.IsPressed();
             _context.WantsToJump = _jumpAction != null && _jumpAction.WasPressedThisFrame();
+            _context.WantsToDash = _dashAction != null && _dashAction.WasPressedThisFrame();
+            _context.WantsToGrapple = _grappleAction != null && _grappleAction.IsPressed();
         }
 
         private void HandleJump()
@@ -139,7 +154,6 @@ namespace Entities.Controllers
             Controllable.SetHoldingJump(_jumpAction.IsPressed());
         }
 
-        // Debug helper - Ahora muestra más información
         private void OnGUI()
         {
             if (_stateMachine != null)

@@ -46,6 +46,11 @@ public class SprintingState : BaseState<PlayerMovementContext>
             Context.StateMachine.ChangeState(MovementState.Walking);
             return;
         }
+        //Transicion a Dash
+        if (Context.WantsToDash)
+        {
+            Debug.Log("Dash");
+        }
     }
 }
 
