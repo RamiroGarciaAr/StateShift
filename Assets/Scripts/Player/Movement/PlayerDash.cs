@@ -129,7 +129,7 @@ public class PlayerDash : MonoBehaviour
         _rb.useGravity = gravityScale > 0;
 
         // Apply initial dash force
-        _rb.AddForce(_dashDirection * dashForce, ForceMode.VelocityChange);
+        _rb.AddForce(_dashDirection * dashForce, ForceMode.Impulse);
     }
 
     private void UpdateDash()

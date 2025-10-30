@@ -23,6 +23,15 @@ public class PlayerMovement : MonoBehaviour, IControllable
     [Range(0, 1)]
     [SerializeField] private float movementSmoothing = .1f;
     [SerializeField] private float airMovementAcceleration = .5f;
+    [Header("Momentum")]
+    [SerializeField] private float postDashCarryDuration = 0.25f;
+    [SerializeField] private float groundCarryDamping = 3f;
+    [SerializeField] private float maxMomentum = 0.4f; // +40% speed cap
+    [SerializeField] private float momentumDecayHalfLife = 1.5f; // seconds
+    [SerializeField] private float sprintGainPerSec = 0.05f;
+    [SerializeField] private float slideGainPerSec = 0.10f;
+    [SerializeField] private float downhillGainPerSec = 0.12f;
+    [SerializeField] private float postDashGain = 0.10f;
 
     private Rigidbody _rb;
     private GroundChecker _groundChecker;
@@ -30,6 +39,9 @@ public class PlayerMovement : MonoBehaviour, IControllable
     private Vector2 _rawMoveDir, _smoothMoveDir, _smoothMoveDirVelocity;
 
     private MovementState _currentMovementState = MovementState.Walking;
+    private MovementState _lastMovementState = MovementState.Walking;
+    private float _postDashCarryTimer = 0f;
+    private float _momentum = 0f;
     #endregion
 
     #region Properties
@@ -40,7 +52,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
     {
         get
         {
-            return _currentMovementState switch
+            float stateSpeed = _currentMovementState switch
             {
                 MovementState.Sprinting => baseSpeed * sprintSpeedMultiplier,
                 MovementState.Walking => baseSpeed * walkSpeedMultiplier,
@@ -50,6 +62,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
                 MovementState.Dashing => 0f, // Dash handles its own speed
                 _ => baseSpeed
             };
+            return stateSpeed * (1f + _momentum);
         }
     }
 
@@ -65,6 +78,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
     public Vector3 GroundNormal => _groundChecker.GroundNormal;
     public Vector3 GroundPoint => _groundChecker.GroundPoint;
     public Vector3 GroundVelocity => _groundChecker.GroundVelocity;
+    public float Momentum01 => maxMomentum > 0f ? (_momentum / maxMomentum) : 0f;
     #endregion
 
     #region Unity Methods
@@ -83,6 +97,8 @@ public class PlayerMovement : MonoBehaviour, IControllable
     protected virtual void FixedUpdate()
     {
         _groundChecker.CheckGround();
+        if (_postDashCarryTimer > 0f) _postDashCarryTimer -= Time.fixedDeltaTime;
+        AccumulateAndDecayMomentum();
         SmoothInput();
         UpdateSlopeDrag();
         UpdateMovement();
@@ -123,7 +139,74 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
     public void SetMovementState(MovementState state)
     {
+        _lastMovementState = _currentMovementState;
         _currentMovementState = state;
+        if (_lastMovementState == MovementState.Dashing && _currentMovementState != MovementState.Dashing)
+        {
+            _postDashCarryTimer = postDashCarryDuration;
+        }
+    }
+
+    public void AddMomentum(float amount)
+    {
+        if (amount <= 0f) return;
+        _momentum = Mathf.Clamp(_momentum + amount, 0f, maxMomentum);
+    }
+
+    public void AddPostDashMomentum()
+    {
+        AddMomentum(postDashGain);
+    }
+
+    public void AddSlideMomentumTick(float weight = 1f)
+    {
+        if (!_groundChecker.IsGrounded) return;
+        _momentum = Mathf.Clamp(_momentum + slideGainPerSec * Mathf.Max(0f, weight) * Time.fixedDeltaTime, 0f, maxMomentum);
+    }
+
+    private void AccumulateAndDecayMomentum()
+    {
+        bool fueled = false;
+
+        if (_groundChecker.IsGrounded)
+        {
+            // Sprinting fuels momentum
+            if (_currentMovementState == MovementState.Sprinting && _rawMoveDir.sqrMagnitude > 0.0001f)
+            {
+                _momentum = Mathf.Clamp(_momentum + sprintGainPerSec * Time.fixedDeltaTime, 0f, maxMomentum);
+                fueled = true;
+            }
+
+            // Sliding fuels momentum (also handled in PlayerSlide, but keep a base gain here)
+            if (_currentMovementState == MovementState.Sliding)
+            {
+                _momentum = Mathf.Clamp(_momentum + slideGainPerSec * 0.25f * Time.fixedDeltaTime, 0f, maxMomentum);
+                fueled = true;
+            }
+
+            // Downhill fuels momentum
+            if (_groundChecker.IsOnSlope && _groundChecker.IsOnWalkableSlope)
+            {
+                Vector3 horizontalVel = new Vector3(_rb.velocity.x, 0f, _rb.velocity.z);
+                float downhillDot = Vector3.Dot(horizontalVel.normalized, _groundChecker.SlopeDir);
+                if (downhillDot > 0.1f)
+                {
+                    float slopeFactor = Mathf.Clamp01(_groundChecker.SlopeAngle / 45f);
+                    float gain = downhillGainPerSec * slopeFactor * downhillDot * Time.fixedDeltaTime;
+                    _momentum = Mathf.Clamp(_momentum + gain, 0f, maxMomentum);
+                    fueled = true;
+                }
+            }
+        }
+
+        // Exponential decay when not fueled
+        if (!fueled && _momentum > 0f)
+        {
+            float lambda = Mathf.Log(2f) / Mathf.Max(0.0001f, momentumDecayHalfLife);
+            float factor = Mathf.Exp(-lambda * Time.fixedDeltaTime);
+            _momentum *= factor;
+            if (_momentum < 0.0001f) _momentum = 0f;
+        }
     }
 
     private void UpdateMovement()
@@ -164,6 +247,19 @@ public class PlayerMovement : MonoBehaviour, IControllable
             return;
         }
 
+        if (_postDashCarryTimer > 0f)
+        {
+            _rb.drag = 0f; // evitar freno fuerte justo después del dash
+            return;
+        }
+
+        // Mantener fluidez mientras existe momentum acumulado
+        if (_momentum > 0f)
+        {
+            _rb.drag = 0f;
+            return;
+        }
+
         if (_groundChecker.IsOnWalkableSlope)
         {
             _rb.drag = 10f; // Freno de mano
@@ -195,10 +291,15 @@ public class PlayerMovement : MonoBehaviour, IControllable
                 _groundChecker.GroundNormal
             ) * CurrentSpeed;
 
+            var curVelXZ = new Vector3(currentVelocity.x, 0, currentVelocity.z);
             if (!_groundChecker.IsGrounded)
             {
-                var curVelXZ = new Vector3(currentVelocity.x, 0, currentVelocity.z);
                 moveVec = Vector3.MoveTowards(curVelXZ, moveVec, airMovementAcceleration * Time.fixedDeltaTime);
+            }
+            else if (_smoothMoveDir.sqrMagnitude < 0.0001f && _postDashCarryTimer > 0f)
+            {
+                // sin input en suelo justo tras dash: amortiguar en lugar de cortar a 0
+                moveVec = Vector3.MoveTowards(curVelXZ, Vector3.zero, groundCarryDamping * Time.fixedDeltaTime);
             }
         }
 

@@ -176,6 +176,12 @@ namespace Entities.Controllers
                             $"Recovery: {recoveryPercent:F0}%");
                     }
                 }
+
+                if (_context.PlayerMovement != null)
+                {
+                    float momentumPercent = _context.PlayerMovement.Momentum01 * 100f;
+                    GUI.Label(new Rect(10, 70, 200, 20), $"Momentum: {momentumPercent:F0}%");
+                }
             }
         }
     }

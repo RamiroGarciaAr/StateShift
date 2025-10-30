@@ -14,6 +14,7 @@ public class PlayerSlide : MonoBehaviour
 
     private Rigidbody _rb;
     private GroundChecker _groundChecker; 
+    private PlayerMovement _playerMovement;
     private bool _isSliding = false;
     private float _slideTimer = 0f;
     private Vector3 _slideDirection = Vector3.zero;
@@ -26,6 +27,7 @@ public class PlayerSlide : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _groundChecker = GetComponent<GroundChecker>();
+        _playerMovement = GetComponent<PlayerMovement>();
     }
 
     private void FixedUpdate()
@@ -71,6 +73,12 @@ public class PlayerSlide : MonoBehaviour
         if (_groundChecker.IsOnWalkableSlope)
         {
             _rb.AddForce(_groundChecker.SlopeDir * slopeSlideForce, ForceMode.Acceleration);
+        }
+
+        // Feed momentum while sliding
+        if (_playerMovement != null)
+        {
+            _playerMovement.AddSlideMomentumTick();
         }
         Vector3 horizontalVelocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
         if (_slideTimer >= slideDuration || horizontalVelocity.magnitude <= minSlideSpeed)
