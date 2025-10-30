@@ -32,7 +32,7 @@ public class SprintingState : BaseState<PlayerMovementContext>
         // Transición a WallRunning cuando está en el aire y tiene una pared
         if (!Context.PlayerMovement.IsGrounded)
         {
-            
+
             if (Context.PlayerWallRun.CanWallRun())
             {
                 Context.StateMachine.ChangeState(MovementState.WallRunning);
@@ -49,7 +49,14 @@ public class SprintingState : BaseState<PlayerMovementContext>
         //Transicion a Dash
         if (Context.WantsToDash)
         {
-            Debug.Log("Dash");
+            bool dashStarted = Context.PlayerDash.TryStartDash(Context.DashInputDirection);
+
+            if (dashStarted)
+            {
+                Context.StateMachine.ChangeState(MovementState.Dashing);
+                Context.WantsToDash = false;
+            }
+            return;
         }
     }
 }

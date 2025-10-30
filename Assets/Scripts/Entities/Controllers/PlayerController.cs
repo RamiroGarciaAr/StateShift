@@ -8,12 +8,13 @@ namespace Entities.Controllers
     [RequireComponent(typeof(PlayerCrouch))]
     [RequireComponent(typeof(PlayerSlide))]
     [RequireComponent(typeof(PlayerWallRun))]
+    [RequireComponent(typeof(PlayerDash))] 
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(PlayerMovement))]
     public class PlayerController : Controller
     {
         private PlayerInput _playerInput;
-        private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction,_grappleAction,_dashAction;
+        private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction, _grappleAction, _dashAction;
         
         // State Machine
         private StateMachine<MovementState> _stateMachine;
@@ -43,7 +44,8 @@ namespace Entities.Controllers
                 PlayerMovement = playerMovement,          
                 PlayerCrouch = GetComponent<PlayerCrouch>(),
                 PlayerSlide = GetComponent<PlayerSlide>(),
-                PlayerWallRun = GetComponent<PlayerWallRun>(),  
+                PlayerWallRun = GetComponent<PlayerWallRun>(),
+                PlayerDash = GetComponent<PlayerDash>(), 
                 Rigidbody = GetComponent<Rigidbody>()
             };
 
@@ -56,7 +58,8 @@ namespace Entities.Controllers
             _stateMachine.RegisterState(MovementState.Sprinting, new SprintingState(_context));
             _stateMachine.RegisterState(MovementState.Crouching, new CrouchingState(_context));
             _stateMachine.RegisterState(MovementState.Sliding, new SlidingState(_context));
-            _stateMachine.RegisterState(MovementState.WallRunning, new WallRunningState(_context)); 
+            _stateMachine.RegisterState(MovementState.WallRunning, new WallRunningState(_context));
+            _stateMachine.RegisterState(MovementState.Dashing, new DashingState(_context)); 
 
             // Inicializar en Walking
             _stateMachine.Initialize(MovementState.Walking);
@@ -99,7 +102,7 @@ namespace Entities.Controllers
             Vector2 movementInput = _moveAction.ReadValue<Vector2>();
             Vector2 direction = CalculateCameraRelativeDirection(movementInput);
 
-            UpdateContext(direction);
+            UpdateContext(direction, movementInput);
             _stateMachine.Update();
 
             Controllable.Move(direction);
@@ -134,9 +137,10 @@ namespace Entities.Controllers
             return input;
         }
 
-        private void UpdateContext(Vector2 direction)
+        private void UpdateContext(Vector2 direction, Vector2 inputRaw)
         {
             _context.MovementInput = direction;
+            _context.DashInputDirection = inputRaw;
             _context.WantsToCrouch = _crouchAction != null && _crouchAction.IsPressed();
             _context.WantsToSprint = _sprintAction != null && _sprintAction.IsPressed();
             _context.WantsToJump = _jumpAction != null && _jumpAction.WasPressedThisFrame();
@@ -160,6 +164,18 @@ namespace Entities.Controllers
             {
                 GUI.Label(new Rect(10, 10, 200, 20), $"Estado: {_stateMachine.CurrentStateType}");
                 
+                if (_context.PlayerDash != null)
+                {
+                    GUI.Label(new Rect(10, 30, 200, 20), 
+                        $"Dash Charges: {_context.PlayerDash.CurrentCharges}/{_context.PlayerDash.MaxCharges}");
+                    
+                    if (_context.PlayerDash.CurrentCharges < _context.PlayerDash.MaxCharges)
+                    {
+                        float recoveryPercent = _context.PlayerDash.ChargeRecoveryProgress * 100f;
+                        GUI.Label(new Rect(10, 50, 200, 20), 
+                            $"Recovery: {recoveryPercent:F0}%");
+                    }
+                }
             }
         }
     }

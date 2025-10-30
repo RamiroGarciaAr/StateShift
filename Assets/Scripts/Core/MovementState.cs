@@ -21,6 +21,7 @@ namespace Core
         public PlayerMovement PlayerMovement { get; set; }
         public PlayerCrouch PlayerCrouch { get; set; }
         public PlayerSlide PlayerSlide { get; set; }
+        public PlayerDash PlayerDash { get; set; }
         public PlayerWallRun PlayerWallRun { get; set; }
         public Rigidbody Rigidbody { get; set; }
 
@@ -29,10 +30,13 @@ namespace Core
 
         // Input States
         public Vector2 MovementInput { get; set; }
+        public Vector2 DashInputDirection { get; set; } // Lo guardo para que no cambie una vez que lo ejecuto
+
         public bool WantsToSprint { get; set; }
         public bool WantsToCrouch { get; set; }
         public bool WantsToJump { get; set; }
         public bool WantsToGrapple { get; set; }
         public bool WantsToDash { get; set; }
+
     }
 }

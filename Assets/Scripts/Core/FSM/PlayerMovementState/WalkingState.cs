@@ -28,7 +28,15 @@ public class WalkingState : BaseState<PlayerMovementContext>
         // Transicion a Dash
         if (Context.WantsToDash)
         {
-            Debug.Log("!");
+            bool dashStarted = Context.PlayerDash.TryStartDash(Context.DashInputDirection);
+            
+            if (dashStarted)
+            {
+                Context.StateMachine.ChangeState(MovementState.Dashing);
+                Context.WantsToDash = false;
+            }
+            return;
         }
+
     }
 }

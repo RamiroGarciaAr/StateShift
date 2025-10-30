@@ -47,6 +47,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
                 MovementState.Crouching => baseSpeed * crouchSpeedMultiplier,
                 MovementState.Sliding => baseSpeed * slideSpeedMultiplier,
                 MovementState.WallRunning => baseSpeed * wallRunSpeedMultiplier,
+                MovementState.Dashing => 0f, // Dash handles its own speed
                 _ => baseSpeed
             };
         }
@@ -127,6 +128,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
     private void UpdateMovement()
     {
+        if (_currentMovementState == MovementState.Dashing) return; 
         if (_groundChecker.IsGrounded && _rb.drag < 1f) 
         {
             _rb.MovePosition(Vector3.MoveTowards(_rb.position, _groundChecker.GroundPoint, Time.fixedDeltaTime * 1f));
