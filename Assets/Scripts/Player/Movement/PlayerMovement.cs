@@ -60,6 +60,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
                 MovementState.Sliding => baseSpeed * slideSpeedMultiplier,
                 MovementState.WallRunning => baseSpeed * wallRunSpeedMultiplier,
                 MovementState.Dashing => 0f, // Dash handles its own speed
+                MovementState.Grappling => 0f,
                 _ => baseSpeed
             };
             return stateSpeed * (1f + _momentum);
@@ -141,6 +142,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
     {
         _lastMovementState = _currentMovementState;
         _currentMovementState = state;
+
         if (_lastMovementState == MovementState.Dashing && _currentMovementState != MovementState.Dashing)
         {
             _postDashCarryTimer = postDashCarryDuration;
@@ -211,8 +213,8 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
     private void UpdateMovement()
     {
-        if (_currentMovementState == MovementState.Dashing) return; 
-        if (_groundChecker.IsGrounded && _rb.drag < 1f) 
+        if (_currentMovementState == MovementState.Dashing || _currentMovementState == MovementState.Grappling) return;
+        if (_groundChecker.IsGrounded && _rb.drag < 1f)
         {
             _rb.MovePosition(Vector3.MoveTowards(_rb.position, _groundChecker.GroundPoint, Time.fixedDeltaTime * 1f));
         }
@@ -238,7 +240,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
         }
 
         // No aplicar drag si estamos en medio de un slide
-        if (_currentMovementState == MovementState.Sliding) return; 
+        if (_currentMovementState == MovementState.Sliding) return;
 
 
         if (_rawMoveDir.sqrMagnitude > 0.01f)

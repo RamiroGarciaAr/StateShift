@@ -12,7 +12,8 @@ namespace Core
         Crouching,
         Sliding,
         WallRunning,
-        Dashing
+        Dashing,
+        Grappling
     }
     public class PlayerMovementContext
     {
@@ -24,6 +25,7 @@ namespace Core
         public PlayerDash PlayerDash { get; set; }
         public PlayerWallRun PlayerWallRun { get; set; }
         public Rigidbody Rigidbody { get; set; }
+        public PlayerGrapple PlayerGrapple { get; set; }
 
         // State Machine
         public StateMachine<MovementState> StateMachine { get; set; }

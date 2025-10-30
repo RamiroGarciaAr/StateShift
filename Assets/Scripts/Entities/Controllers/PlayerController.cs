@@ -8,18 +8,19 @@ namespace Entities.Controllers
     [RequireComponent(typeof(PlayerCrouch))]
     [RequireComponent(typeof(PlayerSlide))]
     [RequireComponent(typeof(PlayerWallRun))]
-    [RequireComponent(typeof(PlayerDash))] 
+    [RequireComponent(typeof(PlayerDash))]
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(PlayerMovement))]
+    [RequireComponent(typeof(PlayerGrapple))]
     public class PlayerController : Controller
     {
         private PlayerInput _playerInput;
         private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction, _grappleAction, _dashAction;
-        
+
         // State Machine
         private StateMachine<MovementState> _stateMachine;
         private PlayerMovementContext _context;
-        
+
         protected override void Awake()
         {
             Controllable = GetComponent<IControllable>();
@@ -36,16 +37,17 @@ namespace Entities.Controllers
         private void InitializeStateMachine()
         {
             var playerMovement = GetComponent<PlayerMovement>();
-            
+
             // Crear contexto
             _context = new PlayerMovementContext
             {
                 Controllable = Controllable,
-                PlayerMovement = playerMovement,          
+                PlayerMovement = playerMovement,
                 PlayerCrouch = GetComponent<PlayerCrouch>(),
                 PlayerSlide = GetComponent<PlayerSlide>(),
                 PlayerWallRun = GetComponent<PlayerWallRun>(),
-                PlayerDash = GetComponent<PlayerDash>(), 
+                PlayerDash = GetComponent<PlayerDash>(),
+                PlayerGrapple = GetComponent<PlayerGrapple>(),
                 Rigidbody = GetComponent<Rigidbody>()
             };
 
@@ -59,7 +61,8 @@ namespace Entities.Controllers
             _stateMachine.RegisterState(MovementState.Crouching, new CrouchingState(_context));
             _stateMachine.RegisterState(MovementState.Sliding, new SlidingState(_context));
             _stateMachine.RegisterState(MovementState.WallRunning, new WallRunningState(_context));
-            _stateMachine.RegisterState(MovementState.Dashing, new DashingState(_context)); 
+            _stateMachine.RegisterState(MovementState.Dashing, new DashingState(_context));
+            _stateMachine.RegisterState(MovementState.Grappling, new GrapplingState(_context));
 
             // Inicializar en Walking
             _stateMachine.Initialize(MovementState.Walking);
@@ -107,11 +110,6 @@ namespace Entities.Controllers
 
             Controllable.Move(direction);
             HandleJump();
-
-            if (_context.WantsToGrapple)
-            {
-                Debug.Log("Grapple");
-            }
         }
 
         private void FixedUpdate()
@@ -133,7 +131,7 @@ namespace Entities.Controllers
 
                 return forwardXZ * input.y + rightXZ * input.x;
             }
-            
+
             return input;
         }
 
@@ -154,7 +152,7 @@ namespace Entities.Controllers
             {
                 Controllable.Jump();
             }
-            
+
             Controllable.SetHoldingJump(_jumpAction.IsPressed());
         }
 
@@ -163,16 +161,16 @@ namespace Entities.Controllers
             if (_stateMachine != null)
             {
                 GUI.Label(new Rect(10, 10, 200, 20), $"Estado: {_stateMachine.CurrentStateType}");
-                
+
                 if (_context.PlayerDash != null)
                 {
-                    GUI.Label(new Rect(10, 30, 200, 20), 
+                    GUI.Label(new Rect(10, 30, 200, 20),
                         $"Dash Charges: {_context.PlayerDash.CurrentCharges}/{_context.PlayerDash.MaxCharges}");
-                    
+
                     if (_context.PlayerDash.CurrentCharges < _context.PlayerDash.MaxCharges)
                     {
                         float recoveryPercent = _context.PlayerDash.ChargeRecoveryProgress * 100f;
-                        GUI.Label(new Rect(10, 50, 200, 20), 
+                        GUI.Label(new Rect(10, 50, 200, 20),
                             $"Recovery: {recoveryPercent:F0}%");
                     }
                 }
@@ -181,6 +179,16 @@ namespace Entities.Controllers
                 {
                     float momentumPercent = _context.PlayerMovement.Momentum01 * 100f;
                     GUI.Label(new Rect(10, 70, 200, 20), $"Momentum: {momentumPercent:F0}%");
+                }
+                if (_context.PlayerGrapple != null)
+                {
+
+
+                    if (_context.PlayerGrapple.CooldownProgress < 1f)
+                    {
+                        float cooldownPercent = _context.PlayerGrapple.CooldownProgress * 100f;
+                        GUI.Label(new Rect(10, 110, 200, 20), $"Grapple CD: {cooldownPercent:F0}%");
+                    }
                 }
             }
         }

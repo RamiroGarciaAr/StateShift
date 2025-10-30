@@ -27,7 +27,17 @@ public class WallRunningState : BaseState<PlayerMovementContext>
             Context.StateMachine.ChangeState(MovementState.Walking);
             return;
         }
-
+        // Transition to Grapple
+        if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)
+        {
+            Context.PlayerWallRun.StopWallRun(); // Stop wallrun primero
+            bool grappleStarted = Context.PlayerGrapple.TryStartGrapple();
+            if (grappleStarted)
+            {
+                Context.StateMachine.ChangeState(MovementState.Grappling);
+                return;
+            }
+        }
         // Salir si ya no hay pared
         if (!Context.PlayerWallRun.HasWall)
         {
@@ -80,7 +90,7 @@ public class WallRunningState : BaseState<PlayerMovementContext>
                 Context.StateMachine.ChangeState(MovementState.Walking);
             }
         }
-        else 
+        else
         {
             // Si está en el aire, volver a sprinting (mantendrá el estado hasta aterrizar)
             Context.StateMachine.ChangeState(Context.WantsToSprint ? MovementState.Sprinting : MovementState.Walking);

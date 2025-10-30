@@ -8,7 +8,7 @@ public class DashingState : BaseState<PlayerMovementContext>
     public override void OnEnter()
     {
         Context.Controllable.SetMovementState(MovementState.Dashing);
-        
+
         // Dash is already started by the transition state
         // This state just manages behavior during the dash
     }
@@ -20,6 +20,17 @@ public class DashingState : BaseState<PlayerMovementContext>
         {
             ExitToAppropriateState();
             return;
+        }
+        // Transition to Grapple
+        if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)
+        {
+            Context.PlayerDash.CancelDash();
+            bool grappleStarted = Context.PlayerGrapple.TryStartGrapple();
+            if (grappleStarted)
+            {
+                Context.StateMachine.ChangeState(MovementState.Grappling);
+                return;
+            }
         }
     }
 

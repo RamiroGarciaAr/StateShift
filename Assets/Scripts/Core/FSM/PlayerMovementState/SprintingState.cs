@@ -28,7 +28,16 @@ public class SprintingState : BaseState<PlayerMovementContext>
             }
             return;
         }
-
+        // Transition to Grapple
+        if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)
+        {
+            bool grappleStarted = Context.PlayerGrapple.TryStartGrapple();
+            if (grappleStarted)
+            {
+                Context.StateMachine.ChangeState(MovementState.Grappling);
+                return;
+            }
+        }
         // Transición a WallRunning cuando está en el aire y tiene una pared
         if (!Context.PlayerMovement.IsGrounded)
         {

@@ -18,7 +18,16 @@ public class WalkingState : BaseState<PlayerMovementContext>
             Context.StateMachine.ChangeState(MovementState.Sprinting);
             return;
         }
-
+        // Transition to Grapple
+        if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)
+        {
+            bool grappleStarted = Context.PlayerGrapple.TryStartGrapple();
+            if (grappleStarted)
+            {
+                Context.StateMachine.ChangeState(MovementState.Grappling);
+                return;
+            }
+        }
         // Transicion a Crouch
         if (Context.WantsToCrouch)
         {
