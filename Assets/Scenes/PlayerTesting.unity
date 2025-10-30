@@ -13615,6 +13615,14 @@ PrefabInstance:
       propertyPath: dashDuration
       value: 0.3
       objectReference: {fileID: 0}
+    - target: {fileID: 2321903993149630621, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+      propertyPath: grappleDelayTime
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2321903993149630621, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+      propertyPath: grappleableLayers.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2580716373554534634, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: playerCam
       value: 
