@@ -99,3 +99,8 @@ InitTestScene*.unity*
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 Assets/Scenes/MainMenuScene/LightingData.asset.meta
 Assets/Scenes/MainMenuScene/LightingData.asset
+
+/Assets/Bakery
+/Assets/Bakery.meta
+/Assets/Editor/x64/Bakery
+/Assets/Editor/x64/Bakery.meta
