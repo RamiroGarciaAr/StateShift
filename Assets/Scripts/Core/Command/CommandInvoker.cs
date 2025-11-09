@@ -9,13 +9,4 @@ public static class CommandInvoker
         command.Execute();
         undoStack.Push(command);
     }
-
-    public static void UndoCommand()
-    {
-        if (undoStack.Count > 0)
-        {
-            var cmd = undoStack.Pop();
-            cmd.Undo();
-        }
-    }
 }

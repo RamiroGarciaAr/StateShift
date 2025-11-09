@@ -10,14 +10,10 @@ public sealed class MoveCommand : ICommand
     public MoveCommand(IMovable movable)
     {
         this.movable = movable;
-    } 
+    }
+
     public void Execute()
     {
         movable.Move(moveDir, maxSpeed);
-    }
-
-    public void Undo()
-    {
-        throw new System.NotImplementedException();
     }
 }

@@ -4,6 +4,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    public bool IsPlaying { get => _isPlaying; }
+
+    private bool _isPlaying = true;
+
     private void Awake()
     {
         if (Instance != null)
@@ -26,24 +30,35 @@ public class GameManager : MonoBehaviour
 
     private void GamePauseListener(bool isPaused)
     {
+        _isPlaying = !isPaused;
         Time.timeScale = isPaused ? 0 : 1;
     }
 
     private void GameOverListener()
     {
-        EventsManager.Instance.OnGamePause -= GamePauseListener;
-        EventsManager.Instance.OnGameOver -= GameOverListener;
-
-        Time.timeScale = 0;
+        StopGame();
     }
 
     public void GameExitListener()
     {
+        StopGame();
+
         SceneLoader.SwitchSceneAsync("MainMenuScene");
     }
 
     public void GameRestartListener()
     {
+        StopGame();
+
         SceneLoader.ReloadSceneAsync();
+    }
+
+    private void StopGame()
+    {
+        EventsManager.Instance.OnGamePause -= GamePauseListener;
+        EventsManager.Instance.OnGameOver -= GameOverListener;
+
+        _isPlaying = false;
+        Time.timeScale = 0;
     }
 }
