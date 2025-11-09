@@ -2040,6 +2040,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15fa404f5b778f144884560e69ab85f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _guns:
+  - {fileID: 464002103}
+  - {fileID: 1750917139}
   _shootAction: {fileID: -4387111861281945765, guid: 46d9041a82955bb48bd63b4f408a0e04, type: 3}
   _reloadAction: {fileID: -3915765646458497879, guid: 46d9041a82955bb48bd63b4f408a0e04, type: 3}
   _switchNextAction: {fileID: -4194395905396428039, guid: 46d9041a82955bb48bd63b4f408a0e04, type: 3}
@@ -13410,6 +13413,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ammoMagazineText: {fileID: 2133170505}
   _ammoReserveText: {fileID: 234606808}
+  _weaponNameText: {fileID: 1628400544}
 --- !u!1 &1579589873
 GameObject:
   m_ObjectHideFlags: 0
@@ -14609,7 +14613,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1750917138
 Transform:
   m_ObjectHideFlags: 0
