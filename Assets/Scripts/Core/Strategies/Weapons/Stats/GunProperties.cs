@@ -5,6 +5,9 @@ namespace Strategies.Weapons
     [CreateAssetMenu(fileName = "GunStats", menuName = "ScriptableObjects/GunStats")]
     public class GunProperties : ScriptableObject
     {
+        [SerializeField] private string gunName = "Gun";
+        public string GunName => gunName;
+
         [Header("Core Stats")]
 
         [SerializeField] private float fireRate = 1f;

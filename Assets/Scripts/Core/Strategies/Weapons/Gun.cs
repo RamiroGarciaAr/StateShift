@@ -9,6 +9,12 @@ namespace Strategies.Weapons
     {
         public GunProperties Properties => _properties;
 
+        public int AmmoOnMagazine => ammoOnMagazine;
+        public int AmmoOnReserve => ammoOnReserve;
+
+        public event System.Action OnShot;
+        public event System.Action OnReloaded;
+
         protected int ammoOnMagazine;
         protected int ammoOnReserve;
 
@@ -17,10 +23,14 @@ namespace Strategies.Weapons
 
         private bool _isReloading;
 
-        private void Start()
+        private MeshRenderer _meshRenderer;
+
+        private void Awake()
         {
             ammoOnMagazine = Properties.MagazineSize;
             ammoOnReserve = Properties.AmmoOnReserve;
+
+            _meshRenderer = GetComponent<MeshRenderer>();
         }
 
         public void Shoot()
@@ -30,6 +40,8 @@ namespace Strategies.Weapons
             ammoOnMagazine--;
 
             FireBullet();
+
+            OnShot?.Invoke();
         }
 
         protected virtual void FireBullet()
@@ -62,6 +74,18 @@ namespace Strategies.Weapons
             ammoOnReserve -= ammoToReload;
 
             _isReloading = false;
+
+            OnReloaded?.Invoke();
+        }
+
+        public void Equip()
+        {
+            _meshRenderer.enabled = true;
+        }
+
+        public void UnEquip()
+        {
+            _meshRenderer.enabled = false;
         }
     }
 }

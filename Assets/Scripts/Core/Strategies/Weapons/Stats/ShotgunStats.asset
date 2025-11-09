@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c633d64b969ba24eb71f54b9e49d164, type: 3}
   m_Name: ShotgunStats
   m_EditorClassIdentifier: 
+  gunName: Shotgun
   fireRate: 3
   magazineSize: 10
   ammoOnReserve: 50
