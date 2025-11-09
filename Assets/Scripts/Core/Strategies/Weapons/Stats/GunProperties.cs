@@ -18,5 +18,8 @@ namespace Strategies.Weapons
 
         [SerializeField] private float reloadTime = 2f;
         public float ReloadTime => reloadTime;
+
+        [SerializeField, Range(0f, 0.5f)] private float spreadRadius = 0f;
+        public float SpreadRadius => spreadRadius;
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Managers;
 using UnityEngine;
@@ -28,12 +27,19 @@ namespace Strategies.Weapons
         {
             if (_isReloading || ammoOnMagazine == 0) return;
 
-            GameObject bullet = _bulletsPool.GetPooledObject();
-            if (bullet == null) return;
-
             ammoOnMagazine--;
 
-            bullet.transform.SetPositionAndRotation(transform.position, transform.rotation);
+            FireBullet();
+        }
+
+        protected virtual void FireBullet()
+        {
+            GameObject bullet = _bulletsPool.GetPooledObject();
+
+            Vector3 spread = Random.insideUnitSphere * Properties.SpreadRadius;
+            Vector3 direction = (transform.forward + spread).normalized;
+
+            bullet.transform.SetPositionAndRotation(transform.position, Quaternion.LookRotation(direction));
             bullet.SetActive(true);
         }
 
@@ -50,7 +56,7 @@ namespace Strategies.Weapons
             yield return new WaitForSeconds(Properties.ReloadTime);
 
             int magazineSpace = Properties.MagazineSize - ammoOnMagazine;
-            int ammoToReload = Math.Min(magazineSpace, ammoOnReserve);
+            int ammoToReload = Mathf.Min(magazineSpace, ammoOnReserve);
 
             ammoOnMagazine += ammoToReload;
             ammoOnReserve -= ammoToReload;
