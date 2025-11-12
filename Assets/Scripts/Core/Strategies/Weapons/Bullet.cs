@@ -1,8 +1,10 @@
+using Commands;
+using Strategies.Health;
 using UnityEngine;
 
 namespace Strategies.Weapons
 {
-    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(Rigidbody), typeof(SphereCollider))]
     public class Bullet : MonoBehaviour, IBullet
     {
         public BulletProperties Properties => _properties;
@@ -37,6 +39,22 @@ namespace Strategies.Weapons
             {
                 gameObject.SetActive(false);
             }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.TryGetComponent<IBullet>(out var _))
+            {
+                return;
+            }
+
+            if (other.TryGetComponent<IDamageable>(out var damageable))
+            {
+                ICommand command = new DamageCommand(damageable, Properties.Damage);
+                CommandQueueManager.Instance.EnqueueCommand(command);
+            }
+
+            gameObject.SetActive(false);
         }
     }
 }
