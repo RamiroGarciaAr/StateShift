@@ -28,11 +28,20 @@ public class SprintingState : BaseState<PlayerMovementContext>
             }
             return;
         }
-
+        // Transition to Grapple
+        if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)
+        {
+            bool grappleStarted = Context.PlayerGrapple.TryStartGrapple();
+            if (grappleStarted)
+            {
+                Context.StateMachine.ChangeState(MovementState.Grappling);
+                return;
+            }
+        }
         // Transición a WallRunning cuando está en el aire y tiene una pared
         if (!Context.PlayerMovement.IsGrounded)
         {
-            
+
             if (Context.PlayerWallRun.CanWallRun())
             {
                 Context.StateMachine.ChangeState(MovementState.WallRunning);
@@ -44,6 +53,18 @@ public class SprintingState : BaseState<PlayerMovementContext>
         if (!Context.WantsToSprint)
         {
             Context.StateMachine.ChangeState(MovementState.Walking);
+            return;
+        }
+        //Transicion a Dash
+        if (Context.WantsToDash)
+        {
+            bool dashStarted = Context.PlayerDash.TryStartDash(Context.DashInputDirection);
+
+            if (dashStarted)
+            {
+                Context.StateMachine.ChangeState(MovementState.Dashing);
+                Context.WantsToDash = false;
+            }
             return;
         }
     }
