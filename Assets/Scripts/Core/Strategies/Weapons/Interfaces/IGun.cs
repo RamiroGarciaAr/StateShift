@@ -1,4 +1,5 @@
 using System;
+using Flyweight.Stats;
 
 namespace Strategies.Weapons
 {
@@ -8,9 +9,6 @@ namespace Strategies.Weapons
 
         int AmmoOnMagazine { get; }
         int AmmoOnReserve { get; }
-
-        event Action OnShot;
-        event Action OnReloaded;
 
         void Shoot();
         void Reload();

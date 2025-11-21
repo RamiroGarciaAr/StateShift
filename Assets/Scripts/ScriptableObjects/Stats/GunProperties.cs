@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Strategies.Weapons
+namespace Flyweight.Stats
 {
     [CreateAssetMenu(fileName = "GunStats", menuName = "ScriptableObjects/GunStats")]
     public class GunProperties : ScriptableObject

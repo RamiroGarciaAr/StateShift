@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace Strategies.Weapons
 {
-    public class Shotgun : Gun, IGun
+    public class ShotgunShooter : ProjectileShooter
     {
         [SerializeField] private int _pellets = 6;
 
-        protected override void FireBullet()
+        public override void Shoot(float spreadRadius)
         {
             for (int i = 0; i < _pellets; i++)
             {
-                base.FireBullet();
+                base.Shoot(spreadRadius);
             }
         }
     }

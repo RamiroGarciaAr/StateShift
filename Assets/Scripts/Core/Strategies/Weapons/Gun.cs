@@ -1,5 +1,5 @@
 using System.Collections;
-using Managers;
+using Flyweight.Stats;
 using UnityEngine;
 
 
@@ -19,7 +19,7 @@ namespace Strategies.Weapons
         protected int ammoOnReserve;
 
         [SerializeField] private GunProperties _properties;
-        [SerializeField] private ObjectPoolManager _bulletsPool;
+        [SerializeField] private Shooter _shooter;
 
         private bool _isReloading;
 
@@ -39,20 +39,9 @@ namespace Strategies.Weapons
 
             ammoOnMagazine--;
 
-            FireBullet();
+            _shooter.Shoot(Properties.SpreadRadius);
 
             OnShot?.Invoke();
-        }
-
-        protected virtual void FireBullet()
-        {
-            GameObject bullet = _bulletsPool.GetPooledObject();
-
-            Vector3 spread = Random.insideUnitSphere * Properties.SpreadRadius;
-            Vector3 direction = (transform.forward + spread).normalized;
-
-            bullet.transform.SetPositionAndRotation(transform.position, Quaternion.LookRotation(direction));
-            bullet.SetActive(true);
         }
 
         public void Reload()
