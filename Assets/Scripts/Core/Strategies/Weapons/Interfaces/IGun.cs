@@ -1,7 +1,6 @@
-using System;
 using Flyweight.Stats;
 
-namespace Strategies.Weapons
+namespace Core.Strategies.Weapons
 {
     public interface IGun
     {

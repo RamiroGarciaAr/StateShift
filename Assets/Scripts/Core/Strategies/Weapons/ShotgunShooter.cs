@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace Strategies.Weapons
+namespace Core.Strategies.Weapons
 {
-    public class ShotgunShooter : ProjectileShooter
+    public class ShotgunShooter : HitScanShooter
     {
         [SerializeField] private int _pellets = 6;
 

@@ -1,15 +1,13 @@
-using Commands;
 using Flyweight.Stats;
-using Strategies.Health;
 using UnityEngine;
 
-namespace Strategies.Weapons
+namespace Core.Strategies.Weapons
 {
-    [RequireComponent(typeof(Rigidbody), typeof(SphereCollider))]
-    public class Bullet : MonoBehaviour, IBullet
+    [RequireComponent(typeof(Rigidbody))]
+    public abstract class Projectile : MonoBehaviour, IProjectile
     {
-        public BulletProperties Properties => _properties;
-        [SerializeField] private BulletProperties _properties;
+        public ProjectileProperties Properties => _properties;
+        [SerializeField] private ProjectileProperties _properties;
 
         private Rigidbody _rigidbody;
         private float _timeRemaining;
@@ -42,20 +40,14 @@ namespace Strategies.Weapons
             }
         }
 
-        private void OnTriggerEnter(Collider other)
+        private void OnCollisionEnter(Collision collision)
         {
-            if (other.TryGetComponent<IBullet>(out var _))
-            {
-                return;
-            }
-
-            if (other.TryGetComponent<IDamageable>(out var damageable))
-            {
-                ICommand command = new DamageCommand(damageable, Properties.Damage);
-                CommandQueueManager.Instance.EnqueueCommand(command);
-            }
+            OnProjectileCollision(collision);
 
             gameObject.SetActive(false);
         }
+
+        public abstract void OnProjectileCollision(Collision other);
+        public abstract void OnProjectileStop();
     }
 }

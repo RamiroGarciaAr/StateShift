@@ -1,12 +1,11 @@
-using Strategies.Health;
+using Core.Strategies.Health;
+using Managers;
 using UnityEngine;
 
 namespace UI.HUD
 {
     public class PlayerHealthUI : MonoBehaviour
     {
-        [SerializeField] private PlayerHealth _playerHealth;
-
         [SerializeField] private RectTransform _healthBar;
         [SerializeField] private RectTransform _healthBarShadow;
 
@@ -21,7 +20,8 @@ namespace UI.HUD
 
         private void Update()
         {
-            float fill = (float)_playerHealth.Health / _playerHealth.MaxHealth;
+            PlayerHealth playerHealth = GameManager.Player.PlayerHealth;
+            float fill = (float)playerHealth.Health / playerHealth.MaxHealth;
 
             _healthBar.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _totalWidth * fill);
             _healthBarShadow.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _totalShadowWidth * fill);

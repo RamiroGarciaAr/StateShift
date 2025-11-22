@@ -1,64 +1,74 @@
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+namespace Managers
 {
-    public static GameManager Instance { get; private set; }
-
-    public bool IsPlaying { get => _isPlaying; }
-
-    private bool _isPlaying = true;
-
-    private void Awake()
+    public sealed class GameManager : MonoBehaviour
     {
-        if (Instance != null)
+        public static GameManager Instance { get; private set; }
+
+        public static PlayerManager Player { get; private set; }
+
+        public bool IsPlaying { get => _isPlaying; }
+
+        private bool _isPlaying = true;
+
+        private void Awake()
         {
-            Destroy(Instance);
+            if (Instance != null)
+            {
+                Destroy(Instance);
+            }
+
+            Instance = this;
         }
 
-        Instance = this;
-    }
+        public void SetPlayerInstance(PlayerManager player)
+        {
+            Player = player;
+        }
 
-    private void Start()
-    {
-        EventsManager.Instance.OnGamePause += GamePauseListener;
-        EventsManager.Instance.OnGameOver += GameOverListener;
-        EventsManager.Instance.OnGameExit += GameExitListener;
-        EventsManager.Instance.OnGameRestart += GameRestartListener;
+        private void Start()
+        {
+            EventsManager.Instance.OnGamePause += GamePauseListener;
+            EventsManager.Instance.OnGameOver += GameOverListener;
+            EventsManager.Instance.OnGameExit += GameExitListener;
+            EventsManager.Instance.OnGameRestart += GameRestartListener;
 
-        Time.timeScale = 1;
-    }
+            Time.timeScale = 1;
+        }
 
-    private void GamePauseListener(bool isPaused)
-    {
-        _isPlaying = !isPaused;
-        Time.timeScale = isPaused ? 0 : 1;
-    }
+        private void GamePauseListener(bool isPaused)
+        {
+            _isPlaying = !isPaused;
+            Time.timeScale = isPaused ? 0 : 1;
+        }
 
-    private void GameOverListener()
-    {
-        StopGame();
-    }
+        private void GameOverListener()
+        {
+            StopGame();
+        }
 
-    public void GameExitListener()
-    {
-        StopGame();
+        public void GameExitListener()
+        {
+            StopGame();
 
-        SceneLoader.SwitchSceneAsync("MainMenuScene");
-    }
+            SceneLoader.SwitchSceneAsync("MainMenuScene");
+        }
 
-    public void GameRestartListener()
-    {
-        StopGame();
+        public void GameRestartListener()
+        {
+            StopGame();
 
-        SceneLoader.ReloadSceneAsync();
-    }
+            SceneLoader.ReloadSceneAsync();
+        }
 
-    private void StopGame()
-    {
-        EventsManager.Instance.OnGamePause -= GamePauseListener;
-        EventsManager.Instance.OnGameOver -= GameOverListener;
+        private void StopGame()
+        {
+            EventsManager.Instance.OnGamePause -= GamePauseListener;
+            EventsManager.Instance.OnGameOver -= GameOverListener;
 
-        _isPlaying = false;
-        Time.timeScale = 0;
+            _isPlaying = false;
+            Time.timeScale = 0;
+        }
     }
 }

@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4059a51986011ca40aecde691467afe8, type: 3}
-  m_Name: BulletStats
+  m_Script: {fileID: 11500000, guid: 52421726d653d1948ba94a435eac0e84, type: 3}
+  m_Name: RocketStats
   m_EditorClassIdentifier: 
-  _damage: 3
-  _range: 100
+  _flightTime: 5
+  _velocity: 1
+  _useGravity: 0
+  _damage: 0

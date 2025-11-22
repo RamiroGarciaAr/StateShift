@@ -3,7 +3,7 @@ using Flyweight.Stats;
 using UnityEngine;
 
 
-namespace Strategies.Weapons
+namespace Core.Strategies.Weapons
 {
     public class Gun : MonoBehaviour, IGun
     {
@@ -12,25 +12,19 @@ namespace Strategies.Weapons
         public int AmmoOnMagazine => ammoOnMagazine;
         public int AmmoOnReserve => ammoOnReserve;
 
-        public event System.Action OnShot;
-        public event System.Action OnReloaded;
-
         protected int ammoOnMagazine;
         protected int ammoOnReserve;
 
         [SerializeField] private GunProperties _properties;
         [SerializeField] private Shooter _shooter;
+        [SerializeField] private MeshRenderer _meshRenderer;
 
         private bool _isReloading;
-
-        private MeshRenderer _meshRenderer;
 
         private void Awake()
         {
             ammoOnMagazine = Properties.MagazineSize;
             ammoOnReserve = Properties.AmmoOnReserve;
-
-            _meshRenderer = GetComponent<MeshRenderer>();
         }
 
         public void Shoot()
@@ -40,8 +34,6 @@ namespace Strategies.Weapons
             ammoOnMagazine--;
 
             _shooter.Shoot(Properties.SpreadRadius);
-
-            OnShot?.Invoke();
         }
 
         public void Reload()
@@ -63,8 +55,6 @@ namespace Strategies.Weapons
             ammoOnReserve -= ammoToReload;
 
             _isReloading = false;
-
-            OnReloaded?.Invoke();
         }
 
         public void Equip()

@@ -1,6 +1,4 @@
-using UnityEngine;
-
-namespace Strategies.Weapons
+namespace Core.Strategies.Weapons
 {
     public interface IShooter
     {

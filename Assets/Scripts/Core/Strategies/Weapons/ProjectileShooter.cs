@@ -1,7 +1,7 @@
 using Managers;
 using UnityEngine;
 
-namespace Strategies.Weapons
+namespace Core.Strategies.Weapons
 {
     public class ProjectileShooter : Shooter
     {

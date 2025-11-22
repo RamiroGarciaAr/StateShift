@@ -1,9 +1,9 @@
-using Commands;
+using Core.Commands;
 using Flyweight.Stats;
-using Strategies.Health;
+using Core.Strategies.Health;
 using UnityEngine;
 
-namespace Strategies.Weapons
+namespace Core.Strategies.Weapons
 {
     public class HitScanShooter : Shooter
     {

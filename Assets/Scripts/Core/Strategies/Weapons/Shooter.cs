@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Strategies.Weapons
+namespace Core.Strategies.Weapons
 {
     public abstract class Shooter : MonoBehaviour, IShooter
     {

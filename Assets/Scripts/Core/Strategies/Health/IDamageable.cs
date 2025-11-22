@@ -1,4 +1,4 @@
-namespace Strategies.Health
+namespace Core.Strategies.Health
 {
     public interface IDamageable
     {

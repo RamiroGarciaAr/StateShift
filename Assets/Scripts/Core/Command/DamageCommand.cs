@@ -1,6 +1,6 @@
-using Strategies.Health;
+using Core.Strategies.Health;
 
-namespace Commands
+namespace Core.Commands
 {
     public sealed class DamageCommand : ICommand
     {

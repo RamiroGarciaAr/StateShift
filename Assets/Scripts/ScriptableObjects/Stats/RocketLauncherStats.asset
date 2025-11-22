@@ -9,8 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4059a51986011ca40aecde691467afe8, type: 3}
-  m_Name: BulletStats
+  m_Script: {fileID: 11500000, guid: 4c633d64b969ba24eb71f54b9e49d164, type: 3}
+  m_Name: RocketLauncherStats
   m_EditorClassIdentifier: 
-  _damage: 3
-  _range: 100
+  gunName: Rocket Launcher
+  fireRate: 5
+  magazineSize: 1
+  ammoOnReserve: 5
+  reloadTime: 4
+  spreadRadius: 0

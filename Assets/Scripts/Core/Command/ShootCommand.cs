@@ -1,6 +1,6 @@
-using Strategies.Weapons;
+using Core.Strategies.Weapons;
 
-namespace Commands
+namespace Core.Commands
 {
     public sealed class ShootCommand : ICommand
     {

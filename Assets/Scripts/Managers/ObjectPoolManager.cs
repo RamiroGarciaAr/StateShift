@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Managers
 {
-    public class ObjectPoolManager : MonoBehaviour
+    public sealed class ObjectPoolManager : MonoBehaviour
     {
         [SerializeField] private GameObject _prefab;
         [SerializeField] private int _poolSize;
@@ -22,6 +21,11 @@ namespace Managers
 
                 _pool[i] = gameObject;
             }
+        }
+
+        private void Start()
+        {
+            transform.parent = null;
         }
 
         public GameObject GetPooledObject()

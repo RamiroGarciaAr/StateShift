@@ -2,23 +2,26 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LoadingManager : MonoBehaviour
+namespace Managers
 {
-    [SerializeField] private Slider _progressBar;
-    [SerializeField] private TextMeshProUGUI _progressText;
-
-    private AsyncOperation _loadingOperation;
-
-    private void Start()
+    public sealed class LoadingManager : MonoBehaviour
     {
-        _loadingOperation = SceneLoader.LoadNextAsync();
-    }
+        [SerializeField] private Slider _progressBar;
+        [SerializeField] private TextMeshProUGUI _progressText;
 
-    private void Update()
-    {
-        float progress = Mathf.Clamp01(_loadingOperation.progress / 0.9f);
+        private AsyncOperation _loadingOperation;
 
-        _progressBar.value = progress;
-        _progressText.text = $"{progress * 100}%";
+        private void Start()
+        {
+            _loadingOperation = SceneLoader.LoadNextAsync();
+        }
+
+        private void Update()
+        {
+            float progress = Mathf.Clamp01(_loadingOperation.progress / 0.9f);
+
+            _progressBar.value = progress;
+            _progressText.text = $"{progress * 100}%";
+        }
     }
 }

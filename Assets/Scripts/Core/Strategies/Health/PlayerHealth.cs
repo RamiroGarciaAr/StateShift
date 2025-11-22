@@ -1,7 +1,8 @@
 using System;
+using Managers;
 using UnityEngine;
 
-namespace Strategies.Health
+namespace Core.Strategies.Health
 {
     public class PlayerHealth : MonoBehaviour, IHealth, IDamageable
     {
@@ -19,8 +20,6 @@ namespace Strategies.Health
         public void Damage(int damage)
         {
             _health = Math.Max(0, _health - damage);
-
-            Debug.Log($"Player HP: {_health}");
 
             if (_health == 0)
             {

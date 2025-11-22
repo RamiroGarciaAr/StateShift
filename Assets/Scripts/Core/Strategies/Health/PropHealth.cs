@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Strategies.Health
+namespace Core.Strategies.Health
 {
     public class PropHealth : MonoBehaviour, IHealth, IDamageable
     {

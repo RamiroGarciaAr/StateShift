@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace Flyweight.Stats
 {
-    [CreateAssetMenu(fileName = "BulletStats", menuName = "ScriptableObjects/BulletStats")]
-    public class BulletProperties : ScriptableObject
+    [CreateAssetMenu(fileName = "ProjectileStats", menuName = "ScriptableObjects/ProjectileStats")]
+    public class ProjectileProperties : ScriptableObject
     {
         [Header("Core Stats")]
 

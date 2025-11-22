@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-public class CommandQueueManager : MonoBehaviour
+public sealed class CommandQueueManager : MonoBehaviour
 {
     public static CommandQueueManager Instance { get; private set; }
 
@@ -18,7 +17,7 @@ public class CommandQueueManager : MonoBehaviour
         Instance = this;
     }
 
-    void Update()
+    private void Update()
     {
         ExecuteCommands(_commandQueue);
 
