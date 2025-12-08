@@ -23,6 +23,8 @@ public class PlayerGrapple : MonoBehaviour
     private Vector3 _grapplePoint;
     private float _cooldownTimer = 0f;
     private Vector3 _grappleDirection;
+    
+    private GrappleRope _grappleRope;
 
     #region Properties
     public bool IsGrappling => _isGrappling;
@@ -35,6 +37,7 @@ public class PlayerGrapple : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _mainCamera = Camera.main;
+        _grappleRope = GetComponent<GrappleRope>();
     }
 
     private void Update()
@@ -50,8 +53,10 @@ public class PlayerGrapple : MonoBehaviour
         if (_isGrappling)
         {
             UpdateGrapple();
+            
         }
     }
+    
 
     public bool TryStartGrapple()
     {
