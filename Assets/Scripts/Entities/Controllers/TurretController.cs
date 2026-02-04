@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Entities.Controllers
 {
-    [RequireComponent(typeof(ITargetFinder))]
     public class TurretController : MonoBehaviour
     {
         [SerializeField] private Transform _turretHead;
