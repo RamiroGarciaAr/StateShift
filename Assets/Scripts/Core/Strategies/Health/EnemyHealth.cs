@@ -1,16 +1,24 @@
+#nullable enable
+
 using System;
-using Managers;
 using UnityEngine;
 
 namespace Core.Strategies.Health
 {
-    public class PlayerHealth : MonoBehaviour, IHealth, IDamageable
+    public class EnemyHealth : MonoBehaviour, IHealth, IDamageable
     {
         public int Health => _health;
         public int MaxHealth => _maxHealth;
 
         [SerializeField] private int _maxHealth;
         [SerializeField] private int _health;
+
+        private IKillable? _killable;
+
+        private void Awake()
+        {
+            _killable = TryGetComponent(out IKillable killable) ? killable : null;
+        }
 
         private void Start()
         {
@@ -23,7 +31,7 @@ namespace Core.Strategies.Health
 
             if (_health == 0)
             {
-                EventsManager.Instance.ActionGameOver();
+                _killable?.Die();
             }
         }
     }

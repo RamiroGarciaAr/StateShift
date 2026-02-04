@@ -1,10 +1,11 @@
 using Core.Commands;
+using Core.Strategies.Health;
 using Core.Strategies.Weapons;
 using UnityEngine;
 
 namespace Entities.Controllers
 {
-    public class TurretController : MonoBehaviour
+    public class TurretController : MonoBehaviour, IKillable
     {
         [SerializeField] private Transform _turretHead;
         [SerializeField] private Gun _gun;
@@ -34,6 +35,11 @@ namespace Entities.Controllers
             RotateToTarget();
             FireIfLookingAtTarget();
             ReloadIfMagazineEmpty();
+        }
+
+        public void Die()
+        {
+            enabled = false;
         }
 
         private void FindTarget()

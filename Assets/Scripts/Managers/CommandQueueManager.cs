@@ -5,7 +5,7 @@ public sealed class CommandQueueManager : MonoBehaviour
 {
     public static CommandQueueManager Instance { get; private set; }
 
-    private Queue<ICommand> _commandQueue = new Queue<ICommand>();
+    private readonly Queue<ICommand> _commandQueue = new();
 
     private void Awake()
     {
@@ -19,16 +19,9 @@ public sealed class CommandQueueManager : MonoBehaviour
 
     private void Update()
     {
-        ExecuteCommands(_commandQueue);
-
-        _commandQueue.Clear();
-    }
-
-    private void ExecuteCommands(IEnumerable<ICommand> commands)
-    {
-        foreach (ICommand command in commands)
+        while (_commandQueue.Count > 0)
         {
-            command.Execute();
+            _commandQueue.Dequeue().Execute();
         }
     }
 

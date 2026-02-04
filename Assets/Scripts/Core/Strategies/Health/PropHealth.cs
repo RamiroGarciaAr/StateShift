@@ -9,7 +9,7 @@ namespace Core.Strategies.Health
         public int MaxHealth => _maxHealth;
 
         [SerializeField] private int _maxHealth;
-        private int _health;
+        [SerializeField] private int _health;
 
         private void Start()
         {
