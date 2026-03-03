@@ -239,6 +239,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 423465286}
   agent: {fileID: 0}
+  walkableLayer:
+    serializedVersion: 2
+    m_Bits: 8
   gizmoColor: {r: 0, g: 1, b: 1, a: 1}
   gizmoRadius: 0.3
   gizmoHeight: 1.5
@@ -1771,7 +1774,7 @@ GameObject:
   - component: {fileID: 1340814242}
   - component: {fileID: 1340814241}
   - component: {fileID: 1340814240}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}

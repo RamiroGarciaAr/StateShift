@@ -9,6 +9,7 @@ public class WaypointController : MonoBehaviour
     [SerializeField] private Camera cam;
     [SerializeField] private NavMeshAgent agent;
 
+
     [Header("Gizmos")]
     [SerializeField] private Color gizmoColor = Color.cyan;
     [SerializeField] private float gizmoRadius = 0.3f;
@@ -26,9 +27,13 @@ public class WaypointController : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                //agent.SetDestination(hit.point);
-                _lastDestination = hit.point;
-                _hasDestination=true;
+                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Ground")) //EW
+                {
+                     //agent.SetDestination(hit.point);
+                    _lastDestination = hit.point;
+                    _hasDestination=true;
+                }
+
             }
         }
     }
@@ -39,7 +44,7 @@ public class WaypointController : MonoBehaviour
 
         Gizmos.color = gizmoColor;
 
-        Gizmos.DrawWireSphere(_lastDestination,gizmoRadius);
+        Gizmos.DrawSphere(_lastDestination,gizmoRadius);
 
         Vector3 top = _lastDestination + Vector3.up * gizmoHeight;
 
