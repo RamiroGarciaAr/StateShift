@@ -29,7 +29,7 @@ public class WaypointController : MonoBehaviour
             {
                 if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Ground")) //EW
                 {
-                     //agent.SetDestination(hit.point);
+                     agent.SetDestination(hit.point);
                     _lastDestination = hit.point;
                     _hasDestination=true;
                 }
