@@ -601,7 +601,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d479ea7b243c3754fa43133cb3f1893f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 423465286}
+  _cam: {fileID: 423465286}
   agent: {fileID: 700778466}
   gizmoColor: {r: 0, g: 1, b: 1, a: 1}
   gizmoRadius: 0.3
@@ -2216,7 +2216,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 412683019}
+  m_Mesh: {fileID: 1783862975}
 --- !u!33 &893709106
 MeshFilter:
   m_ObjectHideFlags: 10
@@ -3243,7 +3243,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 1783862975}
+  m_Mesh: {fileID: 629403505}
 --- !u!33 &1148480227
 MeshFilter:
   m_ObjectHideFlags: 10
@@ -4374,7 +4374,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 726513147}
+  m_Mesh: {fileID: 1689161513}
 --- !u!33 &1333793778
 MeshFilter:
   m_ObjectHideFlags: 10
