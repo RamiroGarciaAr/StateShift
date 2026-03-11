@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class AITickManager : Singleton<AITickManager>
@@ -8,7 +7,7 @@ public class AITickManager : Singleton<AITickManager>
     [Tooltip("The number of AI ticks to process per frame. " +
              "Lower values can improve performance but may result in less responsive AI behavior.")]
 
-    [SerializeField] [Range(1,5)] private int _ticksPerFrame = 1;
+    [SerializeField][Range(1, 5)] private int _ticksPerFrame = 1;
 
     private readonly List<ITickable> _agents = new List<ITickable>();
     private int _currentIndex = 0;
@@ -21,6 +20,13 @@ public class AITickManager : Singleton<AITickManager>
 
     private void Start()
     {
+
+        if (EventsManager.Instance == null)
+        {
+            Debug.LogWarning("[AITickManager] EventsManager not found Pause/GameOver integration disabled.");
+            return;
+        }
+
         EventsManager.Instance.OnGamePause += HandleGamePause;
         EventsManager.Instance.OnGameOver += HandleGameOver;
     }
@@ -31,6 +37,16 @@ public class AITickManager : Singleton<AITickManager>
 
         EventsManager.Instance.OnGamePause -= HandleGamePause;
         EventsManager.Instance.OnGameOver -= HandleGameOver;
+    }
+
+    private void Update()
+    {
+        if (_isPaused || _agents.Count == 0) return;
+    
+        for (int i = 0; i < _ticksPerFrame; i++)
+        {
+            TickNextAgent();
+        }
     }
 
     private void TickNextAgent()

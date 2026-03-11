@@ -596,7 +596,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 423465284}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d479ea7b243c3754fa43133cb3f1893f, type: 3}
   m_Name: 
@@ -1208,6 +1208,7 @@ GameObject:
   - component: {fileID: 700778463}
   - component: {fileID: 700778462}
   - component: {fileID: 700778466}
+  - component: {fileID: 700778467}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
@@ -1297,7 +1298,7 @@ Transform:
   m_GameObject: {fileID: 700778461}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.77, y: 1, z: 1.8}
+  m_LocalPosition: {x: 10.52, y: 1, z: 1.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1325,6 +1326,18 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &700778467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 700778461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a01df80b2ac7959489a67a370a8b34c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &726513147
 Mesh:
   m_ObjectHideFlags: 0
@@ -5033,6 +5046,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1621796439}
+  - component: {fileID: 1621796440}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -5055,6 +5069,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1621796440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1621796438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32cb1bd49fd9fb042ae867824a49debe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _persistAcrossScenes: 0
+  _ticksPerFrame: 1
 --- !u!43 &1689161513
 Mesh:
   m_ObjectHideFlags: 0
