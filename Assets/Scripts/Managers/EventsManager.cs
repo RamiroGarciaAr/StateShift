@@ -1,23 +1,17 @@
 using System;
 using UnityEngine;
 
-public class EventsManager : MonoBehaviour
+public class EventsManager : Singleton<EventsManager>
 {
-    public static EventsManager Instance { get; private set; }
 
     public event Action<bool> OnGamePause;
     public event Action OnGameOver;
     public event Action OnGameExit;
     public event Action OnGameRestart;
 
-    private void Awake()
+    protected override void Awake()
     {
-        if (Instance != null)
-        {
-            Destroy(Instance);
-        }
-
-        Instance = this;
+        base.Awake();
     }
 
     public void ActionGamePause(bool isPaused) => OnGamePause?.Invoke(isPaused);
