@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine.AI;
 public class WaypointController : MonoBehaviour
 {
     [Header("Reference")]
-    [SerializeField] private Camera cam;
+    [SerializeField] private Camera _cam;
     [SerializeField] private NavMeshAgent agent;
 
 
@@ -16,25 +17,42 @@ public class WaypointController : MonoBehaviour
     [SerializeField] private float gizmoHeight = 1.5f;
     private Vector3 _lastDestination;
     private bool _hasDestination=false;
-    
+    private int _groundLayerMask;
+
+    void Awake()
+    {
+
+        if (_cam == null)
+        {
+            _cam = Camera.main;
+        }
+        _groundLayerMask = LayerMask.GetMask("Ground");
+
+        Debug.Assert(_cam != null, $"[WaypointController] Camera reference missing on {gameObject.name}");
+        Debug.Assert(agent != null, $"[WaypointController] NavMeshAgent reference missing on {gameObject.name}");
+    }
 
     void Update()
     {
+        HandleDestinationInput();
+    }
+
+    private void SetDestination(Vector3 destination)
+    {
+        agent.SetDestination(destination);
+        _lastDestination = destination;
+        _hasDestination = true;
+    }
+
+    private void HandleDestinationInput()
+    {
         if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
+            
+            if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _groundLayerMask)) return;
 
-            if (Physics.Raycast(ray, out hit))
-            {
-                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Ground")) //EW
-                {
-                     agent.SetDestination(hit.point);
-                    _lastDestination = hit.point;
-                    _hasDestination=true;
-                }
-
-            }
+            SetDestination(hit.point);
         }
     }
 
