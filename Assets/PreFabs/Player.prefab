@@ -118,7 +118,17 @@ GameObject:
   - component: {fileID: 3130340792650396895}
   - component: {fileID: 7686486979658587214}
   - component: {fileID: 8385160106023303043}
+  - component: {fileID: 8652396224484625696}
+  - component: {fileID: 2580716373554534634}
   - component: {fileID: 3306734593851655564}
+  - component: {fileID: 1711803125929489633}
+  - component: {fileID: 3770684798369094975}
+  - component: {fileID: 4172790948691735389}
+  - component: {fileID: 9165824952976219975}
+  - component: {fileID: 1227051583610816350}
+  - component: {fileID: 4294365468466229228}
+  - component: {fileID: 1256042512381674223}
+  - component: {fileID: 2321903993149630621}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -231,6 +241,46 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!136 &8652396224484625696
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &2580716373554534634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9022fab1cac45242b4262cf0cf8e4b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCam: {fileID: 0}
+  maxDistance: 3
+  interactMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &3306734593851655564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,13 +293,192 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 522121f967d24f9478ec3379ee582c81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  speedMultiplier: 1
+  baseSpeed: 5
+  sprintSpeedMultiplier: 2
+  walkSpeedMultiplier: 1
+  crouchSpeedMultiplier: 0.5
+  slideSpeedMultiplier: 0.3
+  wallRunSpeedMultiplier: 1.2
   movementSmoothing: 0.1
-  jumpForce: 5
+  airMovementAcceleration: 0.5
+  postDashCarryDuration: 0.25
+  groundCarryDamping: 3
+  maxMomentum: 0.4
+  momentumDecayHalfLife: 1.5
+  sprintGainPerSec: 0.05
+  slideGainPerSec: 0.1
+  downhillGainPerSec: 0.12
+  postDashGain: 0.1
+--- !u!114 &1711803125929489633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86dd0bed9f96f28439af24adc916bc59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3770684798369094975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e85f30a839a41624db2cfec9676fe8b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  crouchHeightMultiplier: 0.5
+  crouchTransitionSpeed: 12
+  cameraTarget: {fileID: 0}
+  _collider: {fileID: 8652396224484625696}
+--- !u!114 &4172790948691735389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52795896da8c6774889f81768c0b8cb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slideImpulse: 15
+  slideDuration: 1
+  slideDrag: 0.1
+  slopeSlideForce: 20
+  minSlideSpeed: 2
+  slideSpeedThreshold: 7
+--- !u!114 &9165824952976219975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4daee954d607a92489cdd305403c5060, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  wallRunSpeed: 12
+  wallRunAcceleration: 10
+  maxWallRunTime: 1.5
+  wallStickForce: 15
+  gravityCounterForce: 15
+  wallJumpUpForce: 3
+  wallJumpSideForce: 7
+  wallJumpForwardForce: 5
+  wallCheckDistance: 0.7
+  minJumpHeight: 2
+  minSpeedToWallRun: 3
+  wallRunCooldown: 0.1
+--- !u!114 &1227051583610816350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da9a9555d2ff15442a68a2240b5a50a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   groundCheckDistance: 0.1
   legHeight: 0.5
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 0
-  collider: {fileID: 1020874024964740700}
+  maxSlopeAngle: 45
+  minSlopeAngle: 5
+  capsuleCollider: {fileID: 0}
+--- !u!114 &4294365468466229228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d516670e1e5cb654f907a86a181f4423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpForce: 5
+  gravityMultiplier: 2
+  jumpingGravityMultiplier: 1
+--- !u!114 &1256042512381674223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cf0ce407bbd55e478577c304e32a26d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dashForce: 25
+  dashDuration: 0.2
+  dashCooldown: 1
+  maxDashCharges: 2
+  chargeRecoveryTime: 2
+  momentumGain: 0.5
+  gravityScale: 0
+  dashCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &2321903993149630621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8737292798387105240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d9129863d3d2dd4a98ff21282167e95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxGrappleDistance: 50
+  grappleSpeed: 20
+  grappleAcceleration: 30
+  grappleLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  grappleCooldown: 1
+  minDistanceToTarget: 2
+  momentumGain: 0.2
+  velocityRetention: 0.5

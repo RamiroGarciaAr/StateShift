@@ -1,17 +1,10 @@
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-    public static GameManager Instance { get; private set; }
-
-    private void Awake()
+    protected override void Awake()
     {
-        if (Instance != null)
-        {
-            Destroy(Instance);
-        }
-
-        Instance = this;
+        base.Awake();
     }
 
     private void Start()

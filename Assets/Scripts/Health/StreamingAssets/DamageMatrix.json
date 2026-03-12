@@ -1,0 +1,20 @@
+{
+    "Flesh": {
+        "Physical": 1.0,
+        "Fire": 1.5,
+        "Electric": 0.5,
+        "Corrosive": 1.0
+    },
+    "Exo": {
+        "Physical": 0.75,
+        "Fire": 1.0,
+        "Electric": 1.5,
+        "Corrosive": 1.0
+    },
+    "Shield": {
+        "Physical": 1.0,
+        "Fire": 0.5,
+        "Electric": 1.0,
+        "Corrosive": 2.0
+    }
+}
