@@ -7,7 +7,7 @@ namespace Health
         float CurrentHealth {get;}
         float MaxHealth {get;}
         float HealthNormalize {get;}
-        bool isAlive{get;}
+        bool IsAlive{get;}
 
         event Action<HealthChangeEventArgs> OnHealthChanged;
         event Action OnDeath;

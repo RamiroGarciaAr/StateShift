@@ -15,8 +15,8 @@ namespace Health
         public float CurrentHealth => healthChunks.Sum(c => c.CurrentHealth);
         public float MaxHealth => healthChunks.Sum(c => c.MaxHealth);
         public float HealthNormalize => MaxHealth > 0 ? CurrentHealth / MaxHealth : 0f;
-        public bool isAlive => CurrentHealth > 0f;
-        public virtual bool CanHeal => isAlive && CurrentHealth < MaxHealth;
+        public bool IsAlive => CurrentHealth > 0f;
+        public virtual bool CanHeal => IsAlive && CurrentHealth < MaxHealth;
 
         public event Action<HealthChangeEventArgs> OnHealthChanged;
         public event Action OnDeath;
@@ -31,7 +31,7 @@ namespace Health
 
         public virtual void TakeDamage(DamageInfo damageInfo)
         {
-            if (!isAlive) return;
+            if (!IsAlive) return;
 
             float previousHealth = CurrentHealth;
 
@@ -64,7 +64,7 @@ namespace Health
             );
             OnHealthChanged?.Invoke(args);
 
-            if (!isAlive)
+            if (!IsAlive)
             {
                 OnDeath?.Invoke();
             }

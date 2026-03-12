@@ -2,6 +2,6 @@ using Health;
 
 public interface IDamagable 
 {
-    bool isAlive{get;}
+    bool IsAlive{get;}
     void TakeDamage(DamageInfo damageInfo);    
 }
