@@ -18,32 +18,10 @@ public class WalkingState : BaseState<PlayerMovementContext>
             Context.GroundedStateMachine.ChangeState(MovementState.Sprinting);
             return;
         }
-        // Transition to Grapple
-        if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)
-        {
-            bool grappleStarted = Context.PlayerGrapple.TryStartGrapple();
-            if (grappleStarted)
-            {
-                Context.StateMachine.ChangeState(MovementState.Grappling);
-                return;
-            }
-        }
         // Transicion a Crouch
         if (Context.WantsToCrouch)
         {
             Context.GroundedStateMachine.ChangeState(MovementState.Crouching);
-            return;
-        }
-        // Transicion a Dash
-        if (Context.WantsToDash)
-        {
-            bool dashStarted = Context.PlayerDash.TryStartDash(Context.DashInputDirection);
-
-            if (dashStarted)
-            {
-                Context.StateMachine.ChangeState(MovementState.Dashing);
-                Context.WantsToDash = false;
-            }
             return;
         }
 

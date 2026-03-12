@@ -24,6 +24,25 @@ public class GroundedState : BaseState<PlayerMovementContext>
 
     public override void OnUpdate()
     {
+        if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)
+        {
+            if (Context.PlayerGrapple.TryStartGrapple())
+            {
+                Context.StateMachine.ChangeState(MovementState.Grappling);
+                return;
+            }
+        }
+
+        if (Context.WantsToDash)
+        {
+            if (Context.PlayerDash.TryStartDash(Context.DashInputDirection))
+            {
+                Context.StateMachine.ChangeState(MovementState.Dashing);
+                Context.WantsToDash = false;
+                return;
+            }
+        }
+
         _innerMachine.Update();
     }
 

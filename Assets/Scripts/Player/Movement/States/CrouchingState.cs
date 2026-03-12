@@ -28,16 +28,6 @@ public class CrouchingState : BaseState<PlayerMovementContext>
             }
             return;
         }
-        // Transition to Grapple
-        if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)
-        {
-            bool grappleStarted = Context.PlayerGrapple.TryStartGrapple();
-            if (grappleStarted)
-            {
-                Context.StateMachine.ChangeState(MovementState.Grappling);
-                return;
-            }
-        }
     }
 
     public override void OnExit()

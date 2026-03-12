@@ -25,16 +25,6 @@ public class SlidingState : BaseState<PlayerMovementContext>
             }
             return;
         }
-        // Transition to Grapple
-        if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)
-        {
-            bool grappleStarted = Context.PlayerGrapple.TryStartGrapple();
-            if (grappleStarted)
-            {
-                Context.StateMachine.ChangeState(MovementState.Grappling);
-                return;
-            }
-        }
         // Cancelar slide si suelta el botón de crouch
         if (!Context.WantsToCrouch)
         {
