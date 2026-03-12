@@ -8,20 +8,18 @@ public class WaypointController : MonoBehaviour
 {
     [Header("Reference")]
     [SerializeField] private Camera _cam;
-    [SerializeField] private NavMeshAgent agent;
-
 
     [Header("Gizmos")]
     [SerializeField] private Color gizmoColor = Color.cyan;
     [SerializeField] private float gizmoRadius = 0.3f;
     [SerializeField] private float gizmoHeight = 1.5f;
-    private Vector3 _lastDestination;
-    private bool _hasDestination=false;
-    private int _groundLayerMask;
+
+    public static Vector3 CurrentDestination {get; private set;}
+    public static bool HasDestination {get; private set;}
+    private LayerMask _groundLayerMask;
 
     void Awake()
     {
-
         if (_cam == null)
         {
             _cam = Camera.main;
@@ -29,7 +27,6 @@ public class WaypointController : MonoBehaviour
         _groundLayerMask = LayerMask.GetMask("Ground");
 
         Debug.Assert(_cam != null, $"[WaypointController] Camera reference missing on {gameObject.name}");
-        Debug.Assert(agent != null, $"[WaypointController] NavMeshAgent reference missing on {gameObject.name}");
     }
 
     void Update()
@@ -39,9 +36,8 @@ public class WaypointController : MonoBehaviour
 
     private void SetDestination(Vector3 destination)
     {
-        agent.SetDestination(destination);
-        _lastDestination = destination;
-        _hasDestination = true;
+        CurrentDestination = destination;
+        HasDestination = true;
     }
 
     private void HandleDestinationInput()
@@ -58,15 +54,15 @@ public class WaypointController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (!_hasDestination) return;
+        if (!HasDestination) return;
 
         Gizmos.color = gizmoColor;
 
-        Gizmos.DrawSphere(_lastDestination,gizmoRadius);
+        Gizmos.DrawSphere(CurrentDestination,gizmoRadius);
 
-        Vector3 top = _lastDestination + Vector3.up * gizmoHeight;
+        Vector3 top = CurrentDestination + Vector3.up * gizmoHeight;
 
-        Gizmos.DrawLine(_lastDestination,top);
+        Gizmos.DrawLine(CurrentDestination,top);
         Gizmos.DrawWireSphere(top,gizmoRadius*0.4f);
     }
 }
