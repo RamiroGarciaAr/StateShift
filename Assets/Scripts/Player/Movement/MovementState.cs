@@ -7,13 +7,16 @@ namespace Core
 {
     public enum MovementState
     {
+        // Outer states
+        Grounded,
+        WallRunning,
+        Dashing,
+        Grappling,
+        // Grounded sub-states
         Walking,
         Sprinting,
         Crouching,
-        Sliding,
-        WallRunning,
-        Dashing,
-        Grappling
+        Sliding
     }
     public class PlayerMovementContext
     {
@@ -27,8 +30,9 @@ namespace Core
         public Rigidbody Rigidbody { get; set; }
         public PlayerGrapple PlayerGrapple { get; set; }
 
-        // State Machine
+        // State Machines
         public StateMachine<MovementState> StateMachine { get; set; }
+        public StateMachine<MovementState> GroundedStateMachine { get; set; }
 
         // Input States
         public Vector2 MovementInput { get; set; }

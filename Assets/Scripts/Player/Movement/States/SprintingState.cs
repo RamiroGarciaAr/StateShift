@@ -19,12 +19,12 @@ public class SprintingState : BaseState<PlayerMovementContext>
 
             if (slideStarted)
             {
-                Context.StateMachine.ChangeState(MovementState.Sliding);
+                Context.GroundedStateMachine.ChangeState(MovementState.Sliding);
             }
             else
             {
                 // Si no tiene velocidad suficiente, ir directo a crouch
-                Context.StateMachine.ChangeState(MovementState.Crouching);
+                Context.GroundedStateMachine.ChangeState(MovementState.Crouching);
             }
             return;
         }
@@ -41,7 +41,6 @@ public class SprintingState : BaseState<PlayerMovementContext>
         // Transición a WallRunning cuando está en el aire y tiene una pared
         if (!Context.PlayerMovement.IsGrounded)
         {
-
             if (Context.PlayerWallRun.CanWallRun())
             {
                 Context.StateMachine.ChangeState(MovementState.WallRunning);
@@ -52,7 +51,7 @@ public class SprintingState : BaseState<PlayerMovementContext>
         // Transición a Walking
         if (!Context.WantsToSprint)
         {
-            Context.StateMachine.ChangeState(MovementState.Walking);
+            Context.GroundedStateMachine.ChangeState(MovementState.Walking);
             return;
         }
         //Transicion a Dash

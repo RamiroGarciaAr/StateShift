@@ -48,26 +48,6 @@ public class GrapplingState : BaseState<PlayerMovementContext>
 
     private void ExitToAppropriateState()
     {
-        // Decide next state based on player conditions and inputs
-        if (Context.PlayerMovement.IsGrounded)
-        {
-            if (Context.WantsToSprint)
-            {
-                Context.StateMachine.ChangeState(MovementState.Sprinting);
-            }
-            else if (Context.WantsToCrouch)
-            {
-                Context.StateMachine.ChangeState(MovementState.Crouching);
-            }
-            else
-            {
-                Context.StateMachine.ChangeState(MovementState.Walking);
-            }
-        }
-        else
-        {
-            // In air after grapple
-            Context.StateMachine.ChangeState(Context.WantsToSprint ? MovementState.Sprinting : MovementState.Walking);
-        }
+        Context.StateMachine.ChangeState(MovementState.Grounded);
     }
 }

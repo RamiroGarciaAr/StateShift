@@ -45,26 +45,6 @@ public class DashingState : BaseState<PlayerMovementContext>
 
     private void ExitToAppropriateState()
     {
-        // Decide next state based on player conditions
-        if (Context.PlayerMovement.IsGrounded)
-        {
-            if (Context.WantsToSprint)
-            {
-                Context.StateMachine.ChangeState(MovementState.Sprinting);
-            }
-            else if (Context.WantsToCrouch)
-            {
-                Context.StateMachine.ChangeState(MovementState.Crouching);
-            }
-            else
-            {
-                Context.StateMachine.ChangeState(MovementState.Walking);
-            }
-        }
-        else
-        {
-            // In air after dash
-            Context.StateMachine.ChangeState(Context.WantsToSprint ? MovementState.Sprinting : MovementState.Walking);
-        }
+        Context.StateMachine.ChangeState(MovementState.Grounded);
     }
 }

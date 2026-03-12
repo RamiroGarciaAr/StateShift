@@ -17,11 +17,11 @@ public class SlidingState : BaseState<PlayerMovementContext>
         {
             if (Context.WantsToCrouch)
             {
-                Context.StateMachine.ChangeState(MovementState.Crouching);
+                Context.GroundedStateMachine.ChangeState(MovementState.Crouching);
             }
             else
             {
-                Context.StateMachine.ChangeState(MovementState.Walking);
+                Context.GroundedStateMachine.ChangeState(MovementState.Walking);
             }
             return;
         }
@@ -39,7 +39,7 @@ public class SlidingState : BaseState<PlayerMovementContext>
         if (!Context.WantsToCrouch)
         {
             Context.PlayerSlide.CancelSlide();
-            Context.StateMachine.ChangeState(MovementState.Walking);
+            Context.GroundedStateMachine.ChangeState(MovementState.Walking);
             return;
         }
 
@@ -47,7 +47,7 @@ public class SlidingState : BaseState<PlayerMovementContext>
         if (Context.WantsToJump)
         {
             Context.PlayerSlide.CancelSlide();
-            Context.StateMachine.ChangeState(MovementState.Walking);
+            Context.GroundedStateMachine.ChangeState(MovementState.Walking);
             return;
         }
     }

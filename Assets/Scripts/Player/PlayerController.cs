@@ -56,16 +56,13 @@ namespace Entities.Controllers
             _context.StateMachine = _stateMachine;
 
             // Registrar estados
-            _stateMachine.RegisterState(MovementState.Walking, new WalkingState(_context));
-            _stateMachine.RegisterState(MovementState.Sprinting, new SprintingState(_context));
-            _stateMachine.RegisterState(MovementState.Crouching, new CrouchingState(_context));
-            _stateMachine.RegisterState(MovementState.Sliding, new SlidingState(_context));
+            _stateMachine.RegisterState(MovementState.Grounded, new GroundedState(_context));
             _stateMachine.RegisterState(MovementState.WallRunning, new WallRunningState(_context));
             _stateMachine.RegisterState(MovementState.Dashing, new DashingState(_context));
             _stateMachine.RegisterState(MovementState.Grappling, new GrapplingState(_context));
 
-            // Inicializar en Walking
-            _stateMachine.Initialize(MovementState.Walking);
+            // Inicializar en Grounded (entra en Walking por defecto)
+            _stateMachine.Initialize(MovementState.Grounded);
         }
 
         private void OnEnable()
@@ -160,7 +157,11 @@ namespace Entities.Controllers
         {
             if (_stateMachine != null)
             {
-                GUI.Label(new Rect(10, 10, 200, 20), $"Estado: {_stateMachine.CurrentStateType}");
+                string stateLabel = _stateMachine.CurrentStateType == MovementState.Grounded
+                && _stateMachine.GetState(MovementState.Grounded) is GroundedState gs
+                ? $"Grounded/{gs.CurrentSubState}"
+                : $"{_stateMachine.CurrentStateType}";
+            GUI.Label(new Rect(10, 10, 200, 20), $"Estado: {stateLabel}");
 
                 if (_context.PlayerDash != null)
                 {
