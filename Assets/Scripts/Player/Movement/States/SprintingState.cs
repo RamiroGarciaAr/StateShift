@@ -1,4 +1,3 @@
-using UnityEngine;
 using Core;
 
 public class SprintingState : BaseState<PlayerMovementContext>
@@ -28,13 +27,6 @@ public class SprintingState : BaseState<PlayerMovementContext>
             }
             return;
         }
-        // Transición a WallRunning cuando está en el aire y tiene una pared
-        if (!Context.PlayerMovement.IsGrounded && Context.PlayerWallRun.CanWallRun())
-        {
-            Context.StateMachine.ChangeState(MovementState.WallRunning);
-            return;
-        }
-
         // Transición a Walking
         if (!Context.WantsToSprint)
         {

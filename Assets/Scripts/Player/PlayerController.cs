@@ -60,6 +60,7 @@ namespace Entities.Controllers
             _stateMachine.RegisterState(MovementState.WallRunning, new WallRunningState(_context));
             _stateMachine.RegisterState(MovementState.Dashing, new DashingState(_context));
             _stateMachine.RegisterState(MovementState.Grappling, new GrapplingState(_context));
+            _stateMachine.RegisterState(MovementState.InAir, new InAirState(_context));
 
             // Inicializar en Grounded (entra en Walking por defecto)
             _stateMachine.Initialize(MovementState.Grounded);

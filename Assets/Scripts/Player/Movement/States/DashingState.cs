@@ -45,6 +45,9 @@ public class DashingState : BaseState<PlayerMovementContext>
 
     private void ExitToAppropriateState()
     {
-        Context.StateMachine.ChangeState(MovementState.Grounded);
+        if (Context.PlayerMovement.IsGrounded)
+            Context.StateMachine.ChangeState(MovementState.Grounded);
+        else
+            Context.StateMachine.ChangeState(MovementState.InAir);
     }
 }

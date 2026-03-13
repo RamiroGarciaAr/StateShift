@@ -12,6 +12,7 @@ namespace Core
         WallRunning,
         Dashing,
         Grappling,
+        InAir,
         // Grounded sub-states
         Walking,
         Sprinting,

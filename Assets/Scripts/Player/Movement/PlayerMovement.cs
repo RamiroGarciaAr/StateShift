@@ -61,6 +61,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
                 MovementState.WallRunning => baseSpeed * wallRunSpeedMultiplier,
                 MovementState.Dashing => 0f, // Dash handles its own speed
                 MovementState.Grappling => 0f,
+                MovementState.InAir => baseSpeed * walkSpeedMultiplier,
                 _ => baseSpeed
             };
             return stateSpeed * (1f + _momentum);

@@ -24,6 +24,12 @@ public class GroundedState : BaseState<PlayerMovementContext>
 
     public override void OnUpdate()
     {
+        if (!Context.PlayerMovement.IsGrounded)
+        {
+            Context.StateMachine.ChangeState(MovementState.InAir);
+            return;
+        }
+
         if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)
         {
             if (Context.PlayerGrapple.TryStartGrapple())

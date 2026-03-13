@@ -19,8 +19,7 @@ public class PlayerDash : MonoBehaviour
 
 
     private Rigidbody _rb;
-    private GroundChecker _groundChecker;
-    private Camera _mainCamera;
+        private Camera _mainCamera;
     private PlayerMovement _playerMovement;
 
     private bool _isDashing = false;
@@ -44,7 +43,6 @@ public class PlayerDash : MonoBehaviour
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
-        _groundChecker = GetComponent<GroundChecker>();
         _mainCamera = Camera.main;
         _playerMovement = GetComponent<PlayerMovement>();
         _currentCharges = maxDashCharges;
