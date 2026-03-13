@@ -12,13 +12,14 @@ public class PlayerGrapple : MonoBehaviour
     
     [Header("Grapple Behavior")]
     [SerializeField] private float minDistanceToTarget = 2f;
-    [SerializeField] private float momentumGain = 0.2f;
+    [SerializeField] private float momentumGain = 0.25f;
     [Range(0, 1)]
-    [SerializeField] private float velocityRetention = 0.5f;
-    [SerializeField] private float grappleDelayTime = 0.3f;
+    [SerializeField] private float velocityRetention = 0.8f;
+    [SerializeField] private float grappleDelayTime = 0.1f;
 
     private Rigidbody _rb;
     private Camera _mainCamera;
+    private PlayerMovement _playerMovement;
     private bool _isGrappling = false;
     private Vector3 _grapplePoint;
     private float _cooldownTimer = 0f;
@@ -37,6 +38,7 @@ public class PlayerGrapple : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _mainCamera = Camera.main;
+        _playerMovement = GetComponent<PlayerMovement>();
         _grappleRope = GetComponent<GrappleRope>();
     }
 
@@ -108,6 +110,7 @@ public class PlayerGrapple : MonoBehaviour
     {
         _isGrappling = false;
         _cooldownTimer = grappleCooldown;
+        _playerMovement.AddMomentum(GetMomentumGain());
     }
 
     public void CancelGrapple()

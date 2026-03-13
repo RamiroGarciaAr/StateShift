@@ -14066,6 +14066,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 9165824952976219975, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+      propertyPath: wallRunInitialBoost
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
     - {fileID: 0}

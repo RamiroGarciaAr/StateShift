@@ -5,12 +5,13 @@ using UnityEngine;
 public class PlayerSlide : MonoBehaviour
 {
     [Header("Slide Settings")]
-    [SerializeField] private float slideImpulse = 15f; 
+    [SerializeField] private float slideBoost = 3f;
     [SerializeField] private float slideDuration = 1f;
-    [SerializeField] private float slideDrag = 0.1f; 
-    [SerializeField] private float slopeSlideForce = 20f; 
+    [SerializeField] private float slideDrag = 0.1f;
+    [SerializeField] private float slopeSlideForce = 20f;
     [SerializeField] private float minSlideSpeed = 2f;
-    [SerializeField] private float slideSpeedThreshold = 7f; 
+    [SerializeField] private float slideSpeedThreshold = 6f;
+    [SerializeField] private float slideExitMomentumBonus = 0.15f;
 
     private Rigidbody _rb;
     private GroundChecker _groundChecker; 
@@ -58,9 +59,8 @@ public class PlayerSlide : MonoBehaviour
         Vector3 horizontalVelocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
         _slideDirection = horizontalVelocity.normalized;
 
-        // Aplicar impulso inicial
-        Vector3 slideVelocity = _slideDirection * slideImpulse;
-        _rb.velocity = new Vector3(slideVelocity.x, _rb.velocity.y, slideVelocity.z);
+        // Additive burst on top of incoming velocity (TF2-style)
+        _rb.velocity += _slideDirection * slideBoost;
         
         // Usar Drag para la fricción
         _rb.drag = slideDrag; 
@@ -93,7 +93,8 @@ public class PlayerSlide : MonoBehaviour
 
         _isSliding = false;
         _slideTimer = 0f;
-        _rb.drag = 0f; 
+        _rb.drag = 0f;
+        _playerMovement.AddMomentum(slideExitMomentumBonus);
     }
 
     public void CancelSlide()

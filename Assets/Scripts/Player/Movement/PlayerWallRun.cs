@@ -6,7 +6,7 @@ public class PlayerWallRun : MonoBehaviour
 {
     [Header("WallRunning - Physics")]
     [SerializeField] private LayerMask wallLayerMask;
-    [SerializeField] private float wallRunSpeed = 12f;
+    [SerializeField] private float wallRunSpeed = 14f;
     [SerializeField] private float wallRunAcceleration = 10f;
     [SerializeField] private float maxWallRunTime = 2f;
     [SerializeField] private float wallStickForce = 15f;
@@ -24,6 +24,7 @@ public class PlayerWallRun : MonoBehaviour
 
     [Header("Cooldown")]
     [SerializeField] private float wallRunCooldown = 0.3f;
+    [SerializeField] private float momentumGain = 0.30f;
 
     // Propiedades públicas
     public bool HasWall => _isWallRight || _isWallLeft;
@@ -142,8 +143,9 @@ public class PlayerWallRun : MonoBehaviour
             wallForward = -wallForward;
         }
 
-        _currentSpeed = Mathf.MoveTowards(_currentSpeed, wallRunSpeed, 
-            wallRunAcceleration * Time.fixedDeltaTime);
+        if (_currentSpeed < wallRunSpeed)
+            _currentSpeed = Mathf.MoveTowards(_currentSpeed, wallRunSpeed,
+                wallRunAcceleration * Time.fixedDeltaTime);
 
         Vector3 targetVelocity = wallForward * _currentSpeed;
         Vector3 currentHorizontal = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
@@ -164,7 +166,7 @@ public class PlayerWallRun : MonoBehaviour
         IsWallRunning = false;
         _rb.useGravity = true;
         _cooldownTimer = wallRunCooldown;
-    
+        _playerMovement.AddMomentum(momentumGain);
     }
 
     public void WallJump()
@@ -180,7 +182,7 @@ public class PlayerWallRun : MonoBehaviour
         // Carry wall-run forward momentum, push off the wall, apply vertical boost independently.
         // Each component is direct velocity — no normalization dilution.
         Vector3 horizontalJump = wallForward * _currentSpeed + wallNormal * wallJumpSideForce;
-        _rb.velocity = new Vector3(horizontalJump.x, wallJumpUpForce, horizontalJump.z);
+        _rb.velocity = new Vector3(horizontalJump.x, _rb.velocity.y + wallJumpUpForce, horizontalJump.z);
         StopWallRun();
     }
 }
