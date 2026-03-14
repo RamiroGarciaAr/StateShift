@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Xml.Serialization;
 using Health;
 using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
@@ -37,6 +33,9 @@ public class ProjectileBase : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+        _rb.velocity = transform.forward * _data.ProjectileSpeed;
+        Destroy(gameObject, _data.ProjectileLifetime);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -50,8 +49,7 @@ public class ProjectileBase : MonoBehaviour
 
     private void TryDealDamage(Collision collision)
     {
-        IDamagable target = collision.gameObject.GetComponent<IDamagable>();
-        if (target == null) return;
+        IDamagable target = collision.gameObject.GetComponentInParent<IDamagable>();        if (target == null) return;
 
         if (!target.IsAlive) return;
 
