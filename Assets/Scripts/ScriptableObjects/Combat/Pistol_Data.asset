@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2491053cc2e35841b851ad9d274c553, type: 3}
+  m_Name: Pistol_Data
+  m_EditorClassIdentifier: 
+  weaponName: JR-941A
+  damageType: 0
+  damageAmount: 0
+  roundsPerMinute: 0
+  magazineSize: 0
+  reloadTime: 0
+  maxAmmo: 0
+  hipFireSpread: 0
+  bloomPerShot: 0
+  bloomRecoveryRate: 0
+  maxBloom: 0
+  projectileSpeed: 0
+  projectilePrefab: {fileID: 0}
+  projectileLifetime: 0
+  dropOffMaxRange: 80
+  damageDropOffCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.0066195126
+      outSlope: -0.0066195126
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.27765024
+      value: 0.9981621
+      inSlope: -0.039118007
+      outSlope: -0.039118007
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.16383167
+      outWeight: 0.3710692
+    - serializedVersion: 3
+      time: 0.2782177
+      value: 0.77594984
+      inSlope: 0.010734285
+      outSlope: 0.010734285
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.4648389
+    - serializedVersion: 3
+      time: 0.79863185
+      value: 0.74621624
+      inSlope: -0.088441
+      outSlope: -0.088441
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.3384231
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.0052358
+      value: 0.5047188
+      inSlope: -1.6335914
+      outSlope: -1.6335914
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.5193229
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
