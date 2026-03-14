@@ -14,17 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: JR-941A
   damageType: 0
-  damageAmount: 0
-  roundsPerMinute: 0
-  magazineSize: 0
-  reloadTime: 0
-  maxAmmo: 0
+  damageAmount: 25
+  roundsPerMinute: 20
+  magazineSize: 15
+  reloadTime: 2.5
   hipFireSpread: 0
+  adsSpreadMultiplier: 0
   bloomPerShot: 0
   bloomRecoveryRate: 0
   maxBloom: 0
-  projectileSpeed: 0
+  adsMovementMultiplier: 0
+  blockAdsWhileWallRunning: 0
   projectilePrefab: {fileID: 0}
+  projectileSpeed: 0
   projectileLifetime: 0
   dropOffMaxRange: 80
   damageDropOffCurve:

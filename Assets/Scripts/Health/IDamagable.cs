@@ -1,7 +1,7 @@
 using Health;
 
-public interface IDamagable 
+public interface IDamagable
 {
-    bool IsAlive{get;}
-    void TakeDamage(DamageInfo damageInfo);    
+    bool IsAlive { get; }
+    void TakeDamage(DamageInfo damageInfo);
 }
