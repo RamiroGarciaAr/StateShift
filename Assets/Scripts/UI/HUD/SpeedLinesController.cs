@@ -37,7 +37,7 @@ public class SpeedLinesController : MonoBehaviour
         else Debug.LogError("No se asigno el sistema de particulas");
         
         if (playerRb == null)
-            Debug.LogError("No se asigno player RB");
+            Debug.LogError("[Speed Lines Controller]: No se asigno player RB");
     }
 
     void Update()
