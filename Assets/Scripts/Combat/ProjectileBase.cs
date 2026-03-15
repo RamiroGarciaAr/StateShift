@@ -45,6 +45,7 @@ public class ProjectileBase : MonoBehaviour
         _hasHit = true;
         
         TryDealDamage(collision);
+        Destroy(gameObject); // We destroy the projectile on hit regardless of whether it hit a damagable target or not, to avoid it bouncing around and hitting multiple targets.
     }
 
     private void TryDealDamage(Collision collision)

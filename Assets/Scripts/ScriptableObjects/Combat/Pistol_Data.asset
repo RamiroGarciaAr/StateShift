@@ -26,8 +26,8 @@ MonoBehaviour:
   adsMovementMultiplier: 0
   blockAdsWhileWallRunning: 0
   projectilePrefab: {fileID: 0}
-  projectileSpeed: 1
-  projectileLifetime: 100
+  projectileSpeed: 100
+  projectileLifetime: 10
   dropOffMaxRange: 80
   damageDropOffCurve:
     serializedVersion: 2
