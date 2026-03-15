@@ -1,73 +1,79 @@
 using Health;
 using UnityEngine;
-[RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(Collider))]
+
+// Manual simulation — NO Rigidbody needed. Remove it from the prefab.
 public class ProjectileBase : MonoBehaviour
 {
     private WeaponDataSO _data;
-    private Vector3 _spawnPos;
-    private Rigidbody _rb;
-    private bool _hasHit;
+    private Vector3      _spawnPos;
+    private Vector3      _currentVelocity;
+    private bool         _hasHit;
+    private float        _timeAlive;
+
+    [SerializeField] private LayerMask _hitMask = ~0;
 
     public void Initialise(WeaponDataSO data)
     {
-        _data = data;
+        _data            = data;
+        _spawnPos        = transform.position;
+        _currentVelocity = transform.forward * _data.ProjectileSpeed;
+        _hasHit          = false;
+        _timeAlive       = 0f;
     }
 
-    private void Awake()
+    private void Update()
     {
-        _rb = GetComponent<Rigidbody>();
-        _rb.useGravity = false;
+        if (_hasHit || _data == null) return;
 
-        _rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-    }
-
-    private void Start()
-    {
-        _spawnPos = transform.position;
-
-        if (_data == null)
+        _timeAlive += Time.deltaTime;
+        if (_timeAlive >= _data.ProjectileLifetime)
         {
-            Debug.LogError("[ProjectileBase] Projectile has no data assigned");
-
-            Destroy(gameObject);
+            DeactivateProjectile();
             return;
         }
 
-        _rb.velocity = transform.forward * _data.ProjectileSpeed;
-        Destroy(gameObject, _data.ProjectileLifetime);
+        Vector3 frameTranslation = _currentVelocity * Time.deltaTime;
+
+        if (Physics.Raycast(
+                transform.position,
+                _currentVelocity.normalized,
+                out RaycastHit hit,
+                frameTranslation.magnitude,
+                _hitMask,
+                QueryTriggerInteraction.Ignore))
+        {
+            _hasHit            = true;
+            transform.position = hit.point;
+            TryDealDamage(hit);
+            DeactivateProjectile();
+        }
+        else
+        {
+            transform.position += frameTranslation;
+        }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void TryDealDamage(RaycastHit hit)
     {
-        if (_hasHit) return;
+        IDamagable target = hit.collider.GetComponentInParent<IDamagable>();
+        if (target == null || !target.IsAlive) return;
 
-        _hasHit = true;
-        
-        TryDealDamage(collision);
-        Destroy(gameObject); // We destroy the projectile on hit regardless of whether it hit a damagable target or not, to avoid it bouncing around and hitting multiple targets.
-    }
+        float distance    = Vector3.Distance(_spawnPos, hit.point);
+        float multiplier  = _data.GetDamageMultiplierAtDistance(distance);
+        float finalDamage = _data.DamageAmount * multiplier;
 
-    private void TryDealDamage(Collision collision)
-    {
-        IDamagable target = collision.gameObject.GetComponentInParent<IDamagable>();        if (target == null) return;
-
-        if (!target.IsAlive) return;
-
-        float distance = Vector3.Distance(_spawnPos, transform.position);
-        float multiplier = _data.GetDamageMultiplierAtDistance(distance);
-        float damageAmount = _data.DamageAmount * multiplier;
-
-        //TODO: Add Contact Point Info to DamageInfo and use that for hit effects, decals, etc.
-
-        var damageInfo = new DamageInfo
-        (
-            baseDamage: damageAmount,
+        // TODO: Use hit.normal for decals, VFX, hit direction effects
+        var damageInfo = new DamageInfo(
+            baseDamage: finalDamage,
             damageType: _data.DamageType,
-            hitPoint: collision.GetContact(0).point
+            hitPoint:   hit.point
         );
 
         target.TakeDamage(damageInfo);
     }
 
+    private void DeactivateProjectile()
+    {
+        gameObject.SetActive(false);
+    }
 }
