@@ -5,6 +5,7 @@ public class WeaponDataSO : ScriptableObject
 {
     [Header("Weapon Info")]
     [SerializeField] private string weaponName;
+    [SerializeField] private GameObject weaponPrefab;
 
     public string WeaponName => weaponName;
     [Header("Damage")]
@@ -25,25 +26,6 @@ public class WeaponDataSO : ScriptableObject
     public int MagazineSize => magazineSize;
     public float ReloadTime => reloadTime;
 
-    [Header("Spread & Bloom")]
-    [SerializeField] private float hipFireSpread;
-    [SerializeField] private float adsSpreadMultiplier;  // e.g. 0.3 → 70% tighter in ADS
-    [SerializeField] private float bloomPerShot;
-    [SerializeField] private float bloomRecoveryRate;
-    [SerializeField] private float maxBloom;
-
-    public float HipFireSpread => hipFireSpread;
-    public float AdsSpreadMultiplier => adsSpreadMultiplier;
-    public float BloomPerShot => bloomPerShot;
-    public float BloomRecoveryRate => bloomRecoveryRate;
-    public float MaxBloom => maxBloom;
-    [Header("ADS Behaviour")]
-    [SerializeField] private float adsMovementMultiplier;   // e.g. 0.65
-    [SerializeField] private bool blockAdsWhileWallRunning;
-
-    public float AdsMovementMultiplier => adsMovementMultiplier;
-    public bool BlockAdsWhileWallRunning => blockAdsWhileWallRunning;
-
     [Header("Projectile")]
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private float projectileSpeed;
@@ -53,13 +35,13 @@ public class WeaponDataSO : ScriptableObject
     public float ProjectileSpeed => projectileSpeed;
     public float ProjectileLifetime => projectileLifetime;
 
+    //@TODO: I hate Using the Animation Curve So we need to change this to something else but for now it works and is easy to edit in the inspector so we will keep it for now
     [Header("Damage Falloff")]
     [SerializeField] private float dropOffMaxRange;
     [SerializeField] private AnimationCurve damageDropOffCurve;
 
     public float DropOffMaxRange => dropOffMaxRange;
     public AnimationCurve DamageDropOffCurve => damageDropOffCurve;
-
 
     /// <summary>
     /// Returns the damage multiplier at a given world-space distance.
