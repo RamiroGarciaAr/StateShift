@@ -1,16 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using Entities.Controllers;
 using UnityEngine;
 
 public class Pistol : WeaponBase
 {
-	public override void Shoot()
+    [SerializeField] private Transform muzzlePos;
+
+    void Start()
+    {
+        PlayerController.OnShoot += Shoot;
+    }
+    public override void Shoot()
 	{
-		// TODO: Implement pistol shooting logic
+		GameObject bullet = Instantiate(weaponData.ProjectilePrefab, muzzlePos.position, muzzlePos.rotation);
+        bullet.GetComponent<ProjectileBase>().Initialise(weaponData);
 	}
 
 	public override void Reload()
 	{
-		// TODO: Implement pistol reload logic
+		Debug.Log($"Reloading {weaponData.WeaponName}");
 	}
 }

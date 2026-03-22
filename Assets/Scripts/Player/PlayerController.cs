@@ -2,7 +2,7 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using Strategies;
 using Core;
-
+using System;
 namespace Entities.Controllers
 {
     [RequireComponent(typeof(PlayerCrouch))]
@@ -15,7 +15,10 @@ namespace Entities.Controllers
     public class PlayerController : Controller
     {
         private PlayerInput _playerInput;
-        private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction, _grappleAction, _dashAction;
+        private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction, _grappleAction, _dashAction,_shootAction;
+
+        //Events
+        public static event Action OnShoot;
 
         // State Machine
         private StateMachine<MovementState> _stateMachine;
@@ -77,6 +80,7 @@ namespace Entities.Controllers
             _crouchAction = _playerInput.actions["Crouch"];
             _dashAction = _playerInput.actions["Dash"];
             _grappleAction = _playerInput.actions["Grapple"];
+            _shootAction = _playerInput.actions["Shoot"];
 
             _moveAction.Enable();
             _jumpAction.Enable();
@@ -94,11 +98,17 @@ namespace Entities.Controllers
             _sprintAction?.Disable();
             _dashAction?.Disable();
             _grappleAction?.Disable();
+            _shootAction?.Disable();
         }
 
         private void Update()
         {
             if (Controllable == null) return;
+
+            if (_shootAction.WasPressedThisFrame())
+            {
+                OnShoot?.Invoke();
+            }
 
             Vector2 movementInput = _moveAction.ReadValue<Vector2>();
             Vector2 direction = CalculateCameraRelativeDirection(movementInput);
@@ -152,47 +162,6 @@ namespace Entities.Controllers
             }
 
             Controllable.SetHoldingJump(_jumpAction.IsPressed());
-        }
-
-        private void OnGUI()
-        {
-            if (_stateMachine != null)
-            {
-                string stateLabel = _stateMachine.CurrentStateType == MovementState.Grounded
-                && _stateMachine.GetState(MovementState.Grounded) is GroundedState gs
-                ? $"Grounded/{gs.CurrentSubState}"
-                : $"{_stateMachine.CurrentStateType}";
-            GUI.Label(new Rect(10, 10, 200, 20), $"Estado: {stateLabel}");
-
-                if (_context.PlayerDash != null)
-                {
-                    GUI.Label(new Rect(10, 30, 200, 20),
-                        $"Dash Charges: {_context.PlayerDash.CurrentCharges}/{_context.PlayerDash.MaxCharges}");
-
-                    if (_context.PlayerDash.CurrentCharges < _context.PlayerDash.MaxCharges)
-                    {
-                        float recoveryPercent = _context.PlayerDash.ChargeRecoveryProgress * 100f;
-                        GUI.Label(new Rect(10, 50, 200, 20),
-                            $"Recovery: {recoveryPercent:F0}%");
-                    }
-                }
-
-                if (_context.PlayerMovement != null)
-                {
-                    float momentumPercent = _context.PlayerMovement.Momentum01 * 100f;
-                    GUI.Label(new Rect(10, 70, 200, 20), $"Momentum: {momentumPercent:F0}%");
-                }
-                if (_context.PlayerGrapple != null)
-                {
-
-
-                    if (_context.PlayerGrapple.CooldownProgress < 1f)
-                    {
-                        float cooldownPercent = _context.PlayerGrapple.CooldownProgress * 100f;
-                        GUI.Label(new Rect(10, 110, 200, 20), $"Grapple CD: {cooldownPercent:F0}%");
-                    }
-                }
-            }
         }
     }
 }
