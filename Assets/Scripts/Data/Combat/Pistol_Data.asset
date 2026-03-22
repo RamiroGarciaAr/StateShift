@@ -13,19 +13,13 @@ MonoBehaviour:
   m_Name: Pistol_Data
   m_EditorClassIdentifier: 
   weaponName: JR-941A
+  weaponPrefab: {fileID: 0}
   damageType: 0
   damageAmount: 35
   roundsPerMinute: 300
   magazineSize: 12
   reloadTime: 1.8
-  hipFireSpread: 2.5
-  adsSpreadMultiplier: 0.25
-  bloomPerShot: 1.2
-  bloomRecoveryRate: 8
-  maxBloom: 8
-  adsMovementMultiplier: 0.25
-  blockAdsWhileWallRunning: 1
-  projectilePrefab: {fileID: 0}
+  projectilePrefab: {fileID: 4128576527009579452, guid: 2a5d9a4da5b4a77459e68d230c4ca324, type: 3}
   projectileSpeed: 1000
   projectileLifetime: 3
   dropOffMaxRange: 60
