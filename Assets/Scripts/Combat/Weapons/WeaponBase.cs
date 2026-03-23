@@ -1,4 +1,5 @@
 using UnityEngine;
+using Entities.Controllers;
 
 
 public abstract class WeaponBase : MonoBehaviour, IWeapon
@@ -8,6 +9,15 @@ public abstract class WeaponBase : MonoBehaviour, IWeapon
     public virtual void Initialize(WeaponDataSO data)
     {
         weaponData = data;
+    }
+    void Start()
+    {
+        PlayerInput.OnShoot += Shoot;
+    }
+
+    void OnDisable()
+    {
+        PlayerInput.OnShoot -= Shoot;
     }
 
     public virtual void Equip()

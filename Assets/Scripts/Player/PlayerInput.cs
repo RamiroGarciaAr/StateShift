@@ -5,6 +5,7 @@ using Core;
 using System;
 namespace Entities.Controllers
 {
+    //TODO: THIS IS AWFUL THIS SCRIPT NEEDS TO ONLY SEND SIGNALS NOT HANDLE ANYTHING ELSE OR KNOW THAT OTHER COMPONENTS EXIST
     [RequireComponent(typeof(PlayerCrouch))]
     [RequireComponent(typeof(PlayerSlide))]
     [RequireComponent(typeof(PlayerWallRun))]
@@ -12,13 +13,15 @@ namespace Entities.Controllers
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(PlayerMovement))]
     [RequireComponent(typeof(PlayerGrapple))]
-    public class PlayerController : Controller
+    public class PlayerInput : Controller
     {
-        private PlayerInput _playerInput;
-        private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction, _grappleAction, _dashAction,_shootAction;
+        private UnityEngine.InputSystem.PlayerInput _playerInput;
+        private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction, _grappleAction, _dashAction,_shootAction, _changeWeaponAction;
 
         //Events
         public static event Action OnShoot;
+        
+        public static event Action OnChangeWeapon;
 
         // State Machine
         private StateMachine<MovementState> _stateMachine;
@@ -27,7 +30,7 @@ namespace Entities.Controllers
         protected override void Awake()
         {
             Controllable = GetComponent<IControllable>();
-            _playerInput = GetComponent<PlayerInput>();
+            _playerInput = GetComponent<UnityEngine.InputSystem.PlayerInput>();
 
             if (Controllable == null)
             {
@@ -54,18 +57,16 @@ namespace Entities.Controllers
                 Rigidbody = GetComponent<Rigidbody>()
             };
 
-            // Crear state machine
             _stateMachine = new StateMachine<MovementState>();
             _context.StateMachine = _stateMachine;
 
-            // Registrar estados
+            //TODO: WTF THE STATE MACHINE SHOULD BE SEPARATE...OKAY I NEED TO REWORK THIS ENTIRE THING BUT FOR NOW THIS IS FINE
             _stateMachine.RegisterState(MovementState.Grounded, new GroundedState(_context));
             _stateMachine.RegisterState(MovementState.WallRunning, new WallRunningState(_context));
             _stateMachine.RegisterState(MovementState.Dashing, new DashingState(_context));
             _stateMachine.RegisterState(MovementState.Grappling, new GrapplingState(_context));
             _stateMachine.RegisterState(MovementState.InAir, new InAirState(_context));
 
-            // Inicializar en Grounded (entra en Walking por defecto)
             _stateMachine.Initialize(MovementState.Grounded);
         }
 
@@ -81,6 +82,7 @@ namespace Entities.Controllers
             _dashAction = _playerInput.actions["Dash"];
             _grappleAction = _playerInput.actions["Grapple"];
             _shootAction = _playerInput.actions["Shoot"];
+            _changeWeaponAction = _playerInput.actions["ChangeWeapon"];
 
             _moveAction.Enable();
             _jumpAction.Enable();
@@ -108,6 +110,15 @@ namespace Entities.Controllers
             if (_shootAction.WasPressedThisFrame())
             {
                 OnShoot?.Invoke();
+            }
+
+            if (_changeWeaponAction.ReadValue<float>() > 0f)
+            {
+                Debug.Log("Next Weapon");
+            }
+            else if (_changeWeaponAction.ReadValue<float>() < 0f)
+            {
+                Debug.Log("Previous Weapon");
             }
 
             Vector2 movementInput = _moveAction.ReadValue<Vector2>();
