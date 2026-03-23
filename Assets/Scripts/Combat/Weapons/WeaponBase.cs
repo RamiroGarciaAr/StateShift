@@ -5,6 +5,7 @@ using Entities.Controllers;
 public abstract class WeaponBase : MonoBehaviour, IWeapon
 {
     [SerializeField] protected WeaponDataSO weaponData;
+    [SerializeField] protected Transform muzzlePos;
 
     public virtual void Initialize(WeaponDataSO data)
     {

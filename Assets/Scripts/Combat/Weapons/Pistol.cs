@@ -3,9 +3,7 @@ using UnityEngine;
 
 public class Pistol : WeaponBase
 {
-    [SerializeField] private Transform muzzlePos;
-
-
+    
     public override void Shoot()
 	{
 		GameObject bullet = Instantiate(weaponData.ProjectilePrefab, muzzlePos.position, muzzlePos.rotation);
