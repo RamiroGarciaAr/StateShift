@@ -2194,6 +2194,18 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.099999905
       objectReference: {fileID: 0}
+    - target: {fileID: 4178161123960179872, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
+      propertyPath: weapons.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4178161123960179872, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
+      propertyPath: weapons.Array.data[0]
+      value: 
+      objectReference: {fileID: 1552508201}
+    - target: {fileID: 4178161123960179872, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
+      propertyPath: weapons.Array.data[1]
+      value: 
+      objectReference: {fileID: 679040995}
     - target: {fileID: 4445440526204798318, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
       propertyPath: m_Name
       value: Player Body
@@ -4657,7 +4669,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &679040994
 Transform:
   m_ObjectHideFlags: 0
@@ -10080,7 +10092,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 1022190964}
-  m_VersionIndex: 5885
+  m_VersionIndex: 5888
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -12153,7 +12165,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 1192929394}
-  m_VersionIndex: 5284
+  m_VersionIndex: 5287
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -12163,6 +12175,17 @@ Rigidbody:
   m_CorrespondingSourceObject: {fileID: 3507859536057376565, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
   m_PrefabInstance: {fileID: 320025552}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1552508201 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2940893051205936579, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
+  m_PrefabInstance: {fileID: 376499559}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 972524c5c0915f34f8603a0563025cdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1581040626
 GameObject:
   m_ObjectHideFlags: 0

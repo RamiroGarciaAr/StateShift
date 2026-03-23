@@ -11,7 +11,7 @@ public abstract class WeaponBase : MonoBehaviour, IWeapon
     {
         weaponData = data;
     }
-    void Start()
+    void OnEnable()
     {
         PlayerInput.OnShoot += Shoot;
     }

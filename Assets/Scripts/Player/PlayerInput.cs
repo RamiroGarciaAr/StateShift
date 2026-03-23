@@ -112,13 +112,9 @@ namespace Entities.Controllers
                 OnShoot?.Invoke();
             }
 
-            if (_changeWeaponAction.ReadValue<float>() > 0f)
+            if (_changeWeaponAction.ReadValue<float>() > 0f  || _changeWeaponAction.ReadValue<float>() < 0f )
             {
-                Debug.Log("Next Weapon");
-            }
-            else if (_changeWeaponAction.ReadValue<float>() < 0f)
-            {
-                Debug.Log("Previous Weapon");
+                OnChangeWeapon?.Invoke();
             }
 
             Vector2 movementInput = _moveAction.ReadValue<Vector2>();
