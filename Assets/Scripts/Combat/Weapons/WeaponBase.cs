@@ -8,12 +8,10 @@ public abstract class WeaponBase : MonoBehaviour, IWeapon
     [SerializeField] protected WeaponDataSO weaponData;
     [SerializeField] protected Transform muzzlePos;
 
-    //TODO: Change the OnWeaponShot name...its confusing...
-    // * IDEA: We can have OnAmmoChanged event that gets called whenever the ammo count changes, this way we can use it for both shooting and reloading, and we can pass the current
-    public static event Action<int> OnWeaponShot; // * Ammo count after shot, can be used to update UI
-    public static event Action<int> OnWeaponReloaded; // * We pass the new ammo left on the reserves after reload, can be used to update UI
+    public static event Action<int,int> OnAmmoChanged; // * Ammo count after shot, can be used to update UI (current ammo on magazine, current ammo on reserves)
 
     private int currentAmmoOnMagazine;
+    private int currentAmmoOnReserves;
 
     public virtual void Initialize(WeaponDataSO data)
     {
@@ -22,7 +20,8 @@ public abstract class WeaponBase : MonoBehaviour, IWeapon
     private void Start()
     {
         currentAmmoOnMagazine = weaponData.MagazineSize;
-        OnWeaponShot?.Invoke(currentAmmoOnMagazine); // * When we initialize the weapon we want to update the UI with the current ammo count on the magazine
+        currentAmmoOnReserves = weaponData.TotalAmmo; // TODO: For now we are hard coding this but then we will need to change this to be based on the player's inventory or something like that
+        OnAmmoChanged?.Invoke(currentAmmoOnMagazine, currentAmmoOnReserves); // * When we initialize the weapon we want to update the UI with the current ammo count on the magazine
 
     }
     void OnEnable()
@@ -38,7 +37,7 @@ public abstract class WeaponBase : MonoBehaviour, IWeapon
 
     }
     public string GetWeaponName() => weaponData.WeaponName;
-    public virtual void Equip() =>  OnWeaponShot?.Invoke(currentAmmoOnMagazine); // * When we equip the weapon we want to update the UI with the current ammo count on the magazine
+    public virtual void Equip() =>  OnAmmoChanged?.Invoke(currentAmmoOnMagazine, currentAmmoOnReserves); // * When we equip the weapon we want to update the UI with the current ammo count on the magazine
     public virtual void Unequip(){}
 
     public virtual void TryShoot()
@@ -48,17 +47,21 @@ public abstract class WeaponBase : MonoBehaviour, IWeapon
         {
             Shoot();
             currentAmmoOnMagazine--;
-            OnWeaponShot?.Invoke(currentAmmoOnMagazine);
+            OnAmmoChanged?.Invoke(currentAmmoOnMagazine, currentAmmoOnReserves);
         }
         else
         {
             Debug.Log("Out of ammo!");
         }
     }
+    //TODO: We need to expand this system
     public virtual void TryReload()
     {
         Debug.Log("Reloading...");
         currentAmmoOnMagazine = weaponData.MagazineSize;
+        currentAmmoOnReserves -= weaponData.MagazineSize; // * This is a very simple way to handle reloading, we will need to change this to be based on the player's inventory or something like that
+        if (currentAmmoOnReserves < 0) currentAmmoOnReserves = 0; // * This is to prevent the ammo count from going negative, we will need to change this to be based on the player's inventory or something like that
+        OnAmmoChanged?.Invoke(currentAmmoOnMagazine, currentAmmoOnReserves);
     }
 
     public abstract void Reload();

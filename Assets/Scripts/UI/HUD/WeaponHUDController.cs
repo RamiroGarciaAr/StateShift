@@ -12,15 +12,20 @@ public class WeaponHUDController : MonoBehaviour
     private void Start()
     {
         WeaponInventory.OnWeaponChanged += UpdateWeaponName;
-        WeaponBase.OnWeaponShot += UpdateAmmoCount;
+        WeaponBase.OnAmmoChanged += UpdateAmmoCount;
 
     }
     private void OnDestroy()
     {
         WeaponInventory.OnWeaponChanged -= UpdateWeaponName;
-        WeaponBase.OnWeaponShot -= UpdateAmmoCount;
+        WeaponBase.OnAmmoChanged -= UpdateAmmoCount;
     }
 
-    private void UpdateAmmoCount(int ammoCount) => ammoOnMagazineText.text = ammoCount.ToString();
+    private void UpdateAmmoCount(int ammoOnMagazine, int ammoOnReserves)
+    {
+        ammoOnMagazineText.text = ammoOnMagazine.ToString();
+        ammoOnReservesText.text = ammoOnReserves.ToString();
+    }
     private void UpdateWeaponName(string weaponName) => weaponNameText.text = weaponName;
+
 }

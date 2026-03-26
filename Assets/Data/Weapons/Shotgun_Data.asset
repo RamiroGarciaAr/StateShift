@@ -19,7 +19,7 @@ MonoBehaviour:
   roundsPerMinute: 90
   magazineSize: 6
   reloadTime: 2.5
-  totalAmmo: 0
+  totalAmmo: 120
   projectilePrefab: {fileID: 4128576527009579452, guid: 2a5d9a4da5b4a77459e68d230c4ca324, type: 3}
   projectileSpeed: 400
   projectileLifetime: 10
