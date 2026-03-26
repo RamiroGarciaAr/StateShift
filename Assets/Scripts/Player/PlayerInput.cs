@@ -83,6 +83,7 @@ namespace Entities.Controllers
             _grappleAction = _playerInput.actions["Grapple"];
             _shootAction = _playerInput.actions["Shoot"];
             _changeWeaponAction = _playerInput.actions["ChangeWeapon"];
+            _reloadAction = _playerInput.actions["Reload"];
 
             _moveAction.Enable();
             _jumpAction.Enable();

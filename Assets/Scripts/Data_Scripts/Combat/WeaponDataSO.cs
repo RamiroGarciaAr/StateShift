@@ -22,7 +22,7 @@ public class WeaponDataSO : ScriptableObject
     [Header("Ammo")]
     [SerializeField] private int magazineSize;
     [SerializeField] private float reloadTime;
-    [SerializeField] private int totalAmmo;
+    [SerializeField] private int totalAmmo; // Total ammo that the weapon can hold, does not include the ammo currently in the magazine
 
     public int MagazineSize => magazineSize;
     public float ReloadTime => reloadTime;
