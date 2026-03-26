@@ -20,23 +20,13 @@ public class CrouchingState : BaseState<PlayerMovementContext>
             // Decidir a qué estado ir
             if (Context.WantsToSprint && Context.PlayerCrouch.CanStandUp())
             {
-                Context.StateMachine.ChangeState(MovementState.Sprinting);
+                Context.GroundedStateMachine.ChangeState(MovementState.Sprinting);
             }
             else if (Context.PlayerCrouch.CanStandUp())
             {
-                Context.StateMachine.ChangeState(MovementState.Walking);
+                Context.GroundedStateMachine.ChangeState(MovementState.Walking);
             }
             return;
-        }
-        // Transition to Grapple
-        if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)
-        {
-            bool grappleStarted = Context.PlayerGrapple.TryStartGrapple();
-            if (grappleStarted)
-            {
-                Context.StateMachine.ChangeState(MovementState.Grappling);
-                return;
-            }
         }
     }
 

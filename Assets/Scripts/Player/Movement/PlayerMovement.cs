@@ -24,14 +24,14 @@ public class PlayerMovement : MonoBehaviour, IControllable
     [SerializeField] private float movementSmoothing = .1f;
     [SerializeField] private float airMovementAcceleration = .5f;
     [Header("Momentum")]
-    [SerializeField] private float postDashCarryDuration = 0.25f;
+    [SerializeField] private float postDashCarryDuration = 0.75f;
     [SerializeField] private float groundCarryDamping = 3f;
-    [SerializeField] private float maxMomentum = 0.4f; // +40% speed cap
-    [SerializeField] private float momentumDecayHalfLife = 1.5f; // seconds
-    [SerializeField] private float sprintGainPerSec = 0.05f;
-    [SerializeField] private float slideGainPerSec = 0.10f;
+    [SerializeField] private float maxMomentum = 0.8f; // +80% speed cap
+    [SerializeField] private float momentumDecayHalfLife = 3.0f; // seconds
+    [SerializeField] private float sprintGainPerSec = 0.12f;
+    [SerializeField] private float slideGainPerSec = 0.20f;
     [SerializeField] private float downhillGainPerSec = 0.12f;
-    [SerializeField] private float postDashGain = 0.10f;
+    [SerializeField] private float postDashGain = 0.15f;
 
     private Rigidbody _rb;
     private GroundChecker _groundChecker;
@@ -61,6 +61,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
                 MovementState.WallRunning => baseSpeed * wallRunSpeedMultiplier,
                 MovementState.Dashing => 0f, // Dash handles its own speed
                 MovementState.Grappling => 0f,
+                MovementState.InAir => baseSpeed * walkSpeedMultiplier,
                 _ => baseSpeed
             };
             return stateSpeed * (1f + _momentum);

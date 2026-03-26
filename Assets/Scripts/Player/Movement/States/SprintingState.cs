@@ -1,4 +1,3 @@
-using UnityEngine;
 using Core;
 
 public class SprintingState : BaseState<PlayerMovementContext>
@@ -19,52 +18,19 @@ public class SprintingState : BaseState<PlayerMovementContext>
 
             if (slideStarted)
             {
-                Context.StateMachine.ChangeState(MovementState.Sliding);
+                Context.GroundedStateMachine.ChangeState(MovementState.Sliding);
             }
             else
             {
                 // Si no tiene velocidad suficiente, ir directo a crouch
-                Context.StateMachine.ChangeState(MovementState.Crouching);
+                Context.GroundedStateMachine.ChangeState(MovementState.Crouching);
             }
             return;
         }
-        // Transition to Grapple
-        if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)
-        {
-            bool grappleStarted = Context.PlayerGrapple.TryStartGrapple();
-            if (grappleStarted)
-            {
-                Context.StateMachine.ChangeState(MovementState.Grappling);
-                return;
-            }
-        }
-        // Transición a WallRunning cuando está en el aire y tiene una pared
-        if (!Context.PlayerMovement.IsGrounded)
-        {
-
-            if (Context.PlayerWallRun.CanWallRun())
-            {
-                Context.StateMachine.ChangeState(MovementState.WallRunning);
-                return;
-            }
-        }
-
         // Transición a Walking
         if (!Context.WantsToSprint)
         {
-            Context.StateMachine.ChangeState(MovementState.Walking);
-            return;
-        }
-        //Transicion a Dash
-        if (Context.WantsToDash)
-        {
-            bool dashStarted = Context.PlayerDash.TryStartDash(Context.DashInputDirection);
-
-            if (dashStarted)
-            {
-                Context.StateMachine.ChangeState(MovementState.Dashing);
-                Context.WantsToDash = false;
-            }
+            Context.GroundedStateMachine.ChangeState(MovementState.Walking);
             return;
         }
     }

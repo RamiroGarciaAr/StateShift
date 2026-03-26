@@ -70,6 +70,14 @@ public class StateMachine<TState> where TState : Enum
         return states.TryGetValue(stateType, out var state) ? state : null;
     }
 
+    // Exits the current state without transitioning. Used by composite states (e.g. GroundedState)
+    // to cleanly exit the inner sub-state before the outer machine re-enters the composite state.
+    public void ExitCurrentState()
+    {
+        _currentState?.OnExit();
+        _currentState = null;
+    }
+
     public void Clear()
     {
         _currentState?.OnExit();

@@ -24,7 +24,7 @@ public class WallRunningState : BaseState<PlayerMovementContext>
         if (Context.PlayerMovement.IsGrounded)
         {
             Context.PlayerWallRun.StopWallRun();
-            Context.StateMachine.ChangeState(MovementState.Walking);
+            Context.StateMachine.ChangeState(MovementState.Grounded);
             return;
         }
         // Transition to Grapple
@@ -74,26 +74,9 @@ public class WallRunningState : BaseState<PlayerMovementContext>
 
     private void ExitToAppropriateState()
     {
-        // Decidir a qué estado ir basado en los inputs del jugador
         if (Context.PlayerMovement.IsGrounded)
-        {
-            if (Context.WantsToSprint)
-            {
-                Context.StateMachine.ChangeState(MovementState.Sprinting);
-            }
-            else if (Context.WantsToCrouch)
-            {
-                Context.StateMachine.ChangeState(MovementState.Crouching);
-            }
-            else
-            {
-                Context.StateMachine.ChangeState(MovementState.Walking);
-            }
-        }
+            Context.StateMachine.ChangeState(MovementState.Grounded);
         else
-        {
-            // Si está en el aire, volver a sprinting (mantendrá el estado hasta aterrizar)
-            Context.StateMachine.ChangeState(Context.WantsToSprint ? MovementState.Sprinting : MovementState.Walking);
-        }
+            Context.StateMachine.ChangeState(MovementState.InAir);
     }
 }

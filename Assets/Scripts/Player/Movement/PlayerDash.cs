@@ -11,7 +11,7 @@ public class PlayerDash : MonoBehaviour
     [SerializeField] private int maxDashCharges = 2;
     [SerializeField] private float chargeRecoveryTime = 2f;
     [Range(0, 1)]
-    [SerializeField] private float momentumGain = 0.5f;
+    [SerializeField] private float momentumGain = 0.85f;
 
     [Header("Dash Behavior")]
     [SerializeField] private float gravityScale = 0f;
@@ -19,8 +19,8 @@ public class PlayerDash : MonoBehaviour
 
 
     private Rigidbody _rb;
-    private GroundChecker _groundChecker;
-    private Camera _mainCamera;
+        private Camera _mainCamera;
+    private PlayerMovement _playerMovement;
 
     private bool _isDashing = false;
     private float _dashTimer = 0f;
@@ -43,8 +43,8 @@ public class PlayerDash : MonoBehaviour
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
-        _groundChecker = GetComponent<GroundChecker>();
         _mainCamera = Camera.main;
+        _playerMovement = GetComponent<PlayerMovement>();
         _currentCharges = maxDashCharges;
     }
 
@@ -167,6 +167,8 @@ public class PlayerDash : MonoBehaviour
         Vector3 currentVel = _rb.velocity;
         currentVel *= momentumGain;
         _rb.velocity = currentVel;
+
+        _playerMovement.AddPostDashMomentum();
     }
 
     public void CancelDash()

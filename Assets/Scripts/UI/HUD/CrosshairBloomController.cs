@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 using System.Collections;
 
+//TODO: Bloom has to by defined per weapon, so we need to change this to be based on the weapon data or something like that, for now we will just hard code it in the inspector
 [DisallowMultipleComponent]
 public class CrosshairBloomController : MonoBehaviour
 {
@@ -47,26 +47,16 @@ public class CrosshairBloomController : MonoBehaviour
             Debug.LogWarning("[CrosshairBloomController] Asigná el material con _InnerRadius.");
         SetInner(baseInnerRadius);
     }
-
     void OnEnable()
     {
-        if (fireAction != null && fireAction.action != null)
-        {
-            fireAction.action.performed += OnFire;
-            fireAction.action.Enable();
-        }
+        WeaponBase.OnApplyBloom += OnFire;
     }
-
     void OnDisable()
     {
-        if (fireAction != null && fireAction.action != null)
-        {
-            fireAction.action.performed -= OnFire;
-            fireAction.action.Disable();
-        }
+        WeaponBase.OnApplyBloom -= OnFire;
     }
 
-    void OnFire(InputAction.CallbackContext ctx)
+    void OnFire()
     {
         if (!crosshairMaterial) return;
         if (minInterval > 0f && (Time.time - lastBloomTime) < minInterval) return;
@@ -137,6 +127,4 @@ public class CrosshairBloomController : MonoBehaviour
         return crosshairMaterial.GetFloat(innerRadiusID);
     }
 
-    // Trigger manual
-    public void TriggerBloomOnce() => OnFire(default);
 }

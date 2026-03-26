@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2491053cc2e35841b851ad9d274c553, type: 3}
+  m_Name: Shotgun_Data
+  m_EditorClassIdentifier: 
+  weaponName: Repeater Mk.II
+  weaponPrefab: {fileID: 0}
+  damageType: 1
+  damageAmount: 12
+  roundsPerMinute: 90
+  magazineSize: 6
+  reloadTime: 2.5
+  totalAmmo: 120
+  projectilePrefab: {fileID: 4128576527009579452, guid: 2a5d9a4da5b4a77459e68d230c4ca324, type: 3}
+  projectileSpeed: 400
+  projectileLifetime: 10
+  dropOffMaxRange: 80
+  damageDropOffCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -1.0333295
+      outSlope: -1.0333295
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.9791565
+      value: -0.011791229
+      inSlope: -1.0333295
+      outSlope: -1.0333295
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
