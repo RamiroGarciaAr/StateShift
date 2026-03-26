@@ -180,7 +180,7 @@ PrefabInstance:
       objectReference: {fileID: 1352161675}
     - target: {fileID: 4346480524317279563, guid: 10cc46af66363a448a1785d80c3bf725, type: 3}
       propertyPath: m_VersionIndex
-      value: 4748
+      value: 4751
       objectReference: {fileID: 0}
     - target: {fileID: 4346480524317279563, guid: 10cc46af66363a448a1785d80c3bf725, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -2307,7 +2307,7 @@ PrefabInstance:
       objectReference: {fileID: 1429676460}
     - target: {fileID: 4346480524317279563, guid: 10cc46af66363a448a1785d80c3bf725, type: 3}
       propertyPath: m_VersionIndex
-      value: 4748
+      value: 4751
       objectReference: {fileID: 0}
     - target: {fileID: 4346480524317279563, guid: 10cc46af66363a448a1785d80c3bf725, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -4305,7 +4305,7 @@ PrefabInstance:
       objectReference: {fileID: 1077956024}
     - target: {fileID: 4346480524317279563, guid: 10cc46af66363a448a1785d80c3bf725, type: 3}
       propertyPath: m_VersionIndex
-      value: 4748
+      value: 4751
       objectReference: {fileID: 0}
     - target: {fileID: 4346480524317279563, guid: 10cc46af66363a448a1785d80c3bf725, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -18099,7 +18099,7 @@ PrefabInstance:
       objectReference: {fileID: 1662474309}
     - target: {fileID: 4346480524317279563, guid: 10cc46af66363a448a1785d80c3bf725, type: 3}
       propertyPath: m_VersionIndex
-      value: 4748
+      value: 4751
       objectReference: {fileID: 0}
     - target: {fileID: 4346480524317279563, guid: 10cc46af66363a448a1785d80c3bf725, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -19715,7 +19715,7 @@ PrefabInstance:
       objectReference: {fileID: 391678783}
     - target: {fileID: 4346480524317279563, guid: 10cc46af66363a448a1785d80c3bf725, type: 3}
       propertyPath: m_VersionIndex
-      value: 4748
+      value: 4751
       objectReference: {fileID: 0}
     - target: {fileID: 4346480524317279563, guid: 10cc46af66363a448a1785d80c3bf725, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -19737,8 +19737,7 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 391678783}
-    m_RemovedComponents:
-    - {fileID: 6033806854683977496, guid: 10cc46af66363a448a1785d80c3bf725, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

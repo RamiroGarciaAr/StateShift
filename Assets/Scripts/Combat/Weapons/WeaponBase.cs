@@ -8,10 +8,12 @@ public abstract class WeaponBase : MonoBehaviour, IWeapon
     [SerializeField] protected WeaponDataSO weaponData;
     [SerializeField] protected Transform muzzlePos;
 
-    public static event Action<int,int> OnAmmoChanged; // * Ammo count after shot, can be used to update UI (current ammo on magazine, current ammo on reserves)
+    public static event Action<int, int> OnAmmoChanged; // * Ammo count after shot, can be used to update UI (current ammo on magazine, current ammo on reserves)
+    public static event Action OnApplyBloom; // * Event to trigger the crosshair bloom effect, can be used to trigger the bloom effect on the crosshair
+    private int _currentAmmoOnMagazine;
+    private int _currentAmmoOnReserves;
 
-    private int currentAmmoOnMagazine;
-    private int currentAmmoOnReserves;
+    private float _shootTimer = 0f;
 
     public virtual void Initialize(WeaponDataSO data)
     {
@@ -19,9 +21,16 @@ public abstract class WeaponBase : MonoBehaviour, IWeapon
     }
     private void Start()
     {
-        currentAmmoOnMagazine = weaponData.MagazineSize;
-        currentAmmoOnReserves = weaponData.TotalAmmo; // TODO: For now we are hard coding this but then we will need to change this to be based on the player's inventory or something like that
-        OnAmmoChanged?.Invoke(currentAmmoOnMagazine, currentAmmoOnReserves); // * When we initialize the weapon we want to update the UI with the current ammo count on the magazine
+        _currentAmmoOnMagazine = weaponData.MagazineSize;
+        _currentAmmoOnReserves = weaponData.TotalAmmo; // TODO: For now we are hard coding this but then we will need to change this to be based on the player's inventory or something like that
+        OnAmmoChanged?.Invoke(_currentAmmoOnMagazine, _currentAmmoOnReserves); // * When we initialize the weapon we want to update the UI with the current ammo count on the magazine
+
+    }
+
+    void Update()
+    {
+        if (_shootTimer > 0f)
+            _shootTimer -= Time.deltaTime;
 
     }
     void OnEnable()
@@ -37,31 +46,40 @@ public abstract class WeaponBase : MonoBehaviour, IWeapon
 
     }
     public string GetWeaponName() => weaponData.WeaponName;
-    public virtual void Equip() =>  OnAmmoChanged?.Invoke(currentAmmoOnMagazine, currentAmmoOnReserves); // * When we equip the weapon we want to update the UI with the current ammo count on the magazine
-    public virtual void Unequip(){}
-
+    public virtual void Equip() => OnAmmoChanged?.Invoke(_currentAmmoOnMagazine, _currentAmmoOnReserves); // * When we equip the weapon we want to update the UI with the current ammo count on the magazine
+    public virtual void Unequip() { }
+    
+    // This method can be used to check for conditions before shooting, such as ammo count, fire rate, etc.
     public virtual void TryShoot()
     {
-        // This method can be used to check for conditions before shooting, such as ammo count, fire rate, etc.
-        if (currentAmmoOnMagazine > 0)
+        if (_shootTimer > 0f) return; // Check fire rate
+        if (_currentAmmoOnMagazine <= 0)
         {
-            Shoot();
-            currentAmmoOnMagazine--;
-            OnAmmoChanged?.Invoke(currentAmmoOnMagazine, currentAmmoOnReserves);
+            Debug.Log("Out of ammo, need to reload!");
+            return;
         }
-        else
-        {
-            Debug.Log("Out of ammo!");
-        }
+        OnApplyBloom?.Invoke();
+        Shoot();
+        _currentAmmoOnMagazine--;
+        OnAmmoChanged?.Invoke(_currentAmmoOnMagazine, _currentAmmoOnReserves);
+        _shootTimer = weaponData.SecondsBetweenShots;
     }
     //TODO: We need to expand this system
     public virtual void TryReload()
     {
-        Debug.Log("Reloading...");
-        currentAmmoOnMagazine = weaponData.MagazineSize;
-        currentAmmoOnReserves -= weaponData.MagazineSize; // * This is a very simple way to handle reloading, we will need to change this to be based on the player's inventory or something like that
-        if (currentAmmoOnReserves < 0) currentAmmoOnReserves = 0; // * This is to prevent the ammo count from going negative, we will need to change this to be based on the player's inventory or something like that
-        OnAmmoChanged?.Invoke(currentAmmoOnMagazine, currentAmmoOnReserves);
+        if (_currentAmmoOnMagazine >= weaponData.MagazineSize) return;
+
+        if (_currentAmmoOnReserves <= 0) return;
+        int amountNeeded = weaponData.MagazineSize - _currentAmmoOnMagazine;
+
+        // Take what we need, or whatever is left in reserves
+        int amountToTake = Mathf.Min(amountNeeded, _currentAmmoOnReserves);
+
+        _currentAmmoOnReserves -= amountToTake;
+        _currentAmmoOnMagazine += amountToTake;
+
+        OnAmmoChanged?.Invoke(_currentAmmoOnMagazine, _currentAmmoOnReserves);
+
     }
 
     public abstract void Reload();

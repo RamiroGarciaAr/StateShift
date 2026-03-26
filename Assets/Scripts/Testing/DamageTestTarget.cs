@@ -9,7 +9,6 @@ public class DamageTestTarget : MonoBehaviour, IDamagable
     public void TakeDamage(DamageInfo damageInfo)
     {
         Debug.Log($"[HIT] Damage: {damageInfo.FinalDamage:F1} | " +
-                  $"Type: {damageInfo.DamageType} | " +
-                  $"Point: {damageInfo.HitPoint}");
+                  $"Type: {damageInfo.DamageType}");
     }
 }

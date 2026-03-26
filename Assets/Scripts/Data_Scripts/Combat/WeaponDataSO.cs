@@ -16,7 +16,6 @@ public class WeaponDataSO : ScriptableObject
     public float DamageAmount => damageAmount;
     [Header("Fire Rate")]
     [SerializeField] private int roundsPerMinute;
-
     public int RoundsPerMinute => roundsPerMinute;
     public float SecondsBetweenShots => 60f / roundsPerMinute;
     [Header("Ammo")]
