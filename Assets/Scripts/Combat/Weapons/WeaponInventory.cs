@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Entities.Controllers;
@@ -7,6 +8,8 @@ using UnityEngine;
 public class WeaponInventory : MonoBehaviour
 {
     [SerializeField] private List<WeaponBase> weapons = new();
+
+    public static event Action<string> OnWeaponChanged;
     private int currentWeaponIndex = 0;
 
     private void Start()
@@ -28,6 +31,7 @@ public class WeaponInventory : MonoBehaviour
         if (weapons.Count == 0) return;
 
         WeaponBase weapon = weapons[currentWeaponIndex];
+        OnWeaponChanged?.Invoke(weapon.GetWeaponName());
         weapon.gameObject.SetActive(true);
         weapon.Equip();
     }

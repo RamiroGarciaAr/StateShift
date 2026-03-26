@@ -19,9 +19,10 @@ namespace Entities.Controllers
         private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction, _grappleAction, _dashAction,_shootAction, _changeWeaponAction,_reloadAction;
 
         //Events
-        public static event Action OnShoot;
+
+        // Weapon Events
+        public static event Action OnShoot, OnChangeWeapon, OnReload;
         
-        public static event Action OnChangeWeapon;
 
         // State Machine
         private StateMachine<MovementState> _stateMachine;
@@ -108,16 +109,19 @@ namespace Entities.Controllers
         {
             if (Controllable == null) return;
 
+            //Weapon Actions
+
             if (_shootAction.WasPressedThisFrame())
             {
                 OnShoot?.Invoke();
             }
 
-            if (_changeWeaponAction.ReadValue<float>() > 0f  || _changeWeaponAction.ReadValue<float>() < 0f )
-            {
-                OnChangeWeapon?.Invoke();
-            }
+            if (_changeWeaponAction.ReadValue<float>() > 0f  || _changeWeaponAction.ReadValue<float>() < 0f ) OnChangeWeapon?.Invoke();
+            
+            if (_reloadAction.WasPressedThisFrame()) OnReload?.Invoke();
 
+
+            //Movement Actions
             Vector2 movementInput = _moveAction.ReadValue<Vector2>();
             Vector2 direction = CalculateCameraRelativeDirection(movementInput);
 
