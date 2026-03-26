@@ -22,9 +22,11 @@ public class WeaponDataSO : ScriptableObject
     [Header("Ammo")]
     [SerializeField] private int magazineSize;
     [SerializeField] private float reloadTime;
+    [SerializeField] private int totalAmmo;
 
     public int MagazineSize => magazineSize;
     public float ReloadTime => reloadTime;
+    public int TotalAmmo => totalAmmo;
 
     [Header("Projectile")]
     [SerializeField] private GameObject projectilePrefab;
@@ -35,7 +37,7 @@ public class WeaponDataSO : ScriptableObject
     public float ProjectileSpeed => projectileSpeed;
     public float ProjectileLifetime => projectileLifetime;
 
-    //@TODO: I hate Using the Animation Curve So we need to change this to something else but for now it works and is easy to edit in the inspector so we will keep it for now
+    //TODO: I hate Using the Animation Curve So we need to change this to something else but for now it works and is easy to edit in the inspector so we will keep it for now
     [Header("Damage Falloff")]
     [SerializeField] private float dropOffMaxRange;
     [SerializeField] private AnimationCurve damageDropOffCurve;

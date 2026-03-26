@@ -2587,7 +2587,7 @@ PrefabInstance:
       objectReference: {fileID: 367821567}
     - target: {fileID: 6632174613987314061, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
       propertyPath: m_VersionIndex
-      value: 2313
+      value: 2319
       objectReference: {fileID: 0}
     - target: {fileID: 6632174613987314061, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
       propertyPath: m_SelectedEdges.Array.size

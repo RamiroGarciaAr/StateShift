@@ -16,7 +16,7 @@ namespace Entities.Controllers
     public class PlayerInput : Controller
     {
         private UnityEngine.InputSystem.PlayerInput _playerInput;
-        private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction, _grappleAction, _dashAction,_shootAction, _changeWeaponAction;
+        private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction, _grappleAction, _dashAction,_shootAction, _changeWeaponAction,_reloadAction;
 
         //Events
         public static event Action OnShoot;
