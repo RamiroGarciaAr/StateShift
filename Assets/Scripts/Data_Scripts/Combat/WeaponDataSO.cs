@@ -1,3 +1,4 @@
+using Combat.FireModes;
 using Health;
 using UnityEngine;
 [CreateAssetMenu(menuName = "Combat/Weapon Data")]
@@ -6,6 +7,7 @@ public class WeaponDataSO : ScriptableObject
     [Header("Weapon Info")]
     [SerializeField] private string weaponName;
     [SerializeField] private GameObject weaponPrefab;
+    [SerializeField] private FireModeType fireModeType;
 
     public string WeaponName => weaponName;
     [Header("Damage")]
@@ -18,6 +20,7 @@ public class WeaponDataSO : ScriptableObject
     [SerializeField] private int roundsPerMinute;
     public int RoundsPerMinute => roundsPerMinute;
     public float SecondsBetweenShots => 60f / roundsPerMinute;
+
     [Header("Ammo")]
     [SerializeField] private int magazineSize;
     [SerializeField] private float reloadTime;

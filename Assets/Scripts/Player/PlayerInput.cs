@@ -21,7 +21,8 @@ namespace Entities.Controllers
         //Events
 
         // Weapon Events
-        public static event Action OnShoot, OnChangeWeapon, OnReload;
+        public static event Action<bool> OnShoot;
+        public static event Action OnChangeWeapon, OnReload;
         
 
         // State Machine
@@ -113,7 +114,11 @@ namespace Entities.Controllers
 
             if (_shootAction.WasPressedThisFrame())
             {
-                OnShoot?.Invoke();
+                OnShoot?.Invoke(true);
+            }
+            else if (_shootAction.WasReleasedThisFrame())
+            {
+                OnShoot?.Invoke(false);
             }
 
             if (_changeWeaponAction.ReadValue<float>() > 0f  || _changeWeaponAction.ReadValue<float>() < 0f ) OnChangeWeapon?.Invoke();
