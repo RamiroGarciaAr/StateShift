@@ -1,14 +1,14 @@
-using Combat.FireModes;
+
 using Health;
 using UnityEngine;
+using Combat.FireModes;
 [CreateAssetMenu(menuName = "Combat/Weapon Data")]
 public class WeaponDataSO : ScriptableObject
 {
     [Header("Weapon Info")]
     [SerializeField] private string weaponName;
     [SerializeField] private GameObject weaponPrefab;
-    [SerializeField] private FireModeType fireModeType;
-
+    [SerializeField] private FireModeType[] fireModes;
     public string WeaponName => weaponName;
     [Header("Damage")]
     [SerializeField] private DamageType damageType;

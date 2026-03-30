@@ -1,8 +1,7 @@
 using UnityEngine;
 using System;
-using Combat.FireModes;
 
-public abstract class WeaponBase : MonoBehaviour, IWeapon
+public abstract class WeaponBase : MonoBehaviour, IEquipable
 {
 
 #region Fields
@@ -27,7 +26,6 @@ public abstract class WeaponBase : MonoBehaviour, IWeapon
     /// </summary>
     private int _currentAmmoOnMagazine;
     private int _currentAmmoOnReserves;
-    private IFireMode _currentFireMode; //TODO: A weapon can have multiple fire modes, we need to implement a system to switch between them and to execute the current fire mode when shooting
 #endregion
     public virtual void Initialize(WeaponDataSO data)
     {
@@ -44,19 +42,13 @@ public abstract class WeaponBase : MonoBehaviour, IWeapon
 
 
     }
-    void Update()
-    {
-        _currentFireMode?.Execute(Time.deltaTime);
-    }
+
 #endregion
     
 #region Weapon Status
     public string GetWeaponName() => weaponData.WeaponName;
     public bool HasAmmo() => _currentAmmoOnMagazine > 0;
-    private void SetFireMode(IFireMode fireMode)
-    {
 
-    }
 #endregion
     
     // TODO: Expand into different reload systems

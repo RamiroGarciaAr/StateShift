@@ -7,7 +7,7 @@ using UnityEngine;
 //TODO: We are going to change this system to only shoot the current weapon
 public class WeaponInventory : MonoBehaviour
 {
-    [SerializeField] private List<WeaponBase> weaponList = new(); //TODO: Maybe change for a set
+    [SerializeField] private List<WeaponBase> weaponList = new();
  
     public static event Action<string> OnWeaponChanged;
     private int currentWeaponIndex = 0;
@@ -16,25 +16,12 @@ public class WeaponInventory : MonoBehaviour
     {
         EquipCurrentWeapon();
         PlayerInput.OnChangeWeapon += NextWeapon;
-        PlayerInput.OnShoot += ShootCurrentWeapon;
 
     }
     //TODO: Check if this is necesary
     private void OnDestroy()
     {
         PlayerInput.OnChangeWeapon -= NextWeapon;
-        PlayerInput.OnShoot -= ShootCurrentWeapon;
-    }
-
-
-    public void ShootCurrentWeapon(bool isHeld = false)
-    {
-        if (weaponList.Count == 0) return;
-
-        WeaponBase weapon = weaponList[currentWeaponIndex];
-        //MY IDEA
-        //weapon.Shoot();
-        Debug.Log(weapon.GetWeaponName() + "isHeld: " + isHeld);
     }
 
     public void NextWeapon()
