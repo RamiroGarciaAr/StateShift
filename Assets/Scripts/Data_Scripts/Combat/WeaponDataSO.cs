@@ -8,7 +8,8 @@ public class WeaponDataSO : ScriptableObject
     [Header("Weapon Info")]
     [SerializeField] private string weaponName;
     [SerializeField] private GameObject weaponPrefab;
-    [SerializeField] private FireModeType[] fireModes;
+    [SerializeField] private FireModeType[] availableFireModes;
+    [SerializeField] private int burstCount; // Only used if the weapon has a burst fire mode 
     public string WeaponName => weaponName;
     [Header("Damage")]
     [SerializeField] private DamageType damageType;
@@ -56,5 +57,24 @@ public class WeaponDataSO : ScriptableObject
         if (dropOffMaxRange <= 0f) return 1f; 
         float normalised = Mathf.Clamp01(distance / dropOffMaxRange);
         return damageDropOffCurve.Evaluate(normalised);
+    }
+
+    public void OnValidate()
+    {
+        bool hasBurst = false;
+        foreach (var fireMode in availableFireModes)
+        {
+            if (fireMode == FireModeType.Burst)
+            {
+                hasBurst = true;
+                if (burstCount <= 0)
+                {
+                burstCount = 3; // Default burst count
+                Debug.LogWarning($"Burst count must be greater than 0 for weapon {weaponName}. Setting to default value of 3.");
+                }
+            }
+        }
+        //TODO: We will change this system to handle more firemodes better
+        if (!hasBurst) burstCount = 0; // If the weapon doesn't have burst fire mode, we set the burst count to 0 to avoid confusion
     }
 }
