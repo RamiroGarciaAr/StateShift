@@ -11,6 +11,9 @@ public class WeaponDataSO : ScriptableObject
     [SerializeField] private FireModeType[] availableFireModes;
     [SerializeField] private int burstCount; // Only used if the weapon has a burst fire mode 
     public string WeaponName => weaponName;
+
+    public FireModeType[] AvailableFireModes => availableFireModes;
+    public int BurstCount => burstCount;
     [Header("Damage")]
     [SerializeField] private DamageType damageType;
     [SerializeField] private float damageAmount;
@@ -59,7 +62,7 @@ public class WeaponDataSO : ScriptableObject
         return damageDropOffCurve.Evaluate(normalised);
     }
 
-    public void OnValidate()
+    private void OnValidate()
     {
         bool hasBurst = false;
         foreach (var fireMode in availableFireModes)

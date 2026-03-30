@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: JR-941A
   weaponPrefab: {fileID: 0}
+  availableFireModes: 00000000
+  burstCount: 0
   damageType: 0
   damageAmount: 35
   roundsPerMinute: 300
