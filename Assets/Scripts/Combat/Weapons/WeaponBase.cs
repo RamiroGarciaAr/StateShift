@@ -39,8 +39,6 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
         _currentAmmoOnMagazine = weaponData.MagazineSize;
         _currentAmmoOnReserves = weaponData.TotalAmmo; // TODO: For now we are hard coding this but then we will need to change this to be based on the player's inventory or something like that
         OnAmmoChanged?.Invoke(_currentAmmoOnMagazine, _currentAmmoOnReserves); // * When we initialize the weapon we want to update the UI with the current ammo count on the magazine
-
-
     }
 
 #endregion

@@ -2,6 +2,7 @@
 using Health;
 using UnityEngine;
 using Combat.FireModes;
+using Unity.VisualScripting;
 [CreateAssetMenu(menuName = "Combat/Weapon Data")]
 public class WeaponDataSO : ScriptableObject
 {
@@ -10,6 +11,11 @@ public class WeaponDataSO : ScriptableObject
     [SerializeField] private GameObject weaponPrefab;
     [SerializeField] private FireModeType[] availableFireModes;
     [SerializeField] private int burstCount; // Only used if the weapon has a burst fire mode 
+    
+    [Header("Weapon Accuracy")]
+    [SerializeField] private float spreadAngle;
+
+    public float SpreadAngle => spreadAngle;
     public string WeaponName => weaponName;
 
     public FireModeType[] AvailableFireModes => availableFireModes;
@@ -20,6 +26,7 @@ public class WeaponDataSO : ScriptableObject
 
     public DamageType DamageType => damageType;
     public float DamageAmount => damageAmount;
+
     [Header("Fire Rate")]
     [SerializeField] private int roundsPerMinute;
     public int RoundsPerMinute => roundsPerMinute;

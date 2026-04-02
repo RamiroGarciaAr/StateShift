@@ -4,7 +4,7 @@ namespace Combat.FireModes
 {
     public class BaseFireMode : IFireMode
     {
-        WeaponBase _weapon;
+        protected WeaponBase _weapon;
         public void Initialize(WeaponBase weapon)
         {
            _weapon = weapon;
