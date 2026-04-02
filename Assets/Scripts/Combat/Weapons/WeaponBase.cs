@@ -1,5 +1,7 @@
 using UnityEngine;
 using System;
+using Combat.Interfaces;
+using Combat.FireModes;
 
 public abstract class WeaponBase : MonoBehaviour, IEquipable
 {
@@ -26,6 +28,9 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     /// </summary>
     private int _currentAmmoOnMagazine;
     private int _currentAmmoOnReserves;
+
+    private IFireMode _currentFireMode;
+    private int _currentFireModeIdx;
 #endregion
     public virtual void Initialize(WeaponDataSO data)
     {
@@ -39,9 +44,32 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
         _currentAmmoOnMagazine = weaponData.MagazineSize;
         _currentAmmoOnReserves = weaponData.TotalAmmo; // TODO: For now we are hard coding this but then we will need to change this to be based on the player's inventory or something like that
         OnAmmoChanged?.Invoke(_currentAmmoOnMagazine, _currentAmmoOnReserves); // * When we initialize the weapon we want to update the UI with the current ammo count on the magazine
+
+        InitializeFireMode();
     }
 
 #endregion
+
+#region Fire Mode
+    private void InitializeFireMode()
+    {
+        if (weaponData.AvailableFireModes == null  || weaponData.AvailableFireModes.Length == 0)
+        {
+            Debug.Log("$[Weapon Base] {weaponData.WeaponName} has no fire Modes");
+            return;
+        }
+
+        _currentFireModeIdx=0;
+        SetFireMode(_currentFireModeIdx);
+    }
+
+    private void SetFireMode(int idx)
+    {
+        _currentFireMode = FireModeFactory.Create(weaponData.AvailableFireModes[idx],this);
+
+    }
+#endregion
+
     
 #region Weapon Status
     public string GetWeaponName() => weaponData.WeaponName;
@@ -51,11 +79,15 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     
     // TODO: Expand into different reload systems
 #region Weapon Actions
+
+    public void OnTriggerPressed() => _currentFireMode?.OnTriggerPressed();
+    public void OnTriggerReleased() => _currentFireMode?.OnTriggerReleased();
     public void ConsumeAmmo(int amount)
     {
         _currentAmmoOnMagazine -= amount;
         OnAmmoChanged?.Invoke(_currentAmmoOnMagazine, _currentAmmoOnReserves);
     }
+
     public virtual void Equip() => OnAmmoChanged?.Invoke(_currentAmmoOnMagazine, _currentAmmoOnReserves); // * When we equip the weapon we want to update the UI with the current ammo count on the magazine
     public virtual void Unequip() { }    
     //TODO: We need to expand this system to handle different reload systems

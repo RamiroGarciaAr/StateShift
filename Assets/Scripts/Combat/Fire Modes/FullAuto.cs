@@ -1,6 +1,6 @@
 namespace Combat.FireModes
 {
-    public class SemiAuto : BaseFireMode
+    public class FullAuto : BaseFireMode
     {
         public override void OnTriggerPressed()
         {

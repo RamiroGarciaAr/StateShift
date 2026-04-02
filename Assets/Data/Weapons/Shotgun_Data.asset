@@ -16,6 +16,7 @@ MonoBehaviour:
   weaponPrefab: {fileID: 0}
   availableFireModes: 00000000
   burstCount: 0
+  spreadAngle: 15
   damageType: 1
   damageAmount: 12
   roundsPerMinute: 90

@@ -2401,11 +2401,23 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4178161123960179872, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
+      propertyPath: weaponList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4178161123960179872, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
       propertyPath: weapons.Array.data[0]
       value: 
       objectReference: {fileID: 1552508201}
     - target: {fileID: 4178161123960179872, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
       propertyPath: weapons.Array.data[1]
+      value: 
+      objectReference: {fileID: 679040995}
+    - target: {fileID: 4178161123960179872, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
+      propertyPath: weaponList.Array.data[0]
+      value: 
+      objectReference: {fileID: 1552508201}
+    - target: {fileID: 4178161123960179872, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
+      propertyPath: weaponList.Array.data[1]
       value: 
       objectReference: {fileID: 679040995}
     - target: {fileID: 4445440526204798318, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
@@ -5506,6 +5518,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponData: {fileID: 11400000, guid: 8ed15876548d88f44969d02b6256de37, type: 2}
   muzzlePos: {fileID: 732375326}
+  pelletCount: 8
 --- !u!1 &682495461
 GameObject:
   m_ObjectHideFlags: 0

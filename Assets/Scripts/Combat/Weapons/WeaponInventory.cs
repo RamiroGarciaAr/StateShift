@@ -10,24 +10,37 @@ public class WeaponInventory : MonoBehaviour
     [SerializeField] private List<WeaponBase> weaponList = new();
  
     public static event Action<string> OnWeaponChanged;
-    private int currentWeaponIndex = 0;
+    private int _currentWeaponIndex = 0;
 
     private void Start()
     {
         EquipCurrentWeapon();
         PlayerInput.OnChangeWeapon += NextWeapon;
-
+        PlayerInput.OnShoot += HandleShoot;
+        //PlayerInput.OnReload += HandleReload;
     }
-    //TODO: Check if this is necesary
     private void OnDestroy()
     {
         PlayerInput.OnChangeWeapon -= NextWeapon;
+        PlayerInput.OnShoot -= HandleShoot;
+        //PlayerInput.OnReload -= HandleReload;
+    }
+
+    private void HandleShoot(bool pressed)
+    {
+        
+        if (weaponList.Count == 0) return;
+        WeaponBase current = weaponList[_currentWeaponIndex];
+
+        if (pressed) current.OnTriggerPressed();
+        else current.OnTriggerReleased();
     }
 
     public void NextWeapon()
     {
+        if (weaponList.Count == 0) return;
         UnequipCurrentWeapon();
-        currentWeaponIndex = (currentWeaponIndex + 1) % weaponList.Count;
+        _currentWeaponIndex = (_currentWeaponIndex + 1) % weaponList.Count;
         EquipCurrentWeapon();
     }
 
@@ -35,7 +48,7 @@ public class WeaponInventory : MonoBehaviour
     {
         if (weaponList.Count == 0) return;
 
-        WeaponBase weapon = weaponList[currentWeaponIndex];
+        WeaponBase weapon = weaponList[_currentWeaponIndex];
         OnWeaponChanged?.Invoke(weapon.GetWeaponName());
         weapon.gameObject.SetActive(true);
         weapon.Equip();
@@ -45,7 +58,7 @@ public class WeaponInventory : MonoBehaviour
     {
         if (weaponList.Count == 0) return;
 
-        WeaponBase weapon = weaponList[currentWeaponIndex];
+        WeaponBase weapon = weaponList[_currentWeaponIndex];
         weapon.Unequip();
         weapon.gameObject.SetActive(false);
     }
