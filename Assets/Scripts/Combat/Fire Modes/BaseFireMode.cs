@@ -5,17 +5,18 @@ namespace Combat.FireModes
     public class BaseFireMode : IFireMode
     {
         protected WeaponBase _weapon;
+
         public void Initialize(WeaponBase weapon)
         {
-           _weapon = weapon;
+            _weapon = weapon;
         }
 
         public virtual void OnTriggerPressed()
         {
-            throw new System.NotImplementedException();
+            _weapon.Shoot();
         }
 
-        public virtual void OnTriggerReleased() {}
+        public virtual void OnTriggerReleased() { }
 
         public virtual void Tick(float deltaTime)
         {

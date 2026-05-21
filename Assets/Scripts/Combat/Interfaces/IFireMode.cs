@@ -1,4 +1,5 @@
 using System;
+
 namespace Combat.Interfaces
 {
     public interface IFireMode
@@ -6,6 +7,6 @@ namespace Combat.Interfaces
         void Initialize(WeaponBase weapon); // * Initialize the fire mode with a reference to the weapon, this allows the fire mode to access the weapon's data and methods
         void OnTriggerPressed();
         void OnTriggerReleased();
-        void Tick(float deltaTime); 
+        void Tick(float deltaTime);
     }
 }
