@@ -1,8 +1,9 @@
-using UnityEngine.InputSystem;
-using UnityEngine;
-using Strategies;
-using Core;
 using System;
+using Core;
+using Strategies;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
 namespace Entities.Controllers
 {
     //TODO: THIS IS AWFUL THIS SCRIPT NEEDS TO ONLY SEND SIGNALS NOT HANDLE ANYTHING ELSE OR KNOW THAT OTHER COMPONENTS EXIST
@@ -16,14 +17,26 @@ namespace Entities.Controllers
     public class PlayerInput : Controller
     {
         private UnityEngine.InputSystem.PlayerInput _playerInput;
-        private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction, _grappleAction, _dashAction,_shootAction, _changeWeaponAction,_reloadAction;
+        private InputAction _moveAction,
+            _jumpAction,
+            _sprintAction,
+            _crouchAction,
+            _grappleAction,
+            _lookAction,
+            _dashAction,
+            _shootAction,
+            _changeWeaponAction,
+            _reloadAction;
 
         //Events
 
         // Weapon Events
         public static event Action<bool> OnShoot;
-        public static event Action OnChangeWeapon, OnReload;
-        
+        public static event Action OnChangeWeapon,
+            OnReload;
+
+        // Look Event
+        public static event Action<Vector2> OnLook;
 
         // State Machine
         private StateMachine<MovementState> _stateMachine;
@@ -36,7 +49,10 @@ namespace Entities.Controllers
 
             if (Controllable == null)
             {
-                Debug.LogError("No se encontró un componente IControllable en " + gameObject.name, this);
+                Debug.LogError(
+                    "No se encontró un componente IControllable en " + gameObject.name,
+                    this
+                );
             }
 
             InitializeStateMachine();
@@ -56,7 +72,7 @@ namespace Entities.Controllers
                 PlayerWallRun = GetComponent<PlayerWallRun>(),
                 PlayerDash = GetComponent<PlayerDash>(),
                 PlayerGrapple = GetComponent<PlayerGrapple>(),
-                Rigidbody = GetComponent<Rigidbody>()
+                Rigidbody = GetComponent<Rigidbody>(),
             };
 
             _stateMachine = new StateMachine<MovementState>();
@@ -86,6 +102,7 @@ namespace Entities.Controllers
             _shootAction = _playerInput.actions["Shoot"];
             _changeWeaponAction = _playerInput.actions["ChangeWeapon"];
             _reloadAction = _playerInput.actions["Reload"];
+            _lookAction = _playerInput.actions["MouseLook"];
 
             _moveAction.Enable();
             _jumpAction.Enable();
@@ -93,6 +110,7 @@ namespace Entities.Controllers
             _sprintAction.Enable();
             _dashAction.Enable();
             _grappleAction.Enable();
+            _lookAction.Enable();
         }
 
         private void OnDisable()
@@ -104,14 +122,15 @@ namespace Entities.Controllers
             _dashAction?.Disable();
             _grappleAction?.Disable();
             _shootAction?.Disable();
+            _lookAction?.Disable();
         }
 
         private void Update()
         {
-            if (Controllable == null) return;
+            if (Controllable == null)
+                return;
 
             //Weapon Actions
-
             if (_shootAction.WasPressedThisFrame())
             {
                 OnShoot?.Invoke(true);
@@ -121,10 +140,14 @@ namespace Entities.Controllers
                 OnShoot?.Invoke(false);
             }
 
-            if (_changeWeaponAction.ReadValue<float>() > 0f  || _changeWeaponAction.ReadValue<float>() < 0f ) OnChangeWeapon?.Invoke();
-            
-            if (_reloadAction.WasPressedThisFrame()) OnReload?.Invoke();
+            if (
+                _changeWeaponAction.ReadValue<float>() > 0f
+                || _changeWeaponAction.ReadValue<float>() < 0f
+            )
+                OnChangeWeapon?.Invoke();
 
+            if (_reloadAction.WasPressedThisFrame())
+                OnReload?.Invoke();
 
             //Movement Actions
             Vector2 movementInput = _moveAction.ReadValue<Vector2>();
@@ -135,6 +158,8 @@ namespace Entities.Controllers
 
             Controllable.Move(direction);
             HandleJump();
+
+            OnLook?.Invoke(_lookAction.ReadValue<Vector2>());
         }
 
         private void FixedUpdate()
