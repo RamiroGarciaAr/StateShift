@@ -5,10 +5,12 @@ using UnityEngine;
 
 public abstract class WeaponBase : MonoBehaviour, IEquipable
 {
-    public static event Action OnShoot; // * Event to trigger whenever the weapon is fired, this can be used to trigger the bloom effect on the crosshair or other effects that should happen when the weapon is fired
     #region Fields
     [SerializeField]
     protected WeaponDataSO weaponData;
+
+    public float SecondBetweenShots => weaponData.SecondsBetweenShots;
+    public int BurstCount => weaponData.BurstCount;
 
     [SerializeField]
     protected Transform muzzlePos;
@@ -21,7 +23,7 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     /// </summary>
     //TODO: We might want to change this system removing the static if we want different weapons on screen at the same time, but for now we will keep it simple and have a single weapon on screen at a time
     public static event Action<int, int> OnAmmoChanged; // * Ammo count after shot, can be used to update UI (current ammo on magazine, current ammo on reserves)
-    public static event Action OnApplyBloom; // * Event to trigger the crosshair bloom effect, can be used to trigger the bloom effect on the crosshair
+    public static event Action OnShoot; // * Event to trigger whenever the weapon is fired, this can be used to trigger the bloom effect on the crosshair or other effects that should happen when the weapon is fired
 
     /// <summary>
     /// Ammo Management:
@@ -30,6 +32,9 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     /// </summary>
     private int _currentAmmoOnMagazine;
     private int _currentAmmoOnReserves;
+
+    private bool _wantsToFire;
+    private float _fireTimer;
 
     private IFireMode _currentFireMode;
     private int _currentFireModeIdx;
@@ -41,13 +46,31 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
 
     // TODO: Ammo and Inventory Management
     #region Unity Methods
-    private void Start()
+    private void OnEnable()
     {
+        // * We want to reset the ammo count when we enable the weapon, this is useful for when we switch weapons or when we pick up a new weapon
         _currentAmmoOnMagazine = weaponData.MagazineSize;
         _currentAmmoOnReserves = weaponData.TotalAmmo; // TODO: For now we are hard coding this but then we will need to change this to be based on the player's inventory or something like that
         OnAmmoChanged?.Invoke(_currentAmmoOnMagazine, _currentAmmoOnReserves); // * When we initialize the weapon we want to update the UI with the current ammo count on the magazine
+    }
 
+    private void Start()
+    {
         InitializeFireMode();
+    }
+
+    private void Update()
+    {
+        _fireTimer -= Time.deltaTime;
+        _currentFireMode?.Tick(Time.deltaTime);
+        if (_wantsToFire && _fireTimer <= 0f && HasAmmo())
+        {
+            Shoot();
+            OnShoot?.Invoke();
+            ConsumeAmmo(1); // todo: yes we are hard coding this for now but then we will need to change this to be based on the weapons data
+            _fireTimer = SecondBetweenShots;
+        }
+        _wantsToFire = false; // * We set this to false because we only want to shoot once per trigger press, the fire mode will handle the logic for automatic weapons or burst fire weapons
     }
 
     #endregion
@@ -82,9 +105,16 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     // TODO: Expand into different reload systems
     #region Weapon Actions
 
-    public void OnTriggerPressed() => _currentFireMode?.OnTriggerPressed();
+    /*
+        This is called whenever the player presses the trigger,we set the intent to fire
+    */
+    public void RequestFire() => _wantsToFire = true;
 
-    public void OnTriggerReleased() => _currentFireMode?.OnTriggerReleased();
+    public void StopFiring()
+    {
+        _currentFireMode?.OnTriggerReleased();
+        _wantsToFire = false;
+    }
 
     public void ConsumeAmmo(int amount)
     {

@@ -18,9 +18,6 @@ namespace Combat.FireModes
 
         public virtual void OnTriggerReleased() { }
 
-        public virtual void Tick(float deltaTime)
-        {
-            throw new System.NotImplementedException();
-        }
+        public virtual void Tick(float deltaTime) { }
     }
 }

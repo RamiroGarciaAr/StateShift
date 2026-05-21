@@ -7,8 +7,9 @@ using UnityEngine;
 //TODO: We are going to change this system to only shoot the current weapon
 public class WeaponInventory : MonoBehaviour
 {
-    [SerializeField] private List<WeaponBase> weaponList = new();
- 
+    [SerializeField]
+    private List<WeaponBase> weaponList = new();
+
     public static event Action<string> OnWeaponChanged;
     private int _currentWeaponIndex = 0;
 
@@ -19,6 +20,7 @@ public class WeaponInventory : MonoBehaviour
         PlayerInput.OnShoot += HandleShoot;
         //PlayerInput.OnReload += HandleReload;
     }
+
     private void OnDestroy()
     {
         PlayerInput.OnChangeWeapon -= NextWeapon;
@@ -28,17 +30,20 @@ public class WeaponInventory : MonoBehaviour
 
     private void HandleShoot(bool pressed)
     {
-        
-        if (weaponList.Count == 0) return;
+        if (weaponList.Count == 0)
+            return;
         WeaponBase current = weaponList[_currentWeaponIndex];
 
-        if (pressed) current.OnTriggerPressed();
-        else current.OnTriggerReleased();
+        if (pressed)
+            current.RequestFire();
+        else
+            current.StopFiring();
     }
 
     public void NextWeapon()
     {
-        if (weaponList.Count == 0) return;
+        if (weaponList.Count == 0)
+            return;
         UnequipCurrentWeapon();
         _currentWeaponIndex = (_currentWeaponIndex + 1) % weaponList.Count;
         EquipCurrentWeapon();
@@ -46,7 +51,8 @@ public class WeaponInventory : MonoBehaviour
 
     private void EquipCurrentWeapon()
     {
-        if (weaponList.Count == 0) return;
+        if (weaponList.Count == 0)
+            return;
 
         WeaponBase weapon = weaponList[_currentWeaponIndex];
         OnWeaponChanged?.Invoke(weapon.GetWeaponName());
@@ -56,13 +62,11 @@ public class WeaponInventory : MonoBehaviour
 
     private void UnequipCurrentWeapon()
     {
-        if (weaponList.Count == 0) return;
+        if (weaponList.Count == 0)
+            return;
 
         WeaponBase weapon = weaponList[_currentWeaponIndex];
         weapon.Unequip();
         weapon.gameObject.SetActive(false);
     }
-
-    
-
 }
