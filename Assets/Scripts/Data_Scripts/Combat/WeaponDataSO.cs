@@ -35,6 +35,10 @@ public class WeaponDataSO : ScriptableObject
     [SerializeField]
     private float damageAmount;
 
+    [Header("Damage Drop Off")]
+    [SerializeField]
+    private DamageDropoff damageDropoff;
+
     public DamageType DamageType => damageType;
     public float DamageAmount => damageAmount;
 
@@ -71,10 +75,6 @@ public class WeaponDataSO : ScriptableObject
     public GameObject ProjectilePrefab => projectilePrefab;
     public float ProjectileSpeed => projectileSpeed;
     public float ProjectileLifetime => projectileLifetime;
-
-    [Header("Damage Drop Off")]
-    [SerializeField]
-    private DamageDropoff damageDropoff;
 
     public float GetDamageMultiplierAtDistance(float distance) =>
         damageDropoff.GetDamageMultiplierAtDistance(distance);
