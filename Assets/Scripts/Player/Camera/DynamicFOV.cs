@@ -1,37 +1,60 @@
 using UnityEngine;
-using Cinemachine;
 
 public class DynamicFOV : MonoBehaviour
 {
     [Header("FOV Settings")]
-    [SerializeField] private float baseFOV = 90f;
-    [SerializeField] private float maxFOVIncrease = 20f;
-    [SerializeField] private float fovTransitionSpeed = 5f;
-    
+    [SerializeField]
+    private float baseFOV = 90f;
+
+    [SerializeField]
+    private float maxFOVIncrease = 20f;
+
+    [SerializeField]
+    private float fovTransitionSpeed = 5f;
+
     [Header("Speed Settings")]
-    [SerializeField] private float speedThreshold = 7f;
-    [SerializeField] private float maxSpeedForFOV = 15f;
-    [SerializeField] private AnimationCurve fovCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
-    
+    [SerializeField]
+    private float speedThreshold = 7f;
+
+    [SerializeField]
+    private float maxSpeedForFOV = 15f;
+
+    [SerializeField]
+    private AnimationCurve fovCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
     [Header("Advanced")]
-    [SerializeField] private bool ignoreVerticalVelocity = true;
-    [SerializeField] private float velocitySmoothing = 0.1f;
-    
+    [SerializeField]
+    private bool ignoreVerticalVelocity = true;
+
+    [SerializeField]
+    private float velocitySmoothing = 0.1f;
+
     private Rigidbody targetRigidbody;
-    private CinemachineVirtualCamera virtualCamera;
+
+    [SerializeField]
+    private Camera targetCamera;
     private float _targetFOV;
     private float _currentVelocity;
     private float _smoothedSpeed;
     private float _speedVelocity;
 
     private void Awake()
-    {        
-        // Detectar si estamos usando Cinemachine
-        if (virtualCamera == null)
+    {
+        //We try to auto-assign the camera and rigidbody if not set, but we log errors if we can't find them so the developer can fix it.
+        if (targetCamera == null)
         {
-            virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+            targetCamera = Camera.main;
+            if (targetCamera == null)
+            {
+                Debug.LogError(
+                    "[DynamicFOV] No camera assigned and Camera.main is null. Assign a camera in the inspector or tag your camera as 'MainCamera'.",
+                    this
+                );
+                enabled = false;
+                return;
+            }
         }
-        
+
         var playerGo = GameObject.FindWithTag("Player");
         if (playerGo != null)
         {
@@ -39,40 +62,43 @@ public class DynamicFOV : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("No se encontró un GameObject con la etiqueta 'Player' para asignar el Rigidbody objetivo.", this);
+            Debug.LogWarning(
+                "[DynamicFOV] Could not find Player GameObject with Rigidbody. Dynamic FOV will not work.",
+                this
+            );
         }
         _targetFOV = baseFOV;
     }
 
     private void Start()
     {
-        virtualCamera.m_Lens.FieldOfView = baseFOV;
+        targetCamera.fieldOfView = baseFOV;
     }
 
     private void LateUpdate()
     {
-        if (targetRigidbody == null) return; 
+        if (targetRigidbody == null)
+            return;
         UpdateFOV();
     }
 
     private void UpdateFOV()
     {
         Vector3 velocity = targetRigidbody.velocity;
-        
+
         if (ignoreVerticalVelocity)
         {
             velocity = new Vector3(velocity.x, 0, velocity.z);
         }
-        
+
         float currentSpeed = velocity.magnitude;
-        
+
         _smoothedSpeed = Mathf.SmoothDamp(
             _smoothedSpeed,
             currentSpeed,
             ref _speedVelocity,
             velocitySmoothing
         );
-        
 
         if (_smoothedSpeed < speedThreshold)
         {
@@ -89,14 +115,13 @@ public class DynamicFOV : MonoBehaviour
 
             _targetFOV = baseFOV + (maxFOVIncrease * curveValue);
         }
-        
-        virtualCamera.m_Lens.FieldOfView = Mathf.SmoothDamp(
-            virtualCamera.m_Lens.FieldOfView,
+
+        targetCamera.fieldOfView = Mathf.SmoothDamp(
+            targetCamera.fieldOfView,
             _targetFOV,
             ref _currentVelocity,
             1f / fovTransitionSpeed
         );
-    
     }
 
     public void SetBaseFOV(float newBaseFOV)
@@ -105,10 +130,9 @@ public class DynamicFOV : MonoBehaviour
     }
 
     public float GetTargetFOV() => _targetFOV;
-    
+
     public float GetCurrentFOV()
     {
-        return virtualCamera.m_Lens.FieldOfView;
+        return targetCamera.fieldOfView;
     }
-
 }
