@@ -38,9 +38,14 @@ namespace Entities.Controllers
         // Look Event
         public static event Action<Vector2> OnLook;
 
+        // Movement Events
+        public static event Action<Vector2> OnMove;
+
         // State Machine
         private StateMachine<MovementState> _stateMachine;
         private PlayerMovementContext _context;
+
+        private Vector2 _lastMovementInput = Vector2.zero;
 
         protected override void Awake()
         {
@@ -111,6 +116,9 @@ namespace Entities.Controllers
             _dashAction.Enable();
             _grappleAction.Enable();
             _lookAction.Enable();
+            _shootAction.Enable();
+            _changeWeaponAction.Enable();
+            _reloadAction.Enable();
         }
 
         private void OnDisable()
@@ -123,6 +131,8 @@ namespace Entities.Controllers
             _grappleAction?.Disable();
             _shootAction?.Disable();
             _lookAction?.Disable();
+            _changeWeaponAction?.Disable();
+            _reloadAction?.Disable();
         }
 
         private void Update()
@@ -153,6 +163,11 @@ namespace Entities.Controllers
             Vector2 movementInput = _moveAction.ReadValue<Vector2>();
             Vector2 direction = CalculateCameraRelativeDirection(movementInput);
 
+            if ((direction - _lastMovementInput).sqrMagnitude > 0.001f)
+            {
+                _lastMovementInput = direction;
+                OnMove?.Invoke(direction);
+            }
             UpdateContext(direction, movementInput);
             _stateMachine.Update();
 
