@@ -11,7 +11,9 @@ public class SpringVector3
     [SerializeField]
     float stiffness = 100f;
 
-    [Tooltip("How much damping the spring has")]
+    [Tooltip(
+        "How much damping the spring has, higher values will make it settle faster but can also make it feel less responsive"
+    )]
     [SerializeField]
     float damping = 10f;
 
