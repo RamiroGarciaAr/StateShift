@@ -23,7 +23,7 @@ MonoBehaviour:
     midRange: 50
     longRange: 100
     longRangeDamage: 53.1
-  roundsPerMinute: 300
+  roundsPerMinute: 500
   magazineSize: 12
   reloadTime: 1.8
   totalAmmo: 120
