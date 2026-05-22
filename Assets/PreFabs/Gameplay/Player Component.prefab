@@ -374,6 +374,10 @@ PrefabInstance:
       propertyPath: cameraTarget
       value: 
       objectReference: {fileID: 4467024200913450026}
+    - target: {fileID: 3770684798369094975, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+      propertyPath: _cameraHolder
+      value: 
+      objectReference: {fileID: 8073576273220641323}
     - target: {fileID: 4172790948691735389, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: slideDrag
       value: 1

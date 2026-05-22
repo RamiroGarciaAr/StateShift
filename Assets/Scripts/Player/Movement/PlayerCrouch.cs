@@ -8,10 +8,12 @@ public class PlayerCrouch : MonoBehaviour
     [SerializeField] private float crouchHeightMultiplier = 0.5f;
     [SerializeField] private float crouchTransitionSpeed = 10f;
     [SerializeField] private Transform cameraTarget;
+    [SerializeField] private Transform _cameraHolder;
     [SerializeField] private CapsuleCollider _collider;
     private float _originalHeight;
     private Vector3 _originalCenter;
     private Vector3 _originalCameraLocalPosition;
+    private Vector3 _originalCameraHolderLocalPosition;
     private float _targetHeight;
     private Vector3 _targetCenter;
     private bool _isCrouching;
@@ -34,6 +36,15 @@ public class PlayerCrouch : MonoBehaviour
             _originalCameraLocalPosition = cameraTarget.localPosition;
         }
 
+        if (_cameraHolder == null)
+        {
+            Debug.LogWarning("Camera Holder not assigned in PlayerCrouch script.");
+        }
+        else
+        {
+            _originalCameraHolderLocalPosition = _cameraHolder.localPosition;
+        }
+
 
     }
 
@@ -41,6 +52,7 @@ public class PlayerCrouch : MonoBehaviour
     {
         UpdateColliderSize();
         UpdateCameraPosition();
+        UpdateMainCameraPosition();
     }
 
     private void UpdateCameraPosition()
@@ -59,6 +71,34 @@ public class PlayerCrouch : MonoBehaviour
             targetCameraPosition,
             Time.fixedDeltaTime * crouchTransitionSpeed
         );
+    }
+
+    /// <summary>
+    /// Drives CameraHolder's local Y to match cameraTarget's local Y.
+    /// Lerps smoothly when crouching; snaps instantly when standing up.
+    /// </summary>
+    private void UpdateMainCameraPosition()
+    {
+        if (_cameraHolder == null || cameraTarget == null) return;
+
+        Vector3 targetPos = new Vector3(
+            _originalCameraHolderLocalPosition.x,
+            cameraTarget.localPosition.y,
+            _originalCameraHolderLocalPosition.z
+        );
+
+        if (_isCrouching)
+        {
+            _cameraHolder.localPosition = Vector3.Lerp(
+                _cameraHolder.localPosition,
+                targetPos,
+                Time.fixedDeltaTime * crouchTransitionSpeed
+            );
+        }
+        else
+        {
+            _cameraHolder.localPosition = targetPos;
+        }
     }
 
     public void SetCrouching(bool crouch)
