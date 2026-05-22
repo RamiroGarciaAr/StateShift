@@ -35,9 +35,9 @@ public class WeaponInventory : MonoBehaviour
         WeaponBase current = weaponList[_currentWeaponIndex];
 
         if (pressed)
-            current.RequestFire();
+            current.OnTriggerPressed();
         else
-            current.StopFiring();
+            current.OnTriggerReleased();
     }
 
     public void NextWeapon()

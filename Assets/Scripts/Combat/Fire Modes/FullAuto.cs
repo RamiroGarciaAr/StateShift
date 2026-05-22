@@ -2,9 +2,16 @@ namespace Combat.FireModes
 {
     public class FullAuto : BaseFireMode
     {
-        public override void OnTriggerPressed()
+        private bool _isFiring;
+
+        public override void OnTriggerPressed() => _isFiring = true;
+
+        public override void OnTriggerReleased() => _isFiring = false;
+
+        public override void Tick(float deltaTime)
         {
-            _weapon.Shoot();
+            if (_isFiring)
+                _weapon.RequestFire();
         }
     }
 }

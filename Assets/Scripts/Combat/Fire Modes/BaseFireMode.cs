@@ -11,10 +11,7 @@ namespace Combat.FireModes
             _weapon = weapon;
         }
 
-        public virtual void OnTriggerPressed()
-        {
-            _weapon.Shoot();
-        }
+        public virtual void OnTriggerPressed() { }
 
         public virtual void OnTriggerReleased() { }
 

@@ -110,6 +110,10 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     */
     public void RequestFire() => _wantsToFire = true;
 
+    public void OnTriggerPressed() => _currentFireMode?.OnTriggerPressed();
+
+    public void OnTriggerReleased() => _currentFireMode?.OnTriggerReleased();
+
     public void StopFiring()
     {
         _currentFireMode?.OnTriggerReleased();
