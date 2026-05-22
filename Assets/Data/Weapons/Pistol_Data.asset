@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: JR-941A
   weaponPrefab: {fileID: 0}
-  availableFireModes: 01000000
-  burstCount: 3
+  availableFireModes: 00000000
+  burstCount: 0
   spreadAngle: 0
   damageType: 0
   damageAmount: 35
