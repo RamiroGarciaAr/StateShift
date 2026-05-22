@@ -14,10 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: JR-941A
   weaponPrefab: {fileID: 0}
-  availableFireModes: 00000000
-  burstCount: 0
+  availableFireModes: 01000000
+  burstCount: 3
+  spreadAngle: 0
   damageType: 0
   damageAmount: 35
+  damageDropoff:
+    midRange: 50
+    longRange: 100
+    longRangeDamage: 53.1
   roundsPerMinute: 300
   magazineSize: 12
   reloadTime: 1.8
@@ -25,55 +30,3 @@ MonoBehaviour:
   projectilePrefab: {fileID: 4128576527009579452, guid: 2a5d9a4da5b4a77459e68d230c4ca324, type: 3}
   projectileSpeed: 1000
   projectileLifetime: 3
-  dropOffMaxRange: 60
-  damageDropOffCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: -0.0066195126
-      outSlope: -0.0066195126
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.27765024
-      value: 0.9981621
-      inSlope: -0.039118007
-      outSlope: -0.039118007
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.16383167
-      outWeight: 0.3710692
-    - serializedVersion: 3
-      time: 0.2782177
-      value: 0.77594984
-      inSlope: 0.010734285
-      outSlope: 0.010734285
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.4648389
-    - serializedVersion: 3
-      time: 0.79863185
-      value: 0.74621624
-      inSlope: -0.088441
-      outSlope: -0.088441
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.3384231
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1.0052358
-      value: 0.5047188
-      inSlope: -1.6335914
-      outSlope: -1.6335914
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.5193229
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4

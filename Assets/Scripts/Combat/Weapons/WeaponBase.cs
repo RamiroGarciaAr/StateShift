@@ -9,7 +9,7 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     [SerializeField]
     protected WeaponDataSO weaponData;
 
-    public float SecondBetweenShots => weaponData.SecondsBetweenShots;
+    public float SecondsBetweenShots => weaponData.SecondsBetweenShots;
     public int BurstCount => weaponData.BurstCount;
 
     [SerializeField]
@@ -68,7 +68,7 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
             Shoot();
             OnShoot?.Invoke();
             ConsumeAmmo(1); // todo: yes we are hard coding this for now but then we will need to change this to be based on the weapons data
-            _fireTimer = SecondBetweenShots;
+            _fireTimer = SecondsBetweenShots;
         }
         _wantsToFire = false; // * We set this to false because we only want to shoot once per trigger press, the fire mode will handle the logic for automatic weapons or burst fire weapons
     }
