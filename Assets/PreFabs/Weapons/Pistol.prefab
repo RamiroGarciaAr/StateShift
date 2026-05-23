@@ -764,7 +764,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2215
+  m_VersionIndex: 2218
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -890,6 +890,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7338434795744371695}
   - component: {fileID: 2940893051205936579}
+  - component: {fileID: 3335180886449969153}
   m_Layer: 0
   m_Name: Pistol
   m_TagString: Untagged
@@ -927,6 +928,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponData: {fileID: 11400000, guid: f8c0f805e244ab0488364ba265b64979, type: 2}
   muzzlePos: {fileID: 0}
+--- !u!114 &3335180886449969153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6579536410942975142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff20b0193c58db74a86c9998cc3dde96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  swayPivot: {fileID: 9005622021203118513}
+  recoilPivot: {fileID: 7636421241877084449}
+  bobPivot: {fileID: 5483282936837120564}
+  swayModule: {fileID: 0}
+  recoilModule: {fileID: 1275441440741029969}
+  bobModule: {fileID: 0}
 --- !u!1 &7116972037923160216
 GameObject:
   m_ObjectHideFlags: 0
