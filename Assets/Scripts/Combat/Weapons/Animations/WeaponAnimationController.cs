@@ -28,11 +28,16 @@ public class WeaponAnimationController : MonoBehaviour
     [SerializeField]
     private WeaponBobModule bobModule;
 
+    [Header("Animator")]
+    [SerializeField]
+    private Animator animator;
+
     private void OnEnable()
     {
         PlayerInput.OnLook += HandleLook;
         WeaponBase.OnShoot += HandleShoot;
         PlayerInput.OnMove += HandleMove;
+        WeaponBase.OnReloadAnimation += HandleReload;
     }
 
     private void OnDisable()
@@ -40,6 +45,7 @@ public class WeaponAnimationController : MonoBehaviour
         PlayerInput.OnLook -= HandleLook;
         WeaponBase.OnShoot -= HandleShoot;
         PlayerInput.OnMove -= HandleMove;
+        WeaponBase.OnReloadAnimation -= HandleReload;
     }
 
     private void LateUpdate()
@@ -63,4 +69,10 @@ public class WeaponAnimationController : MonoBehaviour
     private void HandleShoot() => recoilModule.ApplyRecoil();
 
     private void HandleMove(Vector2 moveInput) => bobModule.ApplyBob(moveInput);
+
+    private void HandleReload(float animationSpeed)
+    {
+        animator.speed = animationSpeed;
+        animator.SetTrigger("Reload");
+    }
 }

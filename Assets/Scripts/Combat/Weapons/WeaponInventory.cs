@@ -18,14 +18,12 @@ public class WeaponInventory : MonoBehaviour
         EquipCurrentWeapon();
         PlayerInput.OnChangeWeapon += NextWeapon;
         PlayerInput.OnShoot += HandleShoot;
-        //PlayerInput.OnReload += HandleReload;
     }
 
     private void OnDestroy()
     {
         PlayerInput.OnChangeWeapon -= NextWeapon;
         PlayerInput.OnShoot -= HandleShoot;
-        //PlayerInput.OnReload -= HandleReload;
     }
 
     private void HandleShoot(bool pressed)

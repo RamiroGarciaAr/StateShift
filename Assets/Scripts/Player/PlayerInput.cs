@@ -157,7 +157,10 @@ namespace Entities.Controllers
                 OnChangeWeapon?.Invoke();
 
             if (_reloadAction.WasPressedThisFrame())
+            {
                 OnReload?.Invoke();
+                Debug.Log("Reload");
+            }
 
             //Movement Actions
             Vector2 movementInput = _moveAction.ReadValue<Vector2>();

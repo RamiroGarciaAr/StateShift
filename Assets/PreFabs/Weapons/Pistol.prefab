@@ -764,7 +764,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2218
+  m_VersionIndex: 2227
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -856,6 +856,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1354695397455211300}
+  - component: {fileID: 8693971742260116473}
   m_Layer: 0
   m_Name: Mesh
   m_TagString: Untagged
@@ -880,6 +881,27 @@ Transform:
   - {fileID: 290293262382783823}
   m_Father: {fileID: 7636421241877084449}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &8693971742260116473
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5040761247672832417}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 427948ec1234db9449b96cf6756eabe9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6579536410942975142
 GameObject:
   m_ObjectHideFlags: 0
@@ -955,6 +977,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9005622021203118513}
+  - component: {fileID: 8432078212544909428}
   m_Layer: 0
   m_Name: SwayPivot
   m_TagString: Untagged
@@ -978,6 +1001,27 @@ Transform:
   - {fileID: 5483282936837120564}
   m_Father: {fileID: 7338434795744371695}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8432078212544909428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7116972037923160216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d7b37fd7bf86d94dbc8e743ba655f09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  swayAmount: 0.08
+  swaySpringRotation:
+    stiffness: 100
+    damping: 10
+  breathAmplitude: 0.25
+  breathFrequency: 5
+  swaySpringPosition:
+    stiffness: 1
+    damping: 100
 --- !u!1 &8448587952256270149
 GameObject:
   m_ObjectHideFlags: 0
