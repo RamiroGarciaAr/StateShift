@@ -7,10 +7,12 @@ public class CameraRecoilModule : MonoBehaviour
 {
     [Header("Vertical Accumulation")]
     [Tooltip("The maximum vertical recoil multiplier that can be applied.")]
+    [Range(1f, 5f)]
     [SerializeField]
     private float maxVerticalRecoilMult = 3f;
 
     [Tooltip("The rate at which vertical recoil accumulates.")]
+    [Range(0.1f, 10f)]
     [SerializeField]
     private float verticalGrowthRate = 3f;
 
@@ -19,19 +21,23 @@ public class CameraRecoilModule : MonoBehaviour
 
     [Header("Horizontal Accumulation")]
     [Tooltip("The maximum horizontal recoil multiplier that can be applied.")]
+    [Range(0.1f, 5f)]
     [SerializeField]
     private float maxHorizontalRecoilWindow = 1f;
 
     [Tooltip("The rate at which horizontal recoil accumulates.")]
+    [Range(0.1f, 10f)]
     [SerializeField]
     private float horizontalGrowthRate = 2f;
 
     [Header("Shot Tracking")]
     [Tooltip("The number of shots required to reach maximum recoil.")]
+    [Range(1, 20)]
     [SerializeField]
     private int shotsToMaxRecoil = 10;
 
     [Tooltip("The time after which recoil starts to reset if no shots are fired.")]
+    [Range(0.1f, 1f)]
     [SerializeField]
     private float recoilResetTime = 0.3f;
 
@@ -56,13 +62,13 @@ public class CameraRecoilModule : MonoBehaviour
     {
         _resetTimer -= Time.deltaTime;
         if (_resetTimer <= 0f)
-        {
-            _shotsFired = 0; // Reset shots fired when the timer runs out
-        }
-        // Update the camera recoil spring each frame
+            _shotsFired = 0;
+
         cameraRecoilSpring.Update(Time.deltaTime);
-        // Apply the recoil offset to the camera's local rotation
-        transform.localRotation = Quaternion.Euler(cameraRecoilSpring.Value);
+
+        Vector3 val = cameraRecoilSpring.Value;
+        if (!float.IsNaN(val.x) && !float.IsNaN(val.y) && !float.IsNaN(val.z))
+            transform.localRotation = Quaternion.Euler(val);
     }
 
     private void HandleWeaponFired()
