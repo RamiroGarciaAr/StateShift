@@ -26,7 +26,7 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     public static event Action<int, int> OnAmmoChanged; // * Ammo count after shot, can be used to update UI (current ammo on magazine, current ammo on reserves)
     public static event Action OnShoot; // * Event to trigger whenever the weapon is fired, this can be used to trigger the bloom effect on the crosshair or other effects that should happen when the weapon is fired
 
-    //Todo: We might want to change this system to a more tighly coupled system where the weapon directly communicates with the UI and other systems instead of using events, but for now we will keep it simple and use events to decouple the systems
+    //TODO: We might want to change this system to a more tighly coupled system where the weapon directly communicates with the UI and other systems instead of using events, but for now we will keep it simple and use events to decouple the systems
     public static event Action<float> OnReloadAnimation; // * Event to trigger whenever the weapon is reloaded, this can be used to trigger the reload animation or other effects that should happen when the weapon is reloaded
 
     /// <summary>
