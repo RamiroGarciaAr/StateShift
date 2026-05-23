@@ -2648,6 +2648,34 @@ PrefabInstance:
       propertyPath: m_Icon
       value: 
       objectReference: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
+    - target: {fileID: 1275441440741029969, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
+      propertyPath: recoilAmount
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 1275441440741029969, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
+      propertyPath: kickbackAmount
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1275441440741029969, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
+      propertyPath: recoilShakeAmount
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1275441440741029969, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
+      propertyPath: recoilSpringPosition.damping
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1275441440741029969, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
+      propertyPath: recoilSpringRotation.damping
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1275441440741029969, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
+      propertyPath: recoilSpringPosition.stiffness
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 1275441440741029969, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
+      propertyPath: recoilSpringRotation.stiffness
+      value: 500
+      objectReference: {fileID: 0}
     - target: {fileID: 1354695397455211300, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.22300005
@@ -2664,6 +2692,10 @@ PrefabInstance:
       propertyPath: muzzlePos
       value: 
       objectReference: {fileID: 53543381}
+    - target: {fileID: 3335180886449969153, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 890605036}
     - target: {fileID: 3335180886449969153, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
       propertyPath: bobModule
       value: 
@@ -2722,7 +2754,7 @@ PrefabInstance:
       objectReference: {fileID: 943776508}
     - target: {fileID: 6632174613987314061, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
       propertyPath: m_VersionIndex
-      value: 2364
+      value: 2367
       objectReference: {fileID: 0}
     - target: {fileID: 6632174613987314061, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -7548,6 +7580,11 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!95 &890605036 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8693971742260116473, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
+  m_PrefabInstance: {fileID: 376499559}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &942936096 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4030431382076337180, guid: 10cc46af66363a448a1785d80c3bf725, type: 3}
