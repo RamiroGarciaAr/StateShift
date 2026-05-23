@@ -5,8 +5,11 @@ namespace Health
     [System.Serializable]
     public class HealthChunk
     {
-        [SerializeField] private float maxHealth;
-        [SerializeField] private HealthType healthType;
+        [SerializeField]
+        private float maxHealth;
+
+        [SerializeField]
+        private HealthType healthType;
 
         private float _currentHealth;
 
@@ -25,7 +28,8 @@ namespace Health
 
         public float ApplyDamage(float damage)
         {
-            if (IsDepleted) return damage;
+            if (IsDepleted)
+                return damage;
 
             float absorbed = Mathf.Min(damage, _currentHealth);
             _currentHealth = Mathf.Max(0f, _currentHealth - damage);

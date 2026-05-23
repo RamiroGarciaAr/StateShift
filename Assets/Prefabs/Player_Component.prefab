@@ -4522,9 +4522,7 @@ PrefabInstance:
       propertyPath: m_Lens.NearClipPlane
       value: 0.01
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 3423541954222810910, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
-    - {fileID: 7904665720718998928, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 2772031387368687642, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
     m_AddedGameObjects:
@@ -4650,14 +4648,6 @@ PrefabInstance:
       propertyPath: animator
       value: 
       objectReference: {fileID: 5304593332652887213}
-    - target: {fileID: 3335180886449969153, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
-      propertyPath: bobModule
-      value: 
-      objectReference: {fileID: 1217375323813080290}
-    - target: {fileID: 3335180886449969153, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
-      propertyPath: swayModule
-      value: 
-      objectReference: {fileID: 4917439100116543264}
     - target: {fileID: 5040761247672832417, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
       propertyPath: m_Name
       value: Pistol_Mesh
@@ -4700,7 +4690,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6632174613987314061, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
       propertyPath: m_VersionIndex
-      value: 2370
+      value: 2376
       objectReference: {fileID: 0}
     - target: {fileID: 6632174613987314061, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -5309,10 +5299,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8448587952256270149, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1217375323813080290}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
 --- !u!114 &1867485441462604439 stripped
 MonoBehaviour:
@@ -5330,43 +5317,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 290293262382783823, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
   m_PrefabInstance: {fileID: 3547291397757138772}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &4901582437055580177 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8448587952256270149, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
-  m_PrefabInstance: {fileID: 3547291397757138772}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1217375323813080290
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4901582437055580177}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab0f42dc4a4c55849a7cdd6fd7969217, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bobFrequency: 9
-  bobAmplitude: 0.01
-  bobRotationAmount: 2
-  bobSpringPosition:
-    stiffness: 120
-    damping: 14
-  bobSpringRotation:
-    stiffness: 50
-    damping: 12
---- !u!114 &4917439100116543264 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8432078212544909428, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
-  m_PrefabInstance: {fileID: 3547291397757138772}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d7b37fd7bf86d94dbc8e743ba655f09, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &5304593332652887213 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 8693971742260116473, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}

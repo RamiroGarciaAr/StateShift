@@ -46,6 +46,12 @@ namespace Entities.Controllers
         private PlayerMovementContext _context;
 
         private Vector2 _lastMovementInput = Vector2.zero;
+        private Camera cam;
+
+        private void Start()
+        {
+            cam = Camera.main;
+        }
 
         protected override void Awake()
         {
@@ -188,7 +194,6 @@ namespace Entities.Controllers
         //TODO: THIS IS A TEMPORARY SOLUTION, IDEALLY THE INPUT SYSTEM SHOULD BE ABSTRACTED AWAY AND NOT KNOW ANYTHING ABOUT THE CAMERA OR HOW THE CHARACTER MOVES
         private Vector2 CalculateCameraRelativeDirection(Vector2 input)
         {
-            var cam = Camera.main;
             if (cam != null)
             {
                 var camTransform = cam.transform;
