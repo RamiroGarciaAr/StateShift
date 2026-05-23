@@ -2754,7 +2754,7 @@ PrefabInstance:
       objectReference: {fileID: 943776508}
     - target: {fileID: 6632174613987314061, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
       propertyPath: m_VersionIndex
-      value: 2367
+      value: 2370
       objectReference: {fileID: 0}
     - target: {fileID: 6632174613987314061, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -3359,6 +3359,10 @@ PrefabInstance:
     - target: {fileID: 7338434795744371695, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8432078212544909428, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
+      propertyPath: swayAmount
+      value: 0.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11578,6 +11582,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab0f42dc4a4c55849a7cdd6fd7969217, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bobFrequency: 9
+  bobAmplitude: 0.01
+  bobRotationAmount: 2
+  bobSpringPosition:
+    stiffness: 120
+    damping: 14
+  bobSpringRotation:
+    stiffness: 50
+    damping: 12
 --- !u!43 &1024651209
 Mesh:
   m_ObjectHideFlags: 0

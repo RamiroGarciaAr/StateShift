@@ -34,17 +34,22 @@ public class WeaponBobModule : MonoBehaviour
         if (_moveInput.sqrMagnitude > 0.01f)
         {
             float bobPhase = Time.time * bobFrequency;
+            float forwardness = Mathf.Abs(_moveInput.y);
+            float strafeness = Mathf.Abs(_moveInput.x);
+            float verticalBob =
+                Mathf.Sin(bobPhase) * bobAmplitude * Mathf.Max(forwardness, strafeness * 0.5f);
             // position bob
             bobSpringPosition.SetTarget(
-                new Vector3(
-                    _moveInput.x * bobAmplitude,
-                    Mathf.Sin(bobPhase) * bobAmplitude,
-                    _moveInput.y * bobAmplitude
-                )
+                new Vector3(strafeness * bobAmplitude, verticalBob, _moveInput.y * bobAmplitude)
             );
             // rotation bob
+            float strafeRoll = -_moveInput.x * bobRotationAmount * 2f;
             bobSpringRotation.SetTarget(
-                new Vector3(_moveInput.y * bobRotationAmount, _moveInput.x * bobRotationAmount, 0f)
+                new Vector3(
+                    _moveInput.y * bobRotationAmount,
+                    _moveInput.x * bobRotationAmount,
+                    strafeRoll
+                )
             );
         }
         else
