@@ -30,20 +30,24 @@ public class WeaponSwayModule : MonoBehaviour
     public Vector3 RotationValue => swaySpringRotation.Value;
     public Vector3 PositionValue => swaySpringPosition.Value;
 
-    private void LateUpdate()
-    {
-        swaySpringRotation.Update(Time.deltaTime);
-        swaySpringPosition.Update(Time.deltaTime);
-    }
+    private Vector3 _swayTarget;
 
     public void ApplySway(Vector2 lookInput)
     {
-        swaySpringRotation.AddImpulse(
-            new Vector3(-lookInput.y * swayAmount, lookInput.x * swayAmount, 0f)
-        );
+        _swayTarget = new Vector3(-lookInput.y * swayAmount, lookInput.x * swayAmount, 0f);
+    }
 
-        swaySpringPosition.AddImpulse(
-            new Vector3(0f, Mathf.Sin(Time.time * breathFrequency) * (breathAmplitude / 100f), 0f)
-        );
+    private void LateUpdate()
+    {
+        // Sway decays back to zero over time
+        _swayTarget = Vector3.Lerp(_swayTarget, Vector3.zero, Time.deltaTime * 8f);
+        swaySpringRotation.SetTarget(_swayTarget);
+
+        // Breathing drives position independently
+        float breath = Mathf.Sin(Time.time * breathFrequency) * breathAmplitude;
+        swaySpringPosition.SetTarget(new Vector3(0f, breath, 0f));
+
+        swaySpringRotation.Update(Time.deltaTime);
+        swaySpringPosition.Update(Time.deltaTime);
     }
 }

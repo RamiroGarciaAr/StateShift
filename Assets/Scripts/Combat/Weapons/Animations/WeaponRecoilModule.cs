@@ -14,6 +14,9 @@ public class WeaponRecoilModule : MonoBehaviour
     private float kickbackAmount = 0.1f;
 
     [SerializeField]
+    private float recoilMultiplier = 1f;
+
+    [SerializeField]
     private SpringVector3 recoilSpringRotation = new SpringVector3();
 
     [SerializeField]
@@ -31,7 +34,11 @@ public class WeaponRecoilModule : MonoBehaviour
     public void ApplyRecoil()
     {
         recoilSpringRotation.AddImpulse(
-            new Vector3(-recoilAmount, Random.Range(-recoilShakeAmount, recoilShakeAmount), 0f)
+            new Vector3(
+                -recoilAmount * recoilMultiplier,
+                Random.Range(-recoilShakeAmount, recoilShakeAmount),
+                0f
+            )
         );
         recoilSpringPosition.AddImpulse(new Vector3(0f, 0f, -kickbackAmount));
     }
