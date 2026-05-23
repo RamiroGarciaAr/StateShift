@@ -79,6 +79,7 @@ MonoBehaviour:
   recoilAmount: 200
   recoilShakeAmount: 50
   kickbackAmount: 2.5
+  recoilMultiplier: 1
   recoilSpringRotation:
     stiffness: 200
     damping: 15
@@ -968,6 +969,7 @@ MonoBehaviour:
   swayModule: {fileID: 0}
   recoilModule: {fileID: 1275441440741029969}
   bobModule: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!1 &7116972037923160216
 GameObject:
   m_ObjectHideFlags: 0
@@ -1031,6 +1033,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5483282936837120564}
+  - component: {fileID: 8452569508790261454}
   m_Layer: 0
   m_Name: BobPivot
   m_TagString: Untagged
@@ -1054,3 +1057,24 @@ Transform:
   - {fileID: 7636421241877084449}
   m_Father: {fileID: 9005622021203118513}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8452569508790261454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8448587952256270149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab0f42dc4a4c55849a7cdd6fd7969217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bobFrequency: 9
+  bobAmplitude: 0.02
+  bobRotationAmount: 2
+  bobSpringPosition:
+    stiffness: 120
+    damping: 14
+  bobSpringRotation:
+    stiffness: 50
+    damping: 12
