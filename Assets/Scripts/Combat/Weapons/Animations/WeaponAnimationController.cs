@@ -5,7 +5,6 @@ using UnityEngine;
 ///  Knows all the Pivots and The events
 ///  Will delegate to the modules
 /// </summary>
-[DefaultExecutionOrder(-10)] // Ensure this runs after other scripts that might trigger the events
 public class WeaponAnimationController : MonoBehaviour
 {
     [Header("Pivots")]
@@ -50,6 +49,9 @@ public class WeaponAnimationController : MonoBehaviour
 
     private void LateUpdate()
     {
+        bobModule.LateUpdate();
+        recoilModule.LateUpdate();
+        swayModule.LateUpdate();
         /*
             Recoil Pivot changes but...maybe we can change it so the module also changes the local position?
             I guess it would be more efficient to only change the local rotation and not the position but...we will see

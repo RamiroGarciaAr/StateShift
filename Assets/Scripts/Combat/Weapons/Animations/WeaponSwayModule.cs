@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[DefaultExecutionOrder(-20)] // Runs before the WeaponAnimationController to ensure the sway is applied before the animation updates
-public class WeaponSwayModule : MonoBehaviour
+public class WeaponSwayModule
 {
     [Header("Sway Settings")]
     [Tooltip("How much the weapon should sway based on the look input")]
@@ -37,7 +34,7 @@ public class WeaponSwayModule : MonoBehaviour
         _swayTarget = new Vector3(-lookInput.y * swayAmount, lookInput.x * swayAmount, 0f);
     }
 
-    private void LateUpdate()
+    public void LateUpdate()
     {
         // Sway decays back to zero over time
         _swayTarget = Vector3.Lerp(_swayTarget, Vector3.zero, Time.deltaTime * 8f);

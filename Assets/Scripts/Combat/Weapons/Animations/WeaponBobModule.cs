@@ -1,7 +1,6 @@
 using UnityEngine;
 
-[DefaultExecutionOrder(-20)] // Runs before the WeaponAnimationController to ensure the bob is applied before the animation updates
-public class WeaponBobModule : MonoBehaviour
+public class WeaponBobModule
 {
     [Header("Bob Settings")]
     [Tooltip("How much the weapon should bob based on the movement input")]
@@ -29,7 +28,7 @@ public class WeaponBobModule : MonoBehaviour
 
     private Vector2 _moveInput;
 
-    private void LateUpdate()
+    public void LateUpdate()
     {
         if (_moveInput.sqrMagnitude > 0.01f)
         {

@@ -1,7 +1,6 @@
 using UnityEngine;
 
-[DefaultExecutionOrder(-20)] // Runs before the WeaponAnimationController to ensure the recoil is applied before the animation updates
-public class WeaponRecoilModule : MonoBehaviour
+public class WeaponRecoilModule
 {
     [Header("Recoil Settings")]
     [SerializeField]
@@ -25,7 +24,7 @@ public class WeaponRecoilModule : MonoBehaviour
     public Vector3 RotationValue => recoilSpringRotation.Value;
     public Vector3 PositionValue => recoilSpringPosition.Value;
 
-    private void LateUpdate()
+    public void LateUpdate()
     {
         recoilSpringRotation.Update(Time.deltaTime);
         recoilSpringPosition.Update(Time.deltaTime);
