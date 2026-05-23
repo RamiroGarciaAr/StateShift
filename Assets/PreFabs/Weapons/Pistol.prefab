@@ -40,7 +40,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7636421241877084449}
-  - component: {fileID: 1275441440741029969}
   m_Layer: 0
   m_Name: RecoilPivot
   m_TagString: Untagged
@@ -64,28 +63,6 @@ Transform:
   - {fileID: 1354695397455211300}
   m_Father: {fileID: 5483282936837120564}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1275441440741029969
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 819087592546690794}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cb1397a4636300429a7865de56eb784, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  recoilAmount: 200
-  recoilShakeAmount: 50
-  kickbackAmount: 2.5
-  recoilMultiplier: 1
-  recoilSpringRotation:
-    stiffness: 200
-    damping: 15
-  recoilSpringPosition:
-    stiffness: 250
-    damping: 18
 --- !u!1 &4481944529832479667
 GameObject:
   m_ObjectHideFlags: 0
@@ -966,9 +943,37 @@ MonoBehaviour:
   swayPivot: {fileID: 9005622021203118513}
   recoilPivot: {fileID: 7636421241877084449}
   bobPivot: {fileID: 5483282936837120564}
-  swayModule: {fileID: 0}
-  recoilModule: {fileID: 1275441440741029969}
-  bobModule: {fileID: 0}
+  swayModule:
+    swayAmount: 0.2
+    swaySpringRotation:
+      stiffness: 100
+      damping: 10
+    breathAmplitude: 0.25
+    breathFrequency: 1
+    swaySpringPosition:
+      stiffness: 100
+      damping: 10
+  recoilModule:
+    recoilAmount: 10
+    recoilShakeAmount: 5
+    kickbackAmount: 0.1
+    recoilMultiplier: 1
+    recoilSpringRotation:
+      stiffness: 100
+      damping: 10
+    recoilSpringPosition:
+      stiffness: 100
+      damping: 10
+  bobModule:
+    bobFrequency: 6
+    bobAmplitude: 0.03
+    bobRotationAmount: 1
+    bobSpringPosition:
+      stiffness: 100
+      damping: 10
+    bobSpringRotation:
+      stiffness: 100
+      damping: 10
   animator: {fileID: 0}
 --- !u!1 &7116972037923160216
 GameObject:
@@ -979,7 +984,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9005622021203118513}
-  - component: {fileID: 8432078212544909428}
   m_Layer: 0
   m_Name: SwayPivot
   m_TagString: Untagged
@@ -1003,27 +1007,6 @@ Transform:
   - {fileID: 5483282936837120564}
   m_Father: {fileID: 7338434795744371695}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8432078212544909428
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7116972037923160216}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d7b37fd7bf86d94dbc8e743ba655f09, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  swayAmount: 0.08
-  swaySpringRotation:
-    stiffness: 100
-    damping: 10
-  breathAmplitude: 0.25
-  breathFrequency: 5
-  swaySpringPosition:
-    stiffness: 1
-    damping: 100
 --- !u!1 &8448587952256270149
 GameObject:
   m_ObjectHideFlags: 0
@@ -1033,7 +1016,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5483282936837120564}
-  - component: {fileID: 8452569508790261454}
   m_Layer: 0
   m_Name: BobPivot
   m_TagString: Untagged
@@ -1057,24 +1039,3 @@ Transform:
   - {fileID: 7636421241877084449}
   m_Father: {fileID: 9005622021203118513}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8452569508790261454
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8448587952256270149}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab0f42dc4a4c55849a7cdd6fd7969217, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bobFrequency: 9
-  bobAmplitude: 0.02
-  bobRotationAmount: 2
-  bobSpringPosition:
-    stiffness: 120
-    damping: 14
-  bobSpringRotation:
-    stiffness: 50
-    damping: 12

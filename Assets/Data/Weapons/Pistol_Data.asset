@@ -20,8 +20,8 @@ MonoBehaviour:
   damageType: 0
   damageAmount: 35
   damageDropoff:
-    midRange: 50
-    longRange: 100
+    midRange: 25
+    longRange: 30
     longRangeDamage: 53.1
   roundsPerMinute: 500
   magazineSize: 12
