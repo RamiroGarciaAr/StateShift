@@ -60,8 +60,8 @@ public class WeaponAnimationController : MonoBehaviour
         swayPivot.localRotation = Quaternion.Euler(swayModule.RotationValue);
         swayPivot.localPosition = swayModule.PositionValue;
 
-        //bobPivot.localRotation = Quaternion.Euler(bobModule.RotationValue);
-        //bobPivot.localPosition = bobModule.PositionValue;
+        bobPivot.localRotation = Quaternion.Euler(bobModule.RotationValue);
+        bobPivot.localPosition = bobModule.PositionValue;
     }
 
     private void HandleLook(Vector2 lookInput) => swayModule.ApplySway(lookInput);

@@ -1,4 +1,3 @@
-using System.ComponentModel.Design;
 using UnityEngine;
 
 [DefaultExecutionOrder(-20)] // Runs before the WeaponAnimationController to ensure the bob is applied before the animation updates
@@ -19,16 +18,44 @@ public class WeaponBobModule : MonoBehaviour
     [SerializeField]
     float bobRotationAmount = 1f;
 
+    [SerializeField]
+    SpringVector3 bobSpringPosition = new SpringVector3();
+
+    [SerializeField]
+    SpringVector3 bobSpringRotation = new SpringVector3();
+
+    public Vector3 RotationValue => bobSpringRotation.Value;
+    public Vector3 PositionValue => bobSpringPosition.Value;
+
+    private Vector2 _moveInput;
+
     private void LateUpdate()
     {
-        // Rotate the weapon based on the movement input
-        float rotationZ = Mathf.Sin(Time.time * bobFrequency) * bobRotationAmount;
-        transform.localRotation = Quaternion.Euler(0f, 0f, rotationZ);
+        if (_moveInput.sqrMagnitude > 0.01f)
+        {
+            float bobPhase = Time.time * bobFrequency;
+            // position bob
+            bobSpringPosition.SetTarget(
+                new Vector3(
+                    _moveInput.x * bobAmplitude,
+                    Mathf.Sin(bobPhase) * bobAmplitude,
+                    _moveInput.y * bobAmplitude
+                )
+            );
+            // rotation bob
+            bobSpringRotation.SetTarget(
+                new Vector3(_moveInput.y * bobRotationAmount, _moveInput.x * bobRotationAmount, 0f)
+            );
+        }
+        else
+        {
+            bobSpringPosition.SetTarget(Vector3.zero);
+            bobSpringRotation.SetTarget(Vector3.zero);
+        }
+
+        bobSpringPosition.Update(Time.deltaTime);
+        bobSpringRotation.Update(Time.deltaTime);
     }
 
-    public void ApplyBob(Vector2 moveInput)
-    {
-        float bobX = Mathf.Sin(Time.time * bobFrequency) * bobAmplitude;
-        float bobY = Mathf.Cos(Time.time * bobFrequency * 2f) * bobAmplitude;
-    }
+    public void ApplyBob(Vector2 moveInput) => _moveInput = moveInput;
 }
