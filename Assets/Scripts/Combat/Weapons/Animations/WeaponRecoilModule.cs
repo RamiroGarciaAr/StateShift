@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//TODO: We need to expand this and make it so we have
 [System.Serializable]
 public class WeaponRecoilModule
 {

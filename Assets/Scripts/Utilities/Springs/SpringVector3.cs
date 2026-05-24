@@ -23,18 +23,6 @@ public class SpringVector3
             -stiffness * (currentValue - targetValue) - damping * currentVelocity;
         currentVelocity += acceleration * deltaTime;
         currentValue += currentVelocity * deltaTime;
-
-        // Safety: reset if values explode
-        if (
-            float.IsNaN(currentValue.x)
-            || float.IsNaN(currentValue.y)
-            || float.IsNaN(currentValue.z)
-            || currentValue.sqrMagnitude > 1e8f
-        )
-        {
-            currentValue = Vector3.zero;
-            currentVelocity = Vector3.zero;
-        }
     }
 
     public void AddImpulse(Vector3 impulse) => currentVelocity += impulse; // Add an impulse to the current velocity

@@ -51,7 +51,7 @@ public class WeaponAnimationController : MonoBehaviour
     {
         bobModule.LateUpdate();
         recoilModule.LateUpdate();
-        swayModule.LateUpdate();
+        swayModule.Tick(Time.deltaTime);
         /*
             Recoil Pivot changes but...maybe we can change it so the module also changes the local position?
             I guess it would be more efficient to only change the local rotation and not the position but...we will see
@@ -59,8 +59,10 @@ public class WeaponAnimationController : MonoBehaviour
         recoilPivot.localRotation = Quaternion.Euler(recoilModule.RotationValue);
         recoilPivot.localPosition = recoilModule.PositionValue;
 
-        swayPivot.localRotation = Quaternion.Euler(swayModule.RotationValue);
-        swayPivot.localPosition = swayModule.PositionValue;
+        var swayPose = swayModule.AnimationPose;
+
+        swayPivot.localRotation = swayPose.rotation;
+        swayPivot.localPosition = swayPose.position;
 
         bobPivot.localRotation = Quaternion.Euler(bobModule.RotationValue);
         bobPivot.localPosition = bobModule.PositionValue;
