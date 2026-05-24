@@ -14831,7 +14831,7 @@ PrefabInstance:
       objectReference: {fileID: 1707879945}
     - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: swayModule.swayAmount
-      value: 0.162
+      value: 0.272
       objectReference: {fileID: 0}
     - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: swayModule.breathAmplitude
@@ -14840,6 +14840,14 @@ PrefabInstance:
     - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: recoilModule.kickbackAmount
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: swayModule.swaySpringRotation.damping
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: swayModule.swaySpringPosition.stiffness
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: swayModule.swaySpringRotation.stiffness
@@ -14911,7 +14919,7 @@ PrefabInstance:
       objectReference: {fileID: 6330237}
     - target: {fileID: 7867987661234847449, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_VersionIndex
-      value: 2415
+      value: 2424
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4917439100116543264, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}

@@ -37,10 +37,7 @@ public class WeaponSwayModule
 
     public void LateUpdate()
     {
-        // Sway decays back to zero over time
-        _swayTarget = Vector3.Lerp(_swayTarget, Vector3.zero, Time.deltaTime * 8f);
         swaySpringRotation.SetTarget(_swayTarget);
-
         // Breathing drives position independently
         float breath = Mathf.Sin(Time.time * breathFrequency) * breathAmplitude;
         swaySpringPosition.SetTarget(new Vector3(0f, breath, 0f));
