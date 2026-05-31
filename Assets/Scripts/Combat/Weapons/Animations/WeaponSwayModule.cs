@@ -21,7 +21,6 @@ public class WeaponSwayModule : MonoBehaviour, IAnimationModule
 
     public void ApplySway(Vector2 lookInput)
     {
-        Debug.Log(lookInput);
         _swayTarget = new Vector3(
             -lookInput.y * weaponSwayConfigSO.swayAmount,
             lookInput.x * weaponSwayConfigSO.swayAmount,
@@ -31,7 +30,6 @@ public class WeaponSwayModule : MonoBehaviour, IAnimationModule
 
     public void Tick(float deltaTime)
     {
-        Debug.Log("Tick");
         swaySpringRotation.SetTarget(_swayTarget);
         // Breathing drives position independently
         float breath =
