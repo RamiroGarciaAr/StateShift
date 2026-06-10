@@ -81,6 +81,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
     public Vector3 GroundPoint => _groundChecker.GroundPoint;
     public Vector3 GroundVelocity => _groundChecker.GroundVelocity;
     public float Momentum01 => maxMomentum > 0f ? (_momentum / maxMomentum) : 0f;
+    public Rigidbody Rigidbody => _rb;
     #endregion
 
     #region Unity Methods

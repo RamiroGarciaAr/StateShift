@@ -1,46 +1,45 @@
 using UnityEngine;
+using System;
 
-//TODO: We need to expand this and make it so we have
 [System.Serializable]
-public class WeaponRecoilModule
+public class WeaponRecoilModule : WeaponAnimationModule
 {
-    [Header("Recoil Settings")]
-    [SerializeField]
-    private float recoilAmount = 10f;
+    [Header("Profile")]
+    [SerializeField] 
+    private WeaponRecoilProfileSO _profile;
 
-    [SerializeField]
-    private float recoilShakeAmount = 5f;
+    [Header("Springs")]
+    [SerializeField] 
+    private SpringVector3 _recoilSpringRotation = new SpringVector3();
+    
+    [SerializeField] 
+    private SpringVector3 _recoilSpringPosition = new SpringVector3();
 
-    [SerializeField]
-    private float kickbackAmount = 0.1f;
+    public static event Action<Vector3, Vector3> OnRecoilImpulse;
 
-    [SerializeField]
-    private float recoilMultiplier = 1f;
-
-    [SerializeField]
-    private SpringVector3 recoilSpringRotation = new SpringVector3();
-
-    [SerializeField]
-    private SpringVector3 recoilSpringPosition = new SpringVector3();
-
-    public Vector3 RotationValue => recoilSpringRotation.Value;
-    public Vector3 PositionValue => recoilSpringPosition.Value;
-
-    public void LateUpdate()
-    {
-        recoilSpringRotation.Update(Time.deltaTime);
-        recoilSpringPosition.Update(Time.deltaTime);
-    }
+    public override Pose AnimationPose => new Pose(_recoilSpringPosition.Value, Quaternion.Euler(_recoilSpringRotation.Value));
 
     public void ApplyRecoil()
     {
-        recoilSpringRotation.AddImpulse(
-            new Vector3(
-                -recoilAmount * recoilMultiplier,
-                Random.Range(-recoilShakeAmount, recoilShakeAmount),
-                0f
-            )
+        if (_profile == null) return;
+
+        Vector3 rotImpulse = new Vector3(
+            -_profile.RecoilAmount,
+            UnityEngine.Random.Range(-_profile.RecoilShakeAmount, _profile.RecoilShakeAmount),
+            0f
         );
-        recoilSpringPosition.AddImpulse(new Vector3(0f, 0f, -kickbackAmount));
+
+        Vector3 posImpulse = new Vector3(0f, 0f, -_profile.KickbackAmount);
+
+        _recoilSpringRotation.AddImpulse(rotImpulse);
+        _recoilSpringPosition.AddImpulse(posImpulse);
+
+        OnRecoilImpulse?.Invoke(rotImpulse, posImpulse);
+    }
+
+    public override void Tick(float deltaTime)
+    {
+        _recoilSpringRotation.Update(deltaTime);
+        _recoilSpringPosition.Update(deltaTime);
     }
 }

@@ -17,6 +17,12 @@ public class SpringVector3
     [SerializeField]
     float damping = 10f;
 
+    public void SetConstants(float stiffness, float damping)
+    {
+        this.stiffness = stiffness;
+        this.damping = damping;
+    }
+
     public void Update(float deltaTime)
     {
         Vector3 acceleration =

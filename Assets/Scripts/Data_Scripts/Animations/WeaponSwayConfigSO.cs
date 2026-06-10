@@ -15,4 +15,8 @@ public class WeaponSwayConfigSO : ScriptableObject
     [Range(0.1f, 10f)]
     [Tooltip("How fast the breathing sway should be")]
     public float breathFrequency = 1f;
+
+    [Header("Spring Settings")]
+    public float stiffness = 100f;
+    public float damping = 10f;
 }

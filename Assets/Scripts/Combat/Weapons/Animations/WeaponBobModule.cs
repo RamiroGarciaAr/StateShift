@@ -1,66 +1,66 @@
 using UnityEngine;
 
 [System.Serializable]
-public class WeaponBobModule
+public class WeaponBobModule : WeaponAnimationModule
 {
-    [Header("Bob Settings")]
-    [Tooltip("How much the weapon should bob based on the movement input")]
-    [Range(0f, 10f)]
+    [Header("Profile")]
     [SerializeField]
-    float bobFrequency = 6f;
+    private WeaponBobConfigSO _config;
 
-    [Tooltip("How much the weapon should bob based on the movement input")]
-    [Range(0f, 1f)]
+    [Header("Springs")]
     [SerializeField]
-    float bobAmplitude = 0.03f;
-
-    [Tooltip("How much the weapon should rotate based on the movement input")]
-    [SerializeField]
-    float bobRotationAmount = 1f;
+    private SpringVector3 _bobSpringPosition = new SpringVector3();
 
     [SerializeField]
-    SpringVector3 bobSpringPosition = new SpringVector3();
+    private SpringVector3 _bobSpringRotation = new SpringVector3();
 
-    [SerializeField]
-    SpringVector3 bobSpringRotation = new SpringVector3();
+    public override Pose AnimationPose => new Pose(_bobSpringPosition.Value, Quaternion.Euler(_bobSpringRotation.Value));
 
-    public Vector3 RotationValue => bobSpringRotation.Value;
-    public Vector3 PositionValue => bobSpringPosition.Value;
-
-    private Vector2 _moveInput;
-
-    public void LateUpdate()
+    public void UpdateBob(Vector3 worldVelocity, Transform playerTransform)
     {
-        if (_moveInput.sqrMagnitude > 0.01f)
+        if (playerTransform == null || _config == null) return;
+
+        Vector3 localVelocity = playerTransform.InverseTransformDirection(worldVelocity);
+        float speed = worldVelocity.magnitude;
+
+        if (speed > 0.1f)
         {
-            float bobPhase = Time.time * bobFrequency;
-            float forwardness = Mathf.Abs(_moveInput.y);
-            float strafeness = Mathf.Abs(_moveInput.x);
-            float verticalBob =
-                Mathf.Sin(bobPhase) * bobAmplitude * Mathf.Max(forwardness, strafeness * 0.5f);
-            // position bob
-            bobSpringPosition.SetTarget(
-                new Vector3(strafeness * bobAmplitude, verticalBob, _moveInput.y * bobAmplitude)
-            );
-            // rotation bob
-            float strafeRoll = -_moveInput.x * bobRotationAmount * 2f;
-            bobSpringRotation.SetTarget(
-                new Vector3(
-                    _moveInput.y * bobRotationAmount,
-                    _moveInput.x * bobRotationAmount,
-                    strafeRoll
-                )
-            );
+            float bobPhase = Time.time * _config.bobFrequency;
+            
+            // Determine relative movement intensity
+            float forwardness = localVelocity.z;
+            float strafeness = localVelocity.x;
+
+            float verticalBob = Mathf.Sin(bobPhase) * _config.bobAmplitude * (speed / 5f);
+            
+            _bobSpringPosition.SetTarget(new Vector3(
+                strafeness * _config.bobAmplitude, 
+                verticalBob, 
+                forwardness * _config.bobAmplitude
+            ));
+
+            _bobSpringRotation.SetTarget(new Vector3(
+                forwardness * _config.bobRotationAmount,
+                strafeness * _config.bobRotationAmount,
+                -strafeness * _config.bobRotationAmount * 2f // Roll
+            ));
         }
         else
         {
-            bobSpringPosition.SetTarget(Vector3.zero);
-            bobSpringRotation.SetTarget(Vector3.zero);
+            _bobSpringPosition.SetTarget(Vector3.zero);
+            _bobSpringRotation.SetTarget(Vector3.zero);
         }
-
-        bobSpringPosition.Update(Time.deltaTime);
-        bobSpringRotation.Update(Time.deltaTime);
     }
 
-    public void ApplyBob(Vector2 moveInput) => _moveInput = moveInput;
+    public override void Tick(float deltaTime)
+    {
+        if (_config != null)
+        {
+            _bobSpringPosition.SetConstants(_config.stiffness, _config.damping);
+            _bobSpringRotation.SetConstants(_config.stiffness, _config.damping);
+        }
+
+        _bobSpringPosition.Update(deltaTime);
+        _bobSpringRotation.Update(deltaTime);
+    }
 }

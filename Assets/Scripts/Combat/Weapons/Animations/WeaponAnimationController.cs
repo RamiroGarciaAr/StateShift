@@ -1,41 +1,43 @@
+using System.Collections.Generic;
 using Entities.Controllers;
 using UnityEngine;
 
 /// <summary>
-///  Knows all the Pivots and The events
-///  Will delegate to the modules
+/// Central hub managing weapon animation modules and applying summed offsets to the weapon pivot.
 /// </summary>
 public class WeaponAnimationController : MonoBehaviour
 {
     [Header("Pivots")]
+    [Tooltip("The single consolidated pivot for all weapon procedural animations.")]
     [SerializeField]
-    private Transform swayPivot;
+    private Transform _weaponPivot;
+
+    [Header("Modules (Concrete)")]
+    [SerializeField] private WeaponSwayModule _swayModule;
+    [SerializeField] private WeaponRecoilModule _recoilModule;
+    [SerializeField] private WeaponBobModule _bobModule;
+
+    [Header("Dependencies")]
+    [SerializeField]
+    private PlayerMovement _playerMovement;
 
     [SerializeField]
-    private Transform recoilPivot;
+    private Animator _animator;
 
-    [SerializeField]
-    private Transform bobPivot;
+    private readonly List<WeaponAnimationModule> _moduleStack = new List<WeaponAnimationModule>();
 
-    [Header("Modules")]
-    [SerializeField]
-    private WeaponSwayModule swayModule;
-
-    [SerializeField]
-    private WeaponRecoilModule recoilModule;
-
-    [SerializeField]
-    private WeaponBobModule bobModule;
-
-    [Header("Animator")]
-    [SerializeField]
-    private Animator animator;
+    private void Awake()
+    {
+        // Populate the stack in order of application
+        if (_swayModule != null) _moduleStack.Add(_swayModule);
+        if (_bobModule != null) _moduleStack.Add(_bobModule);
+        if (_recoilModule != null) _moduleStack.Add(_recoilModule);
+    }
 
     private void OnEnable()
     {
         PlayerInput.OnLook += HandleLook;
         WeaponBase.OnShoot += HandleShoot;
-        PlayerInput.OnMove += HandleMove;
         WeaponBase.OnReloadAnimation += HandleReload;
     }
 
@@ -43,40 +45,46 @@ public class WeaponAnimationController : MonoBehaviour
     {
         PlayerInput.OnLook -= HandleLook;
         WeaponBase.OnShoot -= HandleShoot;
-        PlayerInput.OnMove -= HandleMove;
         WeaponBase.OnReloadAnimation -= HandleReload;
     }
 
     private void LateUpdate()
     {
-        bobModule.LateUpdate();
-        recoilModule.LateUpdate();
-        swayModule.Tick(Time.deltaTime);
-        /*
-            Recoil Pivot changes but...maybe we can change it so the module also changes the local position?
-            I guess it would be more efficient to only change the local rotation and not the position but...we will see
-        */
-        recoilPivot.localRotation = Quaternion.Euler(recoilModule.RotationValue);
-        recoilPivot.localPosition = recoilModule.PositionValue;
+        if (_weaponPivot == null || _playerMovement == null) return;
 
-        var swayPose = swayModule.AnimationPose;
+        float dt = Time.deltaTime;
+        Vector3 worldVelocity = _playerMovement.Rigidbody.velocity;
 
-        swayPivot.localRotation = swayPose.rotation;
-        swayPivot.localPosition = swayPose.position;
+        // 1. Specific module updates (driving inputs)
+        _bobModule.UpdateBob(worldVelocity, _playerMovement.transform);
 
-        bobPivot.localRotation = Quaternion.Euler(bobModule.RotationValue);
-        bobPivot.localPosition = bobModule.PositionValue;
+        // 2. Tick all modules and accumulate offsets
+        Vector3 totalPos = Vector3.zero;
+        Quaternion totalRot = Quaternion.identity;
+
+        foreach (var module in _moduleStack)
+        {
+            module.Tick(dt);
+            Pose pose = module.AnimationPose;
+            totalPos += pose.position;
+            totalRot *= pose.rotation;
+        }
+
+        // 3. Apply to pivot
+        _weaponPivot.localPosition = totalPos;
+        _weaponPivot.localRotation = totalRot;
     }
 
-    private void HandleLook(Vector2 lookInput) => swayModule.ApplySway(lookInput);
+    private void HandleLook(Vector2 lookInput) => _swayModule.ApplySway(lookInput);
 
-    private void HandleShoot() => recoilModule.ApplyRecoil();
-
-    private void HandleMove(Vector2 moveInput) => bobModule.ApplyBob(moveInput);
+    private void HandleShoot() => _recoilModule.ApplyRecoil();
 
     private void HandleReload(float animationSpeed)
     {
-        animator.speed = animationSpeed;
-        animator.SetTrigger("Reload");
+        if (_animator != null)
+        {
+            _animator.speed = animationSpeed;
+            _animator.SetTrigger("Reload");
+        }
     }
 }

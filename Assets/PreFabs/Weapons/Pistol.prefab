@@ -31,38 +31,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1354695397455211300}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &819087592546690794
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7636421241877084449}
-  m_Layer: 0
-  m_Name: RecoilPivot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7636421241877084449
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 819087592546690794}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1354695397455211300}
-  m_Father: {fileID: 5483282936837120564}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4481944529832479667
 GameObject:
   m_ObjectHideFlags: 0
@@ -857,7 +825,7 @@ Transform:
   m_Children:
   - {fileID: 5174920882708669770}
   - {fileID: 290293262382783823}
-  m_Father: {fileID: 7636421241877084449}
+  m_Father: {fileID: 4788504574893466364}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &8693971742260116473
 Animator:
@@ -911,7 +879,7 @@ Transform:
   m_LocalScale: {x: 0.82, y: 0.82, z: 0.82}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 9005622021203118513}
+  - {fileID: 4788504574893466364}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2940893051205936579
@@ -940,42 +908,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff20b0193c58db74a86c9998cc3dde96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swayPivot: {fileID: 9005622021203118513}
-  recoilPivot: {fileID: 7636421241877084449}
-  bobPivot: {fileID: 5483282936837120564}
-  swayModule:
-    swayAmount: 0.2
+  _weaponPivot: {fileID: 4788504574893466364}
+  _swayModule:
+    weaponSwayConfigSO: {fileID: 0}
     swaySpringRotation:
       stiffness: 100
       damping: 10
-    breathAmplitude: 0.25
-    breathFrequency: 1
     swaySpringPosition:
       stiffness: 100
       damping: 10
-  recoilModule:
-    recoilAmount: 10
-    recoilShakeAmount: 5
-    kickbackAmount: 0.1
-    recoilMultiplier: 1
-    recoilSpringRotation:
+  _recoilModule:
+    _profile: {fileID: 11400000, guid: b894c5bb795a282449c386e5aaa8f985, type: 2}
+    _recoilSpringRotation:
       stiffness: 100
       damping: 10
-    recoilSpringPosition:
+    _recoilSpringPosition:
       stiffness: 100
       damping: 10
-  bobModule:
-    bobFrequency: 6
-    bobAmplitude: 0.03
-    bobRotationAmount: 1
-    bobSpringPosition:
+  _bobModule:
+    _bobFrequency: 6
+    _bobAmplitude: 0.03
+    _bobRotationAmount: 1
+    _bobSpringPosition:
       stiffness: 100
       damping: 10
-    bobSpringRotation:
+    _bobSpringRotation:
       stiffness: 100
       damping: 10
-  animator: {fileID: 0}
---- !u!1 &7116972037923160216
+  _playerMovement: {fileID: 0}
+  _animator: {fileID: 0}
+--- !u!1 &8874795346771448384
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -983,59 +945,27 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 9005622021203118513}
+  - component: {fileID: 4788504574893466364}
   m_Layer: 0
-  m_Name: SwayPivot
+  m_Name: WeaponPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &9005622021203118513
+--- !u!4 &4788504574893466364
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7116972037923160216}
+  m_GameObject: {fileID: 8874795346771448384}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5483282936837120564}
+  - {fileID: 1354695397455211300}
   m_Father: {fileID: 7338434795744371695}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8448587952256270149
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5483282936837120564}
-  m_Layer: 0
-  m_Name: BobPivot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5483282936837120564
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8448587952256270149}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 7636421241877084449}
-  m_Father: {fileID: 9005622021203118513}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
