@@ -13,9 +13,25 @@ public class WeaponAnimationController : MonoBehaviour
     private Transform _weaponPivot;
 
     [Header("Modules (Concrete)")]
-    [SerializeField] private WeaponSwayModule _swayModule;
-    [SerializeField] private WeaponRecoilModule _recoilModule;
-    [SerializeField] private WeaponBobModule _bobModule;
+    [Header("Weapon Sway")]
+    [Tooltip("The sway module handles weapon sway based on player look input.")]
+    [SerializeField]
+    private WeaponSwayModule _swayModule;
+
+    [Header("Weapon Recoil")]
+    [Tooltip("The recoil module handles weapon recoil based on shooting actions.")]
+    [SerializeField]
+    private WeaponRecoilModule _recoilModule;
+
+    [Header("Weapon Bob")]
+    [Tooltip("The bob module handles vertical and horizontal bobbing based on player movement.")]
+    [SerializeField]
+    private WeaponBobModule _bobModule;
+
+    [Header("Weapon Inertia")]
+    [Tooltip("The inertia module handles the inertia effect of the weapon during movement.")]
+    [SerializeField]
+    private WeaponInertiaModule _inertiaModule;
 
     [Header("Dependencies")]
     [SerializeField]
@@ -29,9 +45,14 @@ public class WeaponAnimationController : MonoBehaviour
     private void Awake()
     {
         // Populate the stack in order of application
-        if (_swayModule != null) _moduleStack.Add(_swayModule);
-        if (_bobModule != null) _moduleStack.Add(_bobModule);
-        if (_recoilModule != null) _moduleStack.Add(_recoilModule);
+        if (_swayModule != null)
+            _moduleStack.Add(_swayModule);
+        if (_bobModule != null)
+            _moduleStack.Add(_bobModule);
+        if (_inertiaModule != null)
+            _moduleStack.Add(_inertiaModule);
+        if (_recoilModule != null)
+            _moduleStack.Add(_recoilModule);
     }
 
     private void OnEnable()
@@ -50,7 +71,8 @@ public class WeaponAnimationController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (_weaponPivot == null || _playerMovement == null) return;
+        if (_weaponPivot == null || _playerMovement == null)
+            return;
 
         float dt = Time.deltaTime;
         Vector3 worldVelocity = _playerMovement.Rigidbody.velocity;

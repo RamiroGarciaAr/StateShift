@@ -15,5 +15,6 @@ MonoBehaviour:
   bobFrequency: 6
   bobRotationAmount: 1
   bobAmplitude: 0.03
-  stiffness: 150
-  damping: 15
+  bobReferenceSpeed: 5
+  stiffness: 100
+  damping: 10
