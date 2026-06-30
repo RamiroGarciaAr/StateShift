@@ -17,26 +17,29 @@ public class WeaponBobModule : WeaponAnimationModule
     public override Pose AnimationPose =>
         new Pose(_bobSpringPosition.Value, Quaternion.Euler(_bobSpringRotation.Value));
 
+    private float _bobPhase;
+
     public void UpdateBob(Vector3 worldVelocity, Transform playerTransform)
     {
         if (playerTransform == null || _config == null)
+        {
+            Debug.LogWarning(
+                "[WeaponBobModule] Player transform or WeaponBobConfigSO is not assigned in WeaponBobModule."
+            );
             return;
+        }
 
-        Vector3 localVelocity = playerTransform.InverseTransformDirection(worldVelocity);
         float speed = worldVelocity.magnitude;
 
         if (speed > 0.1f)
         {
-            float bobPhase = Time.time * _config.bobFrequency;
+            _bobPhase += _config.bobFrequency * Time.deltaTime;
+            Vector2 lissajousCurve = CalculateLissajous(_bobPhase, 1, 2);
 
-            // Determine relative movement intensity
-            float forwardness = localVelocity.z;
-            float strafeness = localVelocity.x;
-
-            Vector2 lissajousCurve = CalculateLissajous(bobPhase, 1, 2);
-
-            float verticalBob = lissajousCurve.y * _config.bobAmplitude * (speed / 5f);
-            float horizontalBob = lissajousCurve.x * _config.bobAmplitude * (speed / 5f);
+            float verticalBob =
+                lissajousCurve.y * _config.bobAmplitude * (speed / _config.bobReferenceSpeed);
+            float horizontalBob =
+                lissajousCurve.x * _config.bobAmplitude * (speed / _config.bobReferenceSpeed);
 
             _bobSpringPosition.SetTarget(new Vector3(horizontalBob, verticalBob, 0f));
         }
