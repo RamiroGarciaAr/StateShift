@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17261406380296340a96618ad9ce3c84, type: 3}
   m_Name: Shotgun_Bob
   m_EditorClassIdentifier: 
-  bobFrequency: 5
+  bobFrequency: 3.2
   bobRotationAmount: 1.5
   bobAmplitude: 0.05
-  stiffness: 140
+  stiffness: 4.52
   damping: 18

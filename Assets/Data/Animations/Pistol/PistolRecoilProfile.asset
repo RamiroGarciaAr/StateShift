@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _recoilAmount: 10
   _recoilShakeAmount: 5.14
-  _kickbackAmount: 0.89
+  _kickbackAmount: 1

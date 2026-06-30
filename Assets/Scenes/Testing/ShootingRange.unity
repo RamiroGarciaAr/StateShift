@@ -8545,37 +8545,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!1 &1538781004
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1538781005}
-  m_Layer: 0
-  m_Name: WeaponPivot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1538781005
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1538781004}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6019853442195864135}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1581040626
 GameObject:
   m_ObjectHideFlags: 0
@@ -15062,6 +15031,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1535758383}
+    - target: {fileID: 717140191619376204, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_VersionIndex
+      value: 5308
+      objectReference: {fileID: 0}
     - target: {fileID: 815059414935386683, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -15072,7 +15045,7 @@ PrefabInstance:
       objectReference: {fileID: 1535758383}
     - target: {fileID: 1314460282740882231, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: _animator
@@ -15107,8 +15080,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 2a7f257fd71555e479b25b728d26239b, type: 2}
     - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: _bobModule._bobSpringPosition.damping
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: _bobModule._bobSpringRotation.damping
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: swayModule.swaySpringRotation.damping
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: _bobModule._bobSpringPosition.stiffness
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: _bobModule._bobSpringRotation.stiffness
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: swayModule.swaySpringPosition.stiffness
@@ -15117,6 +15106,10 @@ PrefabInstance:
     - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: swayModule.swaySpringRotation.stiffness
       value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: _swayModule.swaySpringRotation.stiffness
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 2396640651141749747, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_Mesh
@@ -15182,29 +15175,81 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 2072063008}
+    - target: {fileID: 3311220465198905012, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_VersionIndex
+      value: 5909
+      objectReference: {fileID: 0}
+    - target: {fileID: 4024767100038367935, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4024767100038367935, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4024767100038367935, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.2
+      value: 0.12913102
       objectReference: {fileID: 0}
     - target: {fileID: 4024767100038367935, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.4
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4024767100038367935, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4024767100038367935, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4024767100038367935, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4024767100038367935, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5619360477275941202, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_Name
       value: 'CameraRecoilPivot  '
       objectReference: {fileID: 0}
     - target: {fileID: 5826242063137542504, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 5826242063137542504, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.32
+      value: -0.26
       objectReference: {fileID: 0}
     - target: {fileID: 5826242063137542504, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.159
+      objectReference: {fileID: 0}
+    - target: {fileID: 5826242063137542504, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.99909663
+      objectReference: {fileID: 0}
+    - target: {fileID: 5826242063137542504, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.00012209869
+      objectReference: {fileID: 0}
+    - target: {fileID: 5826242063137542504, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.002877178
+      objectReference: {fileID: 0}
+    - target: {fileID: 5826242063137542504, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.042398628
+      objectReference: {fileID: 0}
+    - target: {fileID: 5826242063137542504, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0.33
+      objectReference: {fileID: 0}
+    - target: {fileID: 5826242063137542504, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 4.86
       objectReference: {fileID: 0}
     - target: {fileID: 7465956539703722295, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_Name
@@ -15212,7 +15257,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7671239003774770162, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7867987661234847449, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_Mesh
@@ -15220,7 +15265,11 @@ PrefabInstance:
       objectReference: {fileID: 31662506}
     - target: {fileID: 7867987661234847449, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_VersionIndex
-      value: 2457
+      value: 2460
+      objectReference: {fileID: 0}
+    - target: {fileID: 8308768788808422824, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.009126138
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4917439100116543264, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
@@ -15228,20 +15277,12 @@ PrefabInstance:
     - {fileID: 1217375323813080290, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
     - {fileID: 2344622237945073413, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 5826242063137542504, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1538781005}
+    m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1314460282740882231, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6019853442195864137}
   m_SourcePrefab: {fileID: 100100000, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
---- !u!4 &6019853442195864135 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5826242063137542504, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
-  m_PrefabInstance: {fileID: 6019853442195864134}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6019853442195864136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1314460282740882231, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
@@ -15263,15 +15304,15 @@ MonoBehaviour:
   _swayModule:
     weaponSwayConfigSO: {fileID: 11400000, guid: 53e8a19cc11be224e980f9a032782861, type: 2}
     swaySpringRotation:
-      stiffness: 100
-      damping: 10
+      stiffness: 120
+      damping: 12
     swaySpringPosition:
-      stiffness: 100
-      damping: 10
+      stiffness: 120
+      damping: 12
   _recoilModule:
     _profile: {fileID: 11400000, guid: 8bdb692dcc491d143aca8ea3c8ac5924, type: 2}
     _recoilSpringRotation:
-      stiffness: 100
+      stiffness: 97.97
       damping: 10
     _recoilSpringPosition:
       stiffness: 100
@@ -15279,11 +15320,11 @@ MonoBehaviour:
   _bobModule:
     _config: {fileID: 11400000, guid: 41e5f3ae69bce524a9e4c8a8cee74dac, type: 2}
     _bobSpringPosition:
-      stiffness: 100
-      damping: 10
+      stiffness: 4.52
+      damping: 18
     _bobSpringRotation:
-      stiffness: 100
-      damping: 10
+      stiffness: 4.52
+      damping: 18
   _playerMovement: {fileID: 1362404591}
   _animator: {fileID: 0}
 --- !u!4 &6019853442195864138 stripped

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fe617167eaf66542ac206e92a8b88bd, type: 3}
   m_Name: Shotgun_Sway
   m_EditorClassIdentifier: 
-  swayAmount: 0.3
+  swayAmount: 0.114
   breathAmplitude: 0.15
-  breathFrequency: 0.8
+  breathFrequency: 0.14
   stiffness: 120
   damping: 12
