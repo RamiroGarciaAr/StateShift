@@ -14,11 +14,13 @@ public class WeaponBobModule : WeaponAnimationModule
     [SerializeField]
     private SpringVector3 _bobSpringRotation = new SpringVector3();
 
-    public override Pose AnimationPose => new Pose(_bobSpringPosition.Value, Quaternion.Euler(_bobSpringRotation.Value));
+    public override Pose AnimationPose =>
+        new Pose(_bobSpringPosition.Value, Quaternion.Euler(_bobSpringRotation.Value));
 
     public void UpdateBob(Vector3 worldVelocity, Transform playerTransform)
     {
-        if (playerTransform == null || _config == null) return;
+        if (playerTransform == null || _config == null)
+            return;
 
         Vector3 localVelocity = playerTransform.InverseTransformDirection(worldVelocity);
         float speed = worldVelocity.magnitude;
@@ -26,24 +28,17 @@ public class WeaponBobModule : WeaponAnimationModule
         if (speed > 0.1f)
         {
             float bobPhase = Time.time * _config.bobFrequency;
-            
+
             // Determine relative movement intensity
             float forwardness = localVelocity.z;
             float strafeness = localVelocity.x;
 
-            float verticalBob = Mathf.Sin(bobPhase) * _config.bobAmplitude * (speed / 5f);
-            
-            _bobSpringPosition.SetTarget(new Vector3(
-                strafeness * _config.bobAmplitude, 
-                verticalBob, 
-                forwardness * _config.bobAmplitude
-            ));
+            Vector2 lissajousCurve = CalculateLissajous(bobPhase, 1, 2);
 
-            _bobSpringRotation.SetTarget(new Vector3(
-                forwardness * _config.bobRotationAmount,
-                strafeness * _config.bobRotationAmount,
-                -strafeness * _config.bobRotationAmount * 2f // Roll
-            ));
+            float verticalBob = lissajousCurve.y * _config.bobAmplitude * (speed / 5f);
+            float horizontalBob = lissajousCurve.x * _config.bobAmplitude * (speed / 5f);
+
+            _bobSpringPosition.SetTarget(new Vector3(horizontalBob, verticalBob, 0f));
         }
         else
         {
@@ -62,5 +57,10 @@ public class WeaponBobModule : WeaponAnimationModule
 
         _bobSpringPosition.Update(deltaTime);
         _bobSpringRotation.Update(deltaTime);
+    }
+
+    private Vector2 CalculateLissajous(float t, float amplitude, float height, float delta = 0f)
+    {
+        return new Vector2(Mathf.Sin(amplitude * t + delta), Mathf.Sin(height * t));
     }
 }
