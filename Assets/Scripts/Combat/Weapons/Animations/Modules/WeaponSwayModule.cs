@@ -22,7 +22,8 @@ public class WeaponSwayModule : WeaponAnimationModule
 
     public void ApplySway(Vector2 lookInput)
     {
-        if (weaponSwayConfigSO == null) return;
+        if (weaponSwayConfigSO == null)
+            return;
 
         _swayTarget = new Vector3(
             -lookInput.y * weaponSwayConfigSO.swayAmount,
@@ -33,10 +34,19 @@ public class WeaponSwayModule : WeaponAnimationModule
 
     public override void Tick(float deltaTime)
     {
-        if (weaponSwayConfigSO == null) return;
+        if (weaponSwayConfigSO == null)
+            return;
 
-        swaySpringRotation.ComputeConstants(weaponSwayConfigSO.SwayF, weaponSwayConfigSO.SwayZ, weaponSwayConfigSO.SwayR);
-        swaySpringPosition.ComputeConstants(weaponSwayConfigSO.BreathF, weaponSwayConfigSO.BreathZ, weaponSwayConfigSO.BreathR);
+        swaySpringRotation.ComputeConstants(
+            weaponSwayConfigSO.SwayF,
+            weaponSwayConfigSO.SwayZ,
+            weaponSwayConfigSO.SwayR
+        );
+        swaySpringPosition.ComputeConstants(
+            weaponSwayConfigSO.BreathF,
+            weaponSwayConfigSO.BreathZ,
+            weaponSwayConfigSO.BreathR
+        );
 
         float breath =
             Mathf.Sin(Time.time * weaponSwayConfigSO.breathFrequency)

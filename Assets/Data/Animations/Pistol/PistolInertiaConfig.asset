@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PistolInertiaConfig
   m_EditorClassIdentifier: 
   _inertiaAmount: 0.02
-  _rollAmount: 10
-  _rollF: 3
-  _rollZ: 0.5
-  _rollR: 2
+  _rollAmount: 4
+  _rollF: 1
+  _rollZ: 1.009
+  _rollR: -2

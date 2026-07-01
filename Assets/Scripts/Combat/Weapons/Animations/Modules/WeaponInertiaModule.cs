@@ -30,7 +30,8 @@ public class WeaponInertiaModule : WeaponAnimationModule
             return;
         }
 
-        if (_config == null) return;
+        if (_config == null)
+            return;
 
         // Preserve existing velocity threshold logic exactly as written
         if (velocity.magnitude < 0.5f)
@@ -56,7 +57,8 @@ public class WeaponInertiaModule : WeaponAnimationModule
 
     public override void Tick(float deltaTime)
     {
-        if (_config == null) return;
+        if (_config == null)
+            return;
 
         // Rotation SOD logic
         _inertiaSpringRotation.ComputeConstants(_config.RollF, _config.RollZ, _config.RollR);

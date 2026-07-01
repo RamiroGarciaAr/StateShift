@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fe617167eaf66542ac206e92a8b88bd, type: 3}
   m_Name: Test Sway Config SO
   m_EditorClassIdentifier: 
-  swayAmount: 0.791
-  breathAmplitude: 0.029
-  breathFrequency: 0.52
-  stiffness: 100
-  damping: 10
+  swayAmount: 0.064
+  breathAmplitude: 0.025
+  breathFrequency: 0.43
+  _swayF: 2.52
+  _swayZ: 0.291
+  _swayR: -2
+  _breathF: 2.47
+  _breathZ: 0.097
+  _breathR: 0

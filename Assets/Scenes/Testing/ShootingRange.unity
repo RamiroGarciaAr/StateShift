@@ -15068,6 +15068,10 @@ PrefabInstance:
       value: 0.272
       objectReference: {fileID: 0}
     - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: _inertiaModule._config
+      value: 
+      objectReference: {fileID: 11400000, guid: c1c4dc7314905a5469ba44fb81b7ccbe, type: 2}
+    - target: {fileID: 2266000981862461269, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: swayModule.breathAmplitude
       value: 0.01
       objectReference: {fileID: 0}
@@ -15277,7 +15281,7 @@ PrefabInstance:
       objectReference: {fileID: 31662506}
     - target: {fileID: 7867987661234847449, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_VersionIndex
-      value: 2472
+      value: 2478
       objectReference: {fileID: 0}
     - target: {fileID: 8308768788808422824, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_LocalPosition.y
@@ -15315,12 +15319,6 @@ MonoBehaviour:
   _weaponPivot: {fileID: 6019853442195864138}
   _swayModule:
     weaponSwayConfigSO: {fileID: 11400000, guid: 53e8a19cc11be224e980f9a032782861, type: 2}
-    swaySpringRotation:
-      stiffness: 120
-      damping: 12
-    swaySpringPosition:
-      stiffness: 120
-      damping: 12
   _recoilModule:
     _profile: {fileID: 11400000, guid: 8bdb692dcc491d143aca8ea3c8ac5924, type: 2}
     _recoilSpringRotation:
@@ -15338,14 +15336,10 @@ MonoBehaviour:
       stiffness: 4.52
       damping: 18
   _inertiaModule:
+    _config: {fileID: 0}
     _inertiaSpringPosition:
       stiffness: 100
       damping: 10
-    _inertiaSpringRotation:
-      stiffness: 100
-      damping: 10
-    inertiaAmount: 0.0225
-    rollAmount: 10
   _playerMovement: {fileID: 1362404591}
   _animator: {fileID: 0}
 --- !u!4 &6019853442195864138 stripped
