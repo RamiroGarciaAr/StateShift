@@ -33,16 +33,15 @@ public class WeaponInertiaModule : WeaponAnimationModule
         if (_config == null)
             return;
 
-        // Preserve existing velocity threshold logic exactly as written
-        if (velocity.magnitude < 0.5f)
+        Vector3 localVelocity = playerTransform.InverseTransformDirection(velocity);
+        Vector3 normalizedLocalVelocity = localVelocity.normalized;
+
+        if (localVelocity.magnitude < 0.1f)
         {
             _inertiaSpringPosition.SetTarget(Vector3.zero);
             _rollTarget = Vector3.zero;
             return;
         }
-
-        Vector3 localVelocity = playerTransform.InverseTransformDirection(velocity);
-        Vector3 normalizedLocalVelocity = localVelocity.normalized;
 
         _inertiaSpringPosition.SetTarget(
             new Vector3(
@@ -60,14 +59,13 @@ public class WeaponInertiaModule : WeaponAnimationModule
         if (_config == null)
             return;
 
-        // Rotation SOD logic
-        _inertiaSpringRotation.ComputeConstants(_config.RollF, _config.RollZ, _config.RollR);
-
         if (!_initialized)
         {
             _inertiaSpringRotation.Initialize(Vector3.zero);
             _initialized = true;
         }
+        // Rotation SOD logic
+        _inertiaSpringRotation.ComputeConstants(_config.RollF, _config.RollZ, _config.RollR);
 
         _inertiaSpringRotation.Update(deltaTime, _rollTarget);
 
