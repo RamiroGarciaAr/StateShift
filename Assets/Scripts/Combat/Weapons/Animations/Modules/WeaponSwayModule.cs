@@ -14,7 +14,16 @@ public class WeaponSwayModule : WeaponAnimationModule
     [SerializeField]
     private SecondOrderDynamics swaySpringPosition;
 
+    [Header("Smoothed Look Input")]
+    [
+        Range(10f, 30f),
+        Tooltip("How quickly the look input is smoothed. Higher values result in faster smoothing.")
+    ]
+    private float _lookSmoothing = 15f;
+
+    private Vector2 _rawLook;
     private Vector3 _swayTarget;
+    private Vector2 _smoothedLook;
     private bool _initialized;
 
     public override Pose AnimationPose =>
@@ -22,14 +31,7 @@ public class WeaponSwayModule : WeaponAnimationModule
 
     public void ApplySway(Vector2 lookInput)
     {
-        if (weaponSwayConfigSO == null)
-            return;
-
-        _swayTarget = new Vector3(
-            -lookInput.y * weaponSwayConfigSO.SwayAmount,
-            lookInput.x * weaponSwayConfigSO.SwayAmount,
-            0f
-        );
+        _rawLook = lookInput;
     }
 
     public override void Tick(float deltaTime)
@@ -61,6 +63,17 @@ public class WeaponSwayModule : WeaponAnimationModule
             weaponSwayConfigSO.BreathRotationYawFrequency,
             weaponSwayConfigSO.BreathRotationYawAmplitude
         );
+        _smoothedLook = Vector2.Lerp(
+            _smoothedLook,
+            _rawLook,
+            1f - Mathf.Exp(-_lookSmoothing * deltaTime)
+        );
+        _swayTarget = new Vector3(
+            -_smoothedLook.y * weaponSwayConfigSO.SwayAmount,
+            _smoothedLook.x * weaponSwayConfigSO.SwayAmount,
+            0f
+        );
+
         Vector3 rotationTarget = _swayTarget + new Vector3(breathPitch, breathYaw, 0f);
 
         if (!_initialized)
