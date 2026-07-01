@@ -7,14 +7,15 @@ public class WeaponSwayModule : WeaponAnimationModule
     [SerializeField]
     private WeaponSwayConfigSO weaponSwayConfigSO;
 
-    [Header("Springs")]
+    [Header("Dynamics")]
     [SerializeField]
-    private SpringVector3 swaySpringRotation = new SpringVector3();
+    private SecondOrderDynamics swaySpringRotation;
 
     [SerializeField]
-    private SpringVector3 swaySpringPosition = new SpringVector3();
+    private SecondOrderDynamics swaySpringPosition;
 
     private Vector3 _swayTarget;
+    private bool _initialized;
 
     public override Pose AnimationPose =>
         new Pose(swaySpringPosition.Value, Quaternion.Euler(swaySpringRotation.Value));
@@ -32,20 +33,28 @@ public class WeaponSwayModule : WeaponAnimationModule
 
     public override void Tick(float deltaTime)
     {
-        if (weaponSwayConfigSO != null)
-        {
-            swaySpringRotation.SetConstants(weaponSwayConfigSO.stiffness, weaponSwayConfigSO.damping);
-            swaySpringPosition.SetConstants(weaponSwayConfigSO.stiffness, weaponSwayConfigSO.damping);
+        if (weaponSwayConfigSO == null) return;
 
-            float breath =
-                Mathf.Sin(Time.time * weaponSwayConfigSO.breathFrequency)
-                * weaponSwayConfigSO.breathAmplitude;
-            swaySpringPosition.SetTarget(new Vector3(0f, breath, 0f));
+        // Ensure instances exist
+        if (swaySpringRotation == null) swaySpringRotation = new SecondOrderDynamics(1, 1, 0, Vector3.zero);
+        if (swaySpringPosition == null) swaySpringPosition = new SecondOrderDynamics(1, 1, 0, Vector3.zero);
+
+        swaySpringRotation.ComputeConstants(weaponSwayConfigSO.SwayF, weaponSwayConfigSO.SwayZ, weaponSwayConfigSO.SwayR);
+        swaySpringPosition.ComputeConstants(weaponSwayConfigSO.BreathF, weaponSwayConfigSO.BreathZ, weaponSwayConfigSO.BreathR);
+
+        float breath =
+            Mathf.Sin(Time.time * weaponSwayConfigSO.breathFrequency)
+            * weaponSwayConfigSO.breathAmplitude;
+        Vector3 breathTarget = new Vector3(0f, breath, 0f);
+
+        if (!_initialized)
+        {
+            swaySpringRotation.Initialize(_swayTarget);
+            swaySpringPosition.Initialize(breathTarget);
+            _initialized = true;
         }
 
-        swaySpringRotation.SetTarget(_swayTarget);
-        
-        swaySpringRotation.Update(deltaTime);
-        swaySpringPosition.Update(deltaTime);
+        swaySpringRotation.Update(deltaTime, _swayTarget);
+        swaySpringPosition.Update(deltaTime, breathTarget);
     }
 }

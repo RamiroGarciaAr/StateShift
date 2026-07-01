@@ -11,13 +11,19 @@ public class SecondOrderDynamics
         k2,
         k3; // Constants for the second-order dynamics
 
+    public Vector3 Value => _y;
+
     public SecondOrderDynamics(float f, float z, float r, Vector3 x0)
+    {
+        Initialize(x0);
+        ComputeConstants(f, z, r);
+    }
+
+    public void Initialize(Vector3 x0)
     {
         _xp = x0;
         _y = x0;
-        _yd = Vector3.zero; // derivative of y is initially zero
-
-        ComputeConstants(f, z, r);
+        _yd = Vector3.zero;
     }
 
     public void ComputeConstants(float f, float z, float r)
