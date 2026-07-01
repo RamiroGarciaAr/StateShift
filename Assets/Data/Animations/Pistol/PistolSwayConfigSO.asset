@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fe617167eaf66542ac206e92a8b88bd, type: 3}
   m_Name: PistolSwayConfigSO
   m_EditorClassIdentifier: 
-  _swayAmount: 0.2
-  _breathAmplitude: 0.25
+  _swayAmount: 0.309
+  _breathAmplitude: 0.01
   _breathRotationPitchAmplitude: 0.5
-  _breathRotationYawAmplitude: 0.5
+  _breathRotationYawAmplitude: 0.8
   _breathFrequency: 1
   _breathRotationPitchFrequency: 1
-  _breathRotationYawFrequency: 1
-  _swayF: 2
-  _swayZ: 0.5
-  _swayR: 2
-  _breathF: 1
+  _breathRotationYawFrequency: 0.4
+  _swayF: 1.2
+  _swayZ: 1.5
+  _swayR: 4
+  _breathF: 2.37
   _breathZ: 1
   _breathR: 0

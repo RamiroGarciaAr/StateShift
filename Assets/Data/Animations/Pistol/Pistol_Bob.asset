@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pistol_Bob
   m_EditorClassIdentifier: 
   bobFrequency: 6
-  bobRotationAmount: 1
+  bobRotationAmount: 2
   bobAmplitude: 0.03
   bobReferenceSpeed: 5
   stiffness: 100

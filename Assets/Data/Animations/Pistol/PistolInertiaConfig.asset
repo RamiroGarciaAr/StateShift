@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 085c58d2c6d13054ab3ffb3fb86d082f, type: 3}
   m_Name: PistolInertiaConfig
   m_EditorClassIdentifier: 
-  _inertiaAmount: 0.02
-  _rollAmount: 4
+  _inertiaAmount: 0.025
+  _rollAmount: 8
   _rollF: 1
   _rollZ: 1.009
-  _rollR: -2
+  _rollR: -0.19
