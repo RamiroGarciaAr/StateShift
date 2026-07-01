@@ -79,6 +79,7 @@ public class WeaponAnimationController : MonoBehaviour
 
         // 1. Specific module updates (driving inputs)
         _bobModule.UpdateBob(worldVelocity, _playerMovement.transform);
+        _inertiaModule.UpdateInertia(worldVelocity, _playerMovement.transform);
 
         // 2. Tick all modules and accumulate offsets
         Vector3 totalPos = Vector3.zero;

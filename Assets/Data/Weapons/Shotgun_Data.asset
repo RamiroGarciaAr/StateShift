@@ -15,9 +15,9 @@ MonoBehaviour:
   weaponName: Repeater Mk.II
   weaponPrefab: {fileID: 0}
   availableFireModes: 01000000
-  burstCount: 3
+  burstCount: 2
   spreadAngle: 15
-  damageType: 1
+  damageType: 2
   damageAmount: 12
   damageDropoff:
     midRange: 50

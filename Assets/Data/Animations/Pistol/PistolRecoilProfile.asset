@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfc089a442263524aa1f845d4f25f9ef, type: 3}
   m_Name: PistolRecoilProfile
   m_EditorClassIdentifier: 
-  _recoilAmount: 10
+  _recoilAmount: 20
   _recoilShakeAmount: 5.14
   _kickbackAmount: 1
