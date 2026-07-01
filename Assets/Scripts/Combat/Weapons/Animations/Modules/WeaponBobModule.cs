@@ -19,15 +19,23 @@ public class WeaponBobModule : WeaponAnimationModule
 
     private float _bobPhase;
 
+    private bool _hasLoggedNullWarning;
+
     public void UpdateBob(Vector3 worldVelocity, Transform playerTransform)
     {
         if (playerTransform == null || _config == null)
         {
-            Debug.LogWarning(
-                "[WeaponBobModule] Player transform or WeaponBobConfigSO is not assigned in WeaponBobModule."
-            );
+            if (!_hasLoggedNullWarning)
+            {
+                Debug.LogWarning(
+                    "[WeaponBobModule] Player transform or WeaponBobConfigSO is not assigned in WeaponBobModule."
+                );
+                _hasLoggedNullWarning = true;
+            }
             return;
         }
+
+        _hasLoggedNullWarning = false;
 
         float speed = worldVelocity.magnitude;
 

@@ -48,19 +48,32 @@ public class WeaponSwayModule : WeaponAnimationModule
             weaponSwayConfigSO.BreathR
         );
 
-        float breath =
-            Mathf.Sin(Time.time * weaponSwayConfigSO.BreathFrequency)
-            * weaponSwayConfigSO.BreathAmplitude;
+        float breath = Breathe(
+            weaponSwayConfigSO.BreathFrequency,
+            weaponSwayConfigSO.BreathAmplitude
+        );
         Vector3 breathTarget = new Vector3(0f, breath, 0f);
+        float breathPitch = Breathe(
+            weaponSwayConfigSO.BreathRotationPitchFrequency,
+            weaponSwayConfigSO.BreathRotationPitchAmplitude
+        );
+        float breathYaw = Breathe(
+            weaponSwayConfigSO.BreathRotationYawFrequency,
+            weaponSwayConfigSO.BreathRotationYawAmplitude
+        );
+        Vector3 rotationTarget = _swayTarget + new Vector3(breathPitch, breathYaw, 0f);
 
         if (!_initialized)
         {
-            swaySpringRotation.Initialize(_swayTarget);
+            swaySpringRotation.Initialize(rotationTarget);
             swaySpringPosition.Initialize(breathTarget);
             _initialized = true;
         }
 
-        swaySpringRotation.Update(deltaTime, _swayTarget);
+        swaySpringRotation.Update(deltaTime, rotationTarget);
         swaySpringPosition.Update(deltaTime, breathTarget);
     }
+
+    private float Breathe(float frequency, float amplitude) =>
+        Mathf.Sin(Time.time * frequency) * amplitude;
 }
