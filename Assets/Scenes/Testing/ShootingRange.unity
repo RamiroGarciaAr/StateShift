@@ -15187,6 +15187,10 @@ PrefabInstance:
       propertyPath: _cameraRecoilSpring.damping
       value: 15
       objectReference: {fileID: 0}
+    - target: {fileID: 3181275876027056110, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
+      propertyPath: _currentMovementStateVariable
+      value: 
+      objectReference: {fileID: 11400000, guid: 367eb9adc8f2d1049ae0f79ad225142e, type: 2}
     - target: {fileID: 3311220465198905012, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -15281,7 +15285,7 @@ PrefabInstance:
       objectReference: {fileID: 31662506}
     - target: {fileID: 7867987661234847449, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_VersionIndex
-      value: 2484
+      value: 2487
       objectReference: {fileID: 0}
     - target: {fileID: 8308768788808422824, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_LocalPosition.y

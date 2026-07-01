@@ -12,31 +12,63 @@ public class PlayerMovement : MonoBehaviour, IControllable
 {
     #region Fields
     [Header("Movement")]
-    [SerializeField] private float baseSpeed = 5f;
+    [SerializeField]
+    private float baseSpeed = 5f;
 
     // ==== Speed Multipliers =====
-    [SerializeField] private float sprintSpeedMultiplier = 2;
-    [SerializeField] private float walkSpeedMultiplier = 1;
-    [SerializeField] private float crouchSpeedMultiplier = 0.5f;
-    [SerializeField] private float slideSpeedMultiplier = 0.3f;
-    [SerializeField] private float wallRunSpeedMultiplier = 1.2f;
+    [SerializeField]
+    private float sprintSpeedMultiplier = 2;
+
+    [SerializeField]
+    private float walkSpeedMultiplier = 1;
+
+    [SerializeField]
+    private float crouchSpeedMultiplier = 0.5f;
+
+    [SerializeField]
+    private float slideSpeedMultiplier = 0.3f;
+
+    [SerializeField]
+    private float wallRunSpeedMultiplier = 1.2f;
+
     [Range(0, 1)]
-    [SerializeField] private float movementSmoothing = .1f;
-    [SerializeField] private float airMovementAcceleration = .5f;
+    [SerializeField]
+    private float movementSmoothing = .1f;
+
+    [SerializeField]
+    private float airMovementAcceleration = .5f;
+
     [Header("Momentum")]
-    [SerializeField] private float postDashCarryDuration = 0.75f;
-    [SerializeField] private float groundCarryDamping = 3f;
-    [SerializeField] private float maxMomentum = 0.8f; // +80% speed cap
-    [SerializeField] private float momentumDecayHalfLife = 3.0f; // seconds
-    [SerializeField] private float sprintGainPerSec = 0.12f;
-    [SerializeField] private float slideGainPerSec = 0.20f;
-    [SerializeField] private float downhillGainPerSec = 0.12f;
-    [SerializeField] private float postDashGain = 0.15f;
+    [SerializeField]
+    private float postDashCarryDuration = 0.75f;
+
+    [SerializeField]
+    private float groundCarryDamping = 3f;
+
+    [SerializeField]
+    private float maxMomentum = 0.8f; // +80% speed cap
+
+    [SerializeField]
+    private float momentumDecayHalfLife = 3.0f; // seconds
+
+    [SerializeField]
+    private float sprintGainPerSec = 0.12f;
+
+    [SerializeField]
+    private float slideGainPerSec = 0.20f;
+
+    [SerializeField]
+    private float downhillGainPerSec = 0.12f;
+
+    [SerializeField]
+    private float postDashGain = 0.15f;
 
     private Rigidbody _rb;
     private GroundChecker _groundChecker;
     private PlayerJumper _playerJumper;
-    private Vector2 _rawMoveDir, _smoothMoveDir, _smoothMoveDirVelocity;
+    private Vector2 _rawMoveDir,
+        _smoothMoveDir,
+        _smoothMoveDirVelocity;
 
     private MovementState _currentMovementState = MovementState.Walking;
     private MovementState _lastMovementState = MovementState.Walking;
@@ -46,8 +78,20 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
     #region Properties
     // ===== Movement =====
-    public float Speed { get => baseSpeed; set => baseSpeed = value; }
-    public float MovementSmoothing { get => movementSmoothing; set => movementSmoothing = value; }
+    [Header("State Broadcaster")]
+    [SerializeField]
+    private MovementStateVariableSO _currentMovementStateVariable;
+
+    public float Speed
+    {
+        get => baseSpeed;
+        set => baseSpeed = value;
+    }
+    public float MovementSmoothing
+    {
+        get => movementSmoothing;
+        set => movementSmoothing = value;
+    }
     private float CurrentSpeed
     {
         get
@@ -62,14 +106,18 @@ public class PlayerMovement : MonoBehaviour, IControllable
                 MovementState.Dashing => 0f, // Dash handles its own speed
                 MovementState.Grappling => 0f,
                 MovementState.InAir => baseSpeed * walkSpeedMultiplier,
-                _ => baseSpeed
+                _ => baseSpeed,
             };
             return stateSpeed * (1f + _momentum);
         }
     }
 
     // ===== Jump  =====
-    public float JumpForce { get => _playerJumper.JumpForce; set => _playerJumper.JumpForce = value; }
+    public float JumpForce
+    {
+        get => _playerJumper.JumpForce;
+        set => _playerJumper.JumpForce = value;
+    }
     public bool IsHoldingJump => _playerJumper.IsHoldingJump;
     public bool IsJumping => _playerJumper.IsJumping;
 
@@ -95,25 +143,28 @@ public class PlayerMovement : MonoBehaviour, IControllable
         _rb.interpolation = RigidbodyInterpolation.Interpolate;
         _rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
+        _currentMovementStateVariable.Value = _currentMovementState; // Initialize the ScriptableObject with the current movement state
     }
 
     protected virtual void FixedUpdate()
     {
         _groundChecker.CheckGround();
-        if (_postDashCarryTimer > 0f) _postDashCarryTimer -= Time.fixedDeltaTime;
+        if (_postDashCarryTimer > 0f)
+            _postDashCarryTimer -= Time.fixedDeltaTime;
         AccumulateAndDecayMomentum();
         SmoothInput();
         UpdateSlopeDrag();
         UpdateMovement();
         ClearInput();
-
     }
     #endregion
 
     private void SmoothInput()
     {
-        float smoothingValue = _currentMovementState == MovementState.Sliding ?
-            movementSmoothing * 3f : movementSmoothing;
+        float smoothingValue =
+            _currentMovementState == MovementState.Sliding
+                ? movementSmoothing * 3f
+                : movementSmoothing;
 
         _smoothMoveDir = Vector2.SmoothDamp(
             _smoothMoveDir,
@@ -144,8 +195,12 @@ public class PlayerMovement : MonoBehaviour, IControllable
     {
         _lastMovementState = _currentMovementState;
         _currentMovementState = state;
+        _currentMovementStateVariable.Value = state; // Update the ScriptableObject with the new movement state
 
-        if (_lastMovementState == MovementState.Dashing && _currentMovementState != MovementState.Dashing)
+        if (
+            _lastMovementState == MovementState.Dashing
+            && _currentMovementState != MovementState.Dashing
+        )
         {
             _postDashCarryTimer = postDashCarryDuration;
         }
@@ -153,7 +208,8 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
     public void AddMomentum(float amount)
     {
-        if (amount <= 0f) return;
+        if (amount <= 0f)
+            return;
         _momentum = Mathf.Clamp(_momentum + amount, 0f, maxMomentum);
     }
 
@@ -164,8 +220,13 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
     public void AddSlideMomentumTick(float weight = 1f)
     {
-        if (!_groundChecker.IsGrounded) return;
-        _momentum = Mathf.Clamp(_momentum + slideGainPerSec * Mathf.Max(0f, weight) * Time.fixedDeltaTime, 0f, maxMomentum);
+        if (!_groundChecker.IsGrounded)
+            return;
+        _momentum = Mathf.Clamp(
+            _momentum + slideGainPerSec * Mathf.Max(0f, weight) * Time.fixedDeltaTime,
+            0f,
+            maxMomentum
+        );
     }
 
     private void AccumulateAndDecayMomentum()
@@ -175,16 +236,27 @@ public class PlayerMovement : MonoBehaviour, IControllable
         if (_groundChecker.IsGrounded)
         {
             // Sprinting fuels momentum
-            if (_currentMovementState == MovementState.Sprinting && _rawMoveDir.sqrMagnitude > 0.0001f)
+            if (
+                _currentMovementState == MovementState.Sprinting
+                && _rawMoveDir.sqrMagnitude > 0.0001f
+            )
             {
-                _momentum = Mathf.Clamp(_momentum + sprintGainPerSec * Time.fixedDeltaTime, 0f, maxMomentum);
+                _momentum = Mathf.Clamp(
+                    _momentum + sprintGainPerSec * Time.fixedDeltaTime,
+                    0f,
+                    maxMomentum
+                );
                 fueled = true;
             }
 
             // Sliding fuels momentum (also handled in PlayerSlide, but keep a base gain here)
             if (_currentMovementState == MovementState.Sliding)
             {
-                _momentum = Mathf.Clamp(_momentum + slideGainPerSec * 0.25f * Time.fixedDeltaTime, 0f, maxMomentum);
+                _momentum = Mathf.Clamp(
+                    _momentum + slideGainPerSec * 0.25f * Time.fixedDeltaTime,
+                    0f,
+                    maxMomentum
+                );
                 fueled = true;
             }
 
@@ -196,7 +268,8 @@ public class PlayerMovement : MonoBehaviour, IControllable
                 if (downhillDot > 0.1f)
                 {
                     float slopeFactor = Mathf.Clamp01(_groundChecker.SlopeAngle / 45f);
-                    float gain = downhillGainPerSec * slopeFactor * downhillDot * Time.fixedDeltaTime;
+                    float gain =
+                        downhillGainPerSec * slopeFactor * downhillDot * Time.fixedDeltaTime;
                     _momentum = Mathf.Clamp(_momentum + gain, 0f, maxMomentum);
                     fueled = true;
                 }
@@ -209,16 +282,27 @@ public class PlayerMovement : MonoBehaviour, IControllable
             float lambda = Mathf.Log(2f) / Mathf.Max(0.0001f, momentumDecayHalfLife);
             float factor = Mathf.Exp(-lambda * Time.fixedDeltaTime);
             _momentum *= factor;
-            if (_momentum < 0.0001f) _momentum = 0f;
+            if (_momentum < 0.0001f)
+                _momentum = 0f;
         }
     }
 
     private void UpdateMovement()
     {
-        if (_currentMovementState == MovementState.Dashing || _currentMovementState == MovementState.Grappling) return;
+        if (
+            _currentMovementState == MovementState.Dashing
+            || _currentMovementState == MovementState.Grappling
+        )
+            return;
         if (_groundChecker.IsGrounded && _rb.drag < 1f)
         {
-            _rb.MovePosition(Vector3.MoveTowards(_rb.position, _groundChecker.GroundPoint, Time.fixedDeltaTime * 1f));
+            _rb.MovePosition(
+                Vector3.MoveTowards(
+                    _rb.position,
+                    _groundChecker.GroundPoint,
+                    Time.fixedDeltaTime * 1f
+                )
+            );
         }
 
         var currentVelocity = _rb.velocity;
@@ -232,6 +316,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
         Vector3 moveVec = CalculateHorizontalMovement(currentVelocity);
         ApplyFinalVelocity(moveVec, velocityY);
     }
+
     private void UpdateSlopeDrag()
     {
         // No aplicar drag si estamos en el aire
@@ -242,8 +327,8 @@ public class PlayerMovement : MonoBehaviour, IControllable
         }
 
         // No aplicar drag si estamos en medio de un slide
-        if (_currentMovementState == MovementState.Sliding) return;
-
+        if (_currentMovementState == MovementState.Sliding)
+            return;
 
         if (_rawMoveDir.sqrMagnitude > 0.01f)
         {
@@ -280,30 +365,40 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
         if (_currentMovementState == MovementState.Sliding && _groundChecker.IsGrounded)
         {
-            moveVec = Vector3.ProjectOnPlane(
-                new Vector3(_smoothMoveDir.x, 0, _smoothMoveDir.y),
-                _groundChecker.GroundNormal
-            ) * CurrentSpeed;
+            moveVec =
+                Vector3.ProjectOnPlane(
+                    new Vector3(_smoothMoveDir.x, 0, _smoothMoveDir.y),
+                    _groundChecker.GroundNormal
+                ) * CurrentSpeed;
 
             Vector3 currentHorizontal = new Vector3(currentVelocity.x, 0, currentVelocity.z);
             moveVec = Vector3.Lerp(currentHorizontal, moveVec, 0.1f);
         }
         else
         {
-            moveVec = Vector3.ProjectOnPlane(
-                new Vector3(_smoothMoveDir.x, 0, _smoothMoveDir.y),
-                _groundChecker.GroundNormal
-            ) * CurrentSpeed;
+            moveVec =
+                Vector3.ProjectOnPlane(
+                    new Vector3(_smoothMoveDir.x, 0, _smoothMoveDir.y),
+                    _groundChecker.GroundNormal
+                ) * CurrentSpeed;
 
             var curVelXZ = new Vector3(currentVelocity.x, 0, currentVelocity.z);
             if (!_groundChecker.IsGrounded)
             {
-                moveVec = Vector3.MoveTowards(curVelXZ, moveVec, airMovementAcceleration * Time.fixedDeltaTime);
+                moveVec = Vector3.MoveTowards(
+                    curVelXZ,
+                    moveVec,
+                    airMovementAcceleration * Time.fixedDeltaTime
+                );
             }
             else if (_smoothMoveDir.sqrMagnitude < 0.0001f && _postDashCarryTimer > 0f)
             {
                 // sin input en suelo justo tras dash: amortiguar en lugar de cortar a 0
-                moveVec = Vector3.MoveTowards(curVelXZ, Vector3.zero, groundCarryDamping * Time.fixedDeltaTime);
+                moveVec = Vector3.MoveTowards(
+                    curVelXZ,
+                    Vector3.zero,
+                    groundCarryDamping * Time.fixedDeltaTime
+                );
             }
         }
 
@@ -328,8 +423,8 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
     private void ApplyFinalVelocity(Vector3 horizontalVelocity, Vector3 verticalVelocity)
     {
-
-        Vector3 groundVel = (_groundChecker.GroundRigidbody != null) ? _groundChecker.GroundVelocity : Vector3.zero;
+        Vector3 groundVel =
+            (_groundChecker.GroundRigidbody != null) ? _groundChecker.GroundVelocity : Vector3.zero;
 
         _rb.velocity = horizontalVelocity + groundVel;
         _rb.velocity += verticalVelocity;
