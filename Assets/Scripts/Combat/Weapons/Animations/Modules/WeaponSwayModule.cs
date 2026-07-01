@@ -35,10 +35,6 @@ public class WeaponSwayModule : WeaponAnimationModule
     {
         if (weaponSwayConfigSO == null) return;
 
-        // Ensure instances exist
-        if (swaySpringRotation == null) swaySpringRotation = new SecondOrderDynamics(1, 1, 0, Vector3.zero);
-        if (swaySpringPosition == null) swaySpringPosition = new SecondOrderDynamics(1, 1, 0, Vector3.zero);
-
         swaySpringRotation.ComputeConstants(weaponSwayConfigSO.SwayF, weaponSwayConfigSO.SwayZ, weaponSwayConfigSO.SwayR);
         swaySpringPosition.ComputeConstants(weaponSwayConfigSO.BreathF, weaponSwayConfigSO.BreathZ, weaponSwayConfigSO.BreathR);
 

@@ -13,6 +13,8 @@ public class SecondOrderDynamics
 
     public Vector3 Value => _y;
 
+    public SecondOrderDynamics() { }
+
     public SecondOrderDynamics(float f, float z, float r, Vector3 x0)
     {
         Initialize(x0);
