@@ -42,6 +42,14 @@ public class WeaponBobModule : WeaponAnimationModule
                 lissajousCurve.x * _config.bobAmplitude * (speed / _config.bobReferenceSpeed);
 
             _bobSpringPosition.SetTarget(new Vector3(horizontalBob, verticalBob, 0f));
+            //TODO: Consider adding a separate spring for rotation bobbing if needed
+            _bobSpringRotation.SetTarget(
+                new Vector3(
+                    lissajousCurve.y * _config.bobRotationAmount,
+                    lissajousCurve.x * _config.bobRotationAmount,
+                    0f
+                )
+            );
         }
         else
         {

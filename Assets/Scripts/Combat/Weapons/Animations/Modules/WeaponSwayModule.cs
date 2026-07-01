@@ -26,8 +26,8 @@ public class WeaponSwayModule : WeaponAnimationModule
             return;
 
         _swayTarget = new Vector3(
-            -lookInput.y * weaponSwayConfigSO.swayAmount,
-            lookInput.x * weaponSwayConfigSO.swayAmount,
+            -lookInput.y * weaponSwayConfigSO.SwayAmount,
+            lookInput.x * weaponSwayConfigSO.SwayAmount,
             0f
         );
     }
@@ -49,8 +49,8 @@ public class WeaponSwayModule : WeaponAnimationModule
         );
 
         float breath =
-            Mathf.Sin(Time.time * weaponSwayConfigSO.breathFrequency)
-            * weaponSwayConfigSO.breathAmplitude;
+            Mathf.Sin(Time.time * weaponSwayConfigSO.BreathFrequency)
+            * weaponSwayConfigSO.BreathAmplitude;
         Vector3 breathTarget = new Vector3(0f, breath, 0f);
 
         if (!_initialized)
