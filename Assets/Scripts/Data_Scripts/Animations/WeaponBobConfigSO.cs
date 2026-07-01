@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "WeaponBobConfig", menuName = "Data/Animations/BobConfig")]
+[CreateAssetMenu(fileName = "WeaponBobConfig", menuName = "Animations/Weapon/BobConfig")]
 public class WeaponBobConfigSO : ScriptableObject
 {
     [Header("Frequencies")]

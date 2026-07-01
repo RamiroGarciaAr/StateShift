@@ -90,7 +90,7 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     {
         if (weaponData.AvailableFireModes == null || weaponData.AvailableFireModes.Length == 0)
         {
-            Debug.Log("$[Weapon Base] {weaponData.WeaponName} has no fire Modes");
+            Debug.LogWarning($"[Weapon Base] {weaponData.WeaponName} has no fire Modes");
             return;
         }
 

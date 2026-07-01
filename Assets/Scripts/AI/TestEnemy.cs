@@ -53,7 +53,7 @@ public class TestEnemy : MonoBehaviour, ITickable
             if (_agent.isStopped == false)
             {
                 _agent.isStopped = true;
-                Debug.Log($"[TestEnemy] {gameObject.name} arrived.");
+                // Debug.Log($"[TestEnemy] {gameObject.name} arrived.");
             }
             return;
         }

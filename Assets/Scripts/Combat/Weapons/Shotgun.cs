@@ -20,6 +20,6 @@ public class Shotgun : WeaponBase
 
     public override void Reload()
     {
-        Debug.Log($"Reloading {weaponData.WeaponName}");
+        // Debug.Log($"Reloading {weaponData.WeaponName}");
     }
 }

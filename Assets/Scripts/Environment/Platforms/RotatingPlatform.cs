@@ -72,7 +72,8 @@ public class RotatingPlatform : MonoBehaviour
             if (rider != null)
             {
                 detectedRiders.Add(rider);
-                Debug.Log($"Detected rider: {rider}");
+                if (showDebug)
+                    Debug.Log($"Detected rider: {rider}");
                 if (!currentRiders.Contains(rider))
                 {
                     rider.OnPlatformEnter(transform);

@@ -63,7 +63,7 @@ public class UIAnimationManager : MonoBehaviour
         if (animator != null && !string.IsNullOrEmpty(triggerName))
         {
             animator.SetTrigger(triggerName);
-            Debug.Log($"Trigger activado: {triggerName}");
+            // Debug.Log($"Trigger activado: {triggerName}");
             
             // Resetear todos los botones a color normal
             ResetAllButtons();
