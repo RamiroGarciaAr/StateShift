@@ -38,6 +38,10 @@ public class DynamicFOV : MonoBehaviour
     private float _smoothedSpeed;
     private float _speedVelocity;
 
+    private float _adsWeight;
+    private float _adsFOVMultiplier = 1f;
+    private float _speedFOV;
+
     private void Awake()
     {
         //We try to auto-assign the camera and rigidbody if not set, but we log errors if we can't find them so the developer can fix it.
@@ -72,6 +76,7 @@ public class DynamicFOV : MonoBehaviour
 
     private void Start()
     {
+        _speedFOV = baseFOV;
         targetCamera.fieldOfView = baseFOV;
     }
 
@@ -116,12 +121,30 @@ public class DynamicFOV : MonoBehaviour
             _targetFOV = baseFOV + (maxFOVIncrease * curveValue);
         }
 
-        targetCamera.fieldOfView = Mathf.SmoothDamp(
-            targetCamera.fieldOfView,
+        // Speed-based FOV is smoothed on its own internal state so the ADS zoom cannot
+        // contaminate it. This keeps aiming in and out perfectly symmetric.
+        _speedFOV = Mathf.SmoothDamp(
+            _speedFOV,
             _targetFOV,
             ref _currentVelocity,
             1f / fovTransitionSpeed
         );
+
+        // ADS zoom is a pure overlay driven only by the hub's symmetric weight.
+        float adsFOV = baseFOV * _adsFOVMultiplier;
+        targetCamera.fieldOfView = Mathf.Lerp(_speedFOV, adsFOV, _adsWeight);
+    }
+
+    /// <summary>
+    /// Applies the ADS zoom layer. Driven each frame by the ADS hub so this component
+    /// remains the single writer of the camera's field of view.
+    /// </summary>
+    /// <param name="weight">Eased 0 (hip) to 1 (aimed) blend weight.</param>
+    /// <param name="fovMultiplier">Field of view multiplier applied at full ADS.</param>
+    public void SetAdsZoom(float weight, float fovMultiplier)
+    {
+        _adsWeight = Mathf.Clamp01(weight);
+        _adsFOVMultiplier = fovMultiplier;
     }
 
     public void SetBaseFOV(float newBaseFOV)

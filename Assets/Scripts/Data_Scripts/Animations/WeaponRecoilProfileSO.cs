@@ -2,7 +2,7 @@ using UnityEngine;
 
 [CreateAssetMenu(
     fileName = "NewWeaponRecoilProfile",
-    menuName = "State Shift/Animations/Weapon Recoil Profile"
+    menuName = "Animations/Weapon/Recoil Profile"
 )]
 public class WeaponRecoilProfileSO : ScriptableObject
 {

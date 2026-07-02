@@ -1,14 +1,22 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = ("Animations/Weapon/SwayConfig"))]
+[CreateAssetMenu(fileName = "WeaponSwayConfigSO", menuName = "Animations/Weapon/Sway Config")]
 public class WeaponSwayConfigSO : ScriptableObject
 {
     [Header("Sway Settings")]
-    [SerializeField, Range(0f, 1f), Tooltip("How much the weapon should sway based on the look input")]
+    [
+        SerializeField,
+        Range(0f, 1f),
+        Tooltip("How much the weapon should sway based on the look input")
+    ]
     private float _swayAmount = 0.2f;
 
     [Header("Breath Settings")]
-    [SerializeField, Range(0f, 1f), Tooltip("How much the weapon should move up and down based on breathing")]
+    [
+        SerializeField,
+        Range(0f, 1f),
+        Tooltip("How much the weapon should move up and down based on breathing")
+    ]
     private float _breathAmplitude = 0.25f;
 
     [SerializeField]

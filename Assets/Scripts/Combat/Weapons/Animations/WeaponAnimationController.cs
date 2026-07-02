@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Entities.Controllers;
 using UnityEngine;
 
@@ -33,6 +32,11 @@ public class WeaponAnimationController : MonoBehaviour
     [SerializeField]
     private WeaponInertiaModule _inertiaModule;
 
+    [Header("Weapon ADS")]
+    [Tooltip("The ADS module blends the weapon between hip and aimed poses.")]
+    [SerializeField]
+    private WeaponAdsModule _adsModule;
+
     [Header("Dependencies")]
     [SerializeField]
     private PlayerMovement _playerMovement;
@@ -40,24 +44,12 @@ public class WeaponAnimationController : MonoBehaviour
     [SerializeField]
     private Animator _animator;
 
-    private readonly List<WeaponAnimationModule> _moduleStack = new List<WeaponAnimationModule>();
-
-    private void Awake()
-    {
-        // Populate the stack in order of application
-        if (_swayModule != null)
-            _moduleStack.Add(_swayModule);
-        if (_bobModule != null)
-            _moduleStack.Add(_bobModule);
-        if (_inertiaModule != null)
-            _moduleStack.Add(_inertiaModule);
-        if (_recoilModule != null)
-            _moduleStack.Add(_recoilModule);
-    }
-
     private void OnEnable()
     {
+        _adsModule.ResetState();
+
         PlayerInput.OnLook += HandleLook;
+        PlayerInput.OnAim += HandleAim;
         WeaponBase.OnShoot += HandleShoot;
         WeaponBase.OnReloadAnimation += HandleReload;
     }
@@ -65,6 +57,7 @@ public class WeaponAnimationController : MonoBehaviour
     private void OnDisable()
     {
         PlayerInput.OnLook -= HandleLook;
+        PlayerInput.OnAim -= HandleAim;
         WeaponBase.OnShoot -= HandleShoot;
         WeaponBase.OnReloadAnimation -= HandleReload;
     }
@@ -74,31 +67,61 @@ public class WeaponAnimationController : MonoBehaviour
         if (_weaponPivot == null || _playerMovement == null)
             return;
 
-        float dt = Time.deltaTime;
+        float deltaTime = Time.deltaTime;
         Vector3 worldVelocity = _playerMovement.Rigidbody.velocity;
 
-        // 1. Specific module updates (driving inputs)
+        // 1. Feed driving inputs into the movement-driven modules.
         _bobModule.UpdateBob(worldVelocity, _playerMovement.transform);
         _inertiaModule.UpdateInertia(worldVelocity, _playerMovement.transform);
 
-        // 2. Tick all modules and accumulate offsets
-        Vector3 totalPos = Vector3.zero;
-        Quaternion totalRot = Quaternion.identity;
+        // 2. Advance every module.
+        _swayModule.Tick(deltaTime);
+        _bobModule.Tick(deltaTime);
+        _inertiaModule.Tick(deltaTime);
+        _recoilModule.Tick(deltaTime);
+        _adsModule.Tick(deltaTime);
 
-        foreach (var module in _moduleStack)
-        {
-            module.Tick(dt);
-            Pose pose = module.AnimationPose;
-            totalPos += pose.position;
-            totalRot *= pose.rotation;
-        }
+        // 3. ADS steadiness scales down the modules that would jostle the sight.
+        float adsWeight = _adsModule.Weight;
+        float swayScale = GetSteadinessScale(adsWeight, _adsModule.SwaySteadiness);
+        float bobScale = GetSteadinessScale(adsWeight, _adsModule.BobSteadiness);
+        float inertiaScale = GetSteadinessScale(adsWeight, _adsModule.InertiaSteadiness);
+        float recoilScale = GetSteadinessScale(adsWeight, _adsModule.RecoilSteadiness);
 
-        // 3. Apply to pivot
-        _weaponPivot.localPosition = totalPos;
-        _weaponPivot.localRotation = totalRot;
+        // 4. Accumulate the scaled offsets. ADS drives the pivot to the aim pose at full weight.
+        Vector3 totalPosition = Vector3.zero;
+        Quaternion totalRotation = Quaternion.identity;
+
+        Accumulate(ref totalPosition, ref totalRotation, _swayModule.AnimationPose, swayScale);
+        Accumulate(ref totalPosition, ref totalRotation, _bobModule.AnimationPose, bobScale);
+        Accumulate(ref totalPosition, ref totalRotation, _inertiaModule.AnimationPose, inertiaScale);
+        Accumulate(ref totalPosition, ref totalRotation, _recoilModule.AnimationPose, recoilScale);
+        Accumulate(ref totalPosition, ref totalRotation, _adsModule.AnimationPose, 1f);
+
+        // 5. Apply to pivot.
+        _weaponPivot.localPosition = totalPosition;
+        _weaponPivot.localRotation = totalRotation;
+    }
+
+    /// <summary>Blends a module's contribution scale from 1 (hip) toward (1 - steadiness) at full ADS.</summary>
+    private static float GetSteadinessScale(float adsWeight, float steadiness) =>
+        1f - (adsWeight * steadiness);
+
+    /// <summary>Adds a scaled pose onto the running position/rotation accumulators.</summary>
+    private static void Accumulate(
+        ref Vector3 totalPosition,
+        ref Quaternion totalRotation,
+        Pose pose,
+        float scale
+    )
+    {
+        totalPosition += pose.position * scale;
+        totalRotation *= Quaternion.Slerp(Quaternion.identity, pose.rotation, scale);
     }
 
     private void HandleLook(Vector2 lookInput) => _swayModule.ApplySway(lookInput);
+
+    private void HandleAim(bool isAiming) => _adsModule.SetAiming(isAiming);
 
     private void HandleShoot() => _recoilModule.ApplyRecoil();
 
