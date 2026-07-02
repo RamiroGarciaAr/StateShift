@@ -26,12 +26,14 @@ namespace Entities.Controllers
             _dashAction,
             _shootAction,
             _changeWeaponAction,
-            _reloadAction;
+            _reloadAction,
+            _aimAction;
 
         //Events
 
         // Weapon Events
-        public static event Action<bool> OnShoot;
+        public static event Action<bool> OnShoot,
+            OnAim;
         public static event Action OnChangeWeapon,
             OnReload;
 
@@ -114,6 +116,7 @@ namespace Entities.Controllers
             _changeWeaponAction = _playerInput.actions["ChangeWeapon"];
             _reloadAction = _playerInput.actions["Reload"];
             _lookAction = _playerInput.actions["MouseLook"];
+            _aimAction = _playerInput.actions["Aim"];
 
             _moveAction.Enable();
             _jumpAction.Enable();
@@ -125,6 +128,7 @@ namespace Entities.Controllers
             _shootAction.Enable();
             _changeWeaponAction.Enable();
             _reloadAction.Enable();
+            _aimAction.Enable();
         }
 
         private void OnDisable()
@@ -139,6 +143,7 @@ namespace Entities.Controllers
             _lookAction?.Disable();
             _changeWeaponAction?.Disable();
             _reloadAction?.Disable();
+            _aimAction?.Disable();
         }
 
         private void Update()
@@ -148,13 +153,14 @@ namespace Entities.Controllers
 
             //Weapon Actions
             if (_shootAction.WasPressedThisFrame())
-            {
                 OnShoot?.Invoke(true);
-            }
             else if (_shootAction.WasReleasedThisFrame())
-            {
                 OnShoot?.Invoke(false);
-            }
+
+            if (_aimAction.WasPressedThisFrame())
+                OnAim?.Invoke(true);
+            else if (_aimAction.WasReleasedThisFrame())
+                OnAim?.Invoke(false);
 
             if (
                 _changeWeaponAction.ReadValue<float>() > 0f
