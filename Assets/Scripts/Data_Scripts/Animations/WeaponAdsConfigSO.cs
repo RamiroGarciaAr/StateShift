@@ -37,6 +37,9 @@ public class WeaponAdsConfigSO : ScriptableObject
     [SerializeField, Range(0f, 1f), Tooltip("How much visual recoil kick is reduced while aiming.")]
     private float _recoilSteadiness = 0.25f;
 
+    [SerializeField, Range(0f, 1f), Tooltip("How much the movement-state stance offset is reduced while aiming. Keep at 1 so the sight aligns exactly with the camera at full ADS.")]
+    private float _stanceSteadiness = 1f;
+
     public Vector3 HipPosition => _hipPosition;
     public Vector3 HipRotation => _hipRotation;
     public Vector3 AdsPosition => _adsPosition;
@@ -49,4 +52,5 @@ public class WeaponAdsConfigSO : ScriptableObject
     public float BobSteadiness => _bobSteadiness;
     public float InertiaSteadiness => _inertiaSteadiness;
     public float RecoilSteadiness => _recoilSteadiness;
+    public float StanceSteadiness => _stanceSteadiness;
 }

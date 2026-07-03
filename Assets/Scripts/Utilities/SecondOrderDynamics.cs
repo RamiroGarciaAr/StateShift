@@ -37,6 +37,8 @@ public class SecondOrderDynamics
 
     public Vector3 Update(float deltaTime, Vector3 x, Vector3? xd = null)
     {
+        if (deltaTime <= 0f)
+            return _y;
         if (xd == null) // we estimate velocity if it's not provided
         {
             xd = (x - _xp) / deltaTime;

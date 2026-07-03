@@ -36,6 +36,9 @@ public class WeaponAdsModule : WeaponAnimationModule
     /// <summary>How much visual recoil kick should be suppressed at full ADS (0..1).</summary>
     public float RecoilSteadiness => _config != null ? _config.RecoilSteadiness : 0f;
 
+    /// <summary>How much the movement-state stance offset should be suppressed at full ADS (0..1).</summary>
+    public float StanceSteadiness => _config != null ? _config.StanceSteadiness : 0f;
+
     public override Pose AnimationPose => _pose;
 
     /// <summary>Resets the blend weight to hip fire. Call from the owner's OnEnable.</summary>

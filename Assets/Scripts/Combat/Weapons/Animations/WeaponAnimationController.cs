@@ -37,6 +37,13 @@ public class WeaponAnimationController : MonoBehaviour
     [SerializeField]
     private WeaponAdsModule _adsModule;
 
+    [Header("Weapon Stance")]
+    [Tooltip(
+        "The stance module handles weapon position and rotation based on player movement state."
+    )]
+    [SerializeField]
+    private WeaponStanceModule _stanceModule;
+
     [Header("Dependencies")]
     [SerializeField]
     private PlayerMovement _playerMovement;
@@ -75,6 +82,7 @@ public class WeaponAnimationController : MonoBehaviour
         _inertiaModule.UpdateInertia(worldVelocity, _playerMovement.transform);
 
         // 2. Advance every module.
+        _stanceModule.Tick(deltaTime);
         _swayModule.Tick(deltaTime);
         _bobModule.Tick(deltaTime);
         _inertiaModule.Tick(deltaTime);
@@ -87,14 +95,23 @@ public class WeaponAnimationController : MonoBehaviour
         float bobScale = GetSteadinessScale(adsWeight, _adsModule.BobSteadiness);
         float inertiaScale = GetSteadinessScale(adsWeight, _adsModule.InertiaSteadiness);
         float recoilScale = GetSteadinessScale(adsWeight, _adsModule.RecoilSteadiness);
+        float stanceScale = GetSteadinessScale(adsWeight, _adsModule.StanceSteadiness);
 
         // 4. Accumulate the scaled offsets. ADS drives the pivot to the aim pose at full weight.
         Vector3 totalPosition = Vector3.zero;
         Quaternion totalRotation = Quaternion.identity;
 
+        // Stance is the movement-driven base posture. It fades out as ADS engages so the
+        // aim pose can align the sight with the camera without a competing offset.
+        Accumulate(ref totalPosition, ref totalRotation, _stanceModule.AnimationPose, stanceScale);
         Accumulate(ref totalPosition, ref totalRotation, _swayModule.AnimationPose, swayScale);
         Accumulate(ref totalPosition, ref totalRotation, _bobModule.AnimationPose, bobScale);
-        Accumulate(ref totalPosition, ref totalRotation, _inertiaModule.AnimationPose, inertiaScale);
+        Accumulate(
+            ref totalPosition,
+            ref totalRotation,
+            _inertiaModule.AnimationPose,
+            inertiaScale
+        );
         Accumulate(ref totalPosition, ref totalRotation, _recoilModule.AnimationPose, recoilScale);
         Accumulate(ref totalPosition, ref totalRotation, _adsModule.AnimationPose, 1f);
 

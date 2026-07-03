@@ -59,6 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5826242063137542504}
   - component: {fileID: 6428083590670865253}
+  - component: {fileID: 3093535740533749571}
   m_Layer: 0
   m_Name: Shotgun
   m_TagString: Untagged
@@ -98,6 +99,53 @@ MonoBehaviour:
   muzzlePos: {fileID: 749669372301003475}
   _impactSpawner: {fileID: 0}
   pelletCount: 8
+--- !u!114 &3093535740533749571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314460282740882231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff20b0193c58db74a86c9998cc3dde96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weaponPivot: {fileID: 7772951826341160706}
+  _swayModule:
+    weaponSwayConfigSO: {fileID: 11400000, guid: 53e8a19cc11be224e980f9a032782861, type: 2}
+  _recoilModule:
+    _profile: {fileID: 11400000, guid: 8bdb692dcc491d143aca8ea3c8ac5924, type: 2}
+    _recoilSpringRotation:
+      stiffness: 97.97
+      damping: 10
+    _recoilSpringPosition:
+      stiffness: 100
+      damping: 10
+    _kickSpringRotation:
+      stiffness: 100
+      damping: 10
+  _bobModule:
+    _config: {fileID: 11400000, guid: 9aebabd67df72a0458caaae40b4ac362, type: 2}
+    _bobSpringPosition:
+      stiffness: 4.52
+      damping: 18
+    _bobSpringRotation:
+      stiffness: 4.52
+      damping: 18
+  _inertiaModule:
+    _config: {fileID: 11400000, guid: e2f05f1d6ebdc844b9ec705f1b4eb9ee, type: 2}
+    _inertiaSpringPosition:
+      stiffness: 100
+      damping: 10
+  _adsModule:
+    _config: {fileID: 11400000, guid: e93eed8e9a07c7b4a98f4fa564916a97, type: 2}
+    _adsBlendWeight: {fileID: 11400000, guid: 34738cf8910ab714cb01d546f0630aa4, type: 2}
+  _stanceModule:
+    weaponStanceConfig: {fileID: 11400000, guid: 166e5fc67c415154aaa6d384ae14ac54, type: 2}
+    movementStateVariable: {fileID: 11400000, guid: 367eb9adc8f2d1049ae0f79ad225142e, type: 2}
+  _playerMovement: {fileID: 3181275876027056110}
+  _animator: {fileID: 0}
 --- !u!1 &3382626885331823557
 GameObject:
   m_ObjectHideFlags: 0
@@ -4420,6 +4468,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3130340792650396895, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
   m_PrefabInstance: {fileID: 127728179419462242}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3181275876027056110 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3306734593851655564, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+  m_PrefabInstance: {fileID: 127728179419462242}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8684296433054750650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 522121f967d24f9478ec3379ee582c81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8684296433054750650 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8737292798387105240, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
