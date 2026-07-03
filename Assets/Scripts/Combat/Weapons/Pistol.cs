@@ -9,12 +9,7 @@ public class Pistol : WeaponBase
     */
     public override void Shoot()
     {
-        GameObject bullet = Instantiate(
-            weaponData.ProjectilePrefab,
-            muzzlePos.position,
-            muzzlePos.rotation
-        );
-        bullet.GetComponent<ProjectileBase>().Initialise(weaponData);
+        SpawnProjectile(muzzlePos.position, muzzlePos.rotation);
     }
 
     public override void Reload()

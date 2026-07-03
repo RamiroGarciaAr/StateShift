@@ -1,6 +1,7 @@
 using System;
 using Combat.FireModes;
 using Combat.Interfaces;
+using Combat.VFX;
 using Entities.Controllers;
 using UnityEngine;
 
@@ -15,6 +16,11 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
 
     [SerializeField]
     protected Transform muzzlePos;
+
+    [Header("VFX")]
+    [Tooltip("Shared pooled impact effect spawner injected into every projectile this weapon fires.")]
+    [SerializeField]
+    private ImpactEffectSpawner _impactSpawner;
 
     // ** Events to communicate with other systems (like UI, audio, etc.)
     /// <summary>
@@ -165,4 +171,16 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
 
     public abstract void Reload();
     public abstract void Shoot();
+
+    /// <summary>
+    /// Spawns a projectile and injects the shared weapon data and impact effect spawner.
+    /// Centralises the spawn logic so every weapon behaves identically.
+    /// </summary>
+    /// <param name="position">World-space spawn position (typically the muzzle).</param>
+    /// <param name="rotation">World-space spawn rotation (aim direction).</param>
+    protected void SpawnProjectile(Vector3 position, Quaternion rotation)
+    {
+        GameObject bullet = Instantiate(weaponData.ProjectilePrefab, position, rotation);
+        bullet.GetComponent<ProjectileBase>().Initialise(weaponData, _impactSpawner);
+    }
 }
