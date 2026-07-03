@@ -15,3 +15,5 @@ MonoBehaviour:
   _recoilAmount: 30
   _recoilShakeAmount: 10
   _kickbackAmount: 1
+  _kickAmount: 10
+  _kickYawAmount: 5

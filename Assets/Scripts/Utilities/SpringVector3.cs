@@ -33,6 +33,12 @@ public class SpringVector3
 
     public void AddImpulse(Vector3 impulse) => currentVelocity += impulse; // Add an impulse to the current velocity
 
+    /// <summary>
+    /// Instantly displaces the current value (snaps this frame) and lets the spring recover toward
+    /// its target. Use for punchy, instantaneous kicks rather than the ramped feel of AddImpulse.
+    /// </summary>
+    public void AddValue(Vector3 value) => currentValue += value;
+
     public void SetTarget(Vector3 target) => targetValue = target; // Set the target value for the spring
 
     public Vector3 Value => currentValue;

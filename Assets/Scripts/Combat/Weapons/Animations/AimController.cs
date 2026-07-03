@@ -29,7 +29,9 @@ public class AimController : MonoBehaviour
     [
         SerializeField,
         Range(0.5f, 20f),
-        Tooltip("ADS zoom transition speed in weight units/second. Identical for aiming in and out; a full transition takes ~1/value seconds.")
+        Tooltip(
+            "ADS zoom transition speed in weight units/second. Identical for aiming in and out; a full transition takes ~1/value seconds."
+        )
     ]
     private float _adsZoomSpeed = 8f;
 
@@ -42,7 +44,10 @@ public class AimController : MonoBehaviour
     private float _adsSensitivityMultiplier = 0.6f;
 
     [Header("Crosshair")]
-    [SerializeField, Tooltip("Crosshair canvas group; hidden instantly the moment the aim key is pressed.")]
+    [
+        SerializeField,
+        Tooltip("Crosshair canvas group; hidden instantly the moment the aim key is pressed.")
+    ]
     private CanvasGroup _crosshairGroup;
 
     /// <summary>Current aim look sensitivity multiplier for the active blend weight.</summary>
@@ -69,6 +74,7 @@ public class AimController : MonoBehaviour
         float weight = _adsBlendWeight.Value;
 
         // Constant-rate move so aiming in and out take the exact same time.
+        // The ADS weight is already eased, so this will feel like a smooth transition.
         _smoothedZoomWeight = Mathf.MoveTowards(
             _smoothedZoomWeight,
             weight,
