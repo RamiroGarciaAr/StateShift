@@ -13,12 +13,14 @@ namespace Core
         Dashing,
         Grappling,
         InAir,
+
         // Grounded sub-states
         Walking,
         Sprinting,
         Crouching,
-        Sliding
+        Sliding,
     }
+
     public class PlayerMovementContext
     {
         // Referencias a componentes
@@ -44,6 +46,5 @@ namespace Core
         public bool WantsToJump { get; set; }
         public bool WantsToGrapple { get; set; }
         public bool WantsToDash { get; set; }
-
     }
 }

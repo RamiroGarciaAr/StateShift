@@ -49,6 +49,9 @@ public class WeaponAnimationController : MonoBehaviour
     private PlayerMovement _playerMovement;
 
     [SerializeField]
+    private BoolVariable _isGroundedVariable;
+
+    [SerializeField]
     private Animator _animator;
 
     private void OnEnable()
@@ -105,7 +108,10 @@ public class WeaponAnimationController : MonoBehaviour
         // aim pose can align the sight with the camera without a competing offset.
         Accumulate(ref totalPosition, ref totalRotation, _stanceModule.AnimationPose, stanceScale);
         Accumulate(ref totalPosition, ref totalRotation, _swayModule.AnimationPose, swayScale);
-        Accumulate(ref totalPosition, ref totalRotation, _bobModule.AnimationPose, bobScale);
+        if (_isGroundedVariable.Value)
+        {
+            Accumulate(ref totalPosition, ref totalRotation, _bobModule.AnimationPose, bobScale);
+        }
         Accumulate(
             ref totalPosition,
             ref totalRotation,

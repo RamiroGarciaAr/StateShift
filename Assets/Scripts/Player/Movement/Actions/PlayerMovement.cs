@@ -82,6 +82,9 @@ public class PlayerMovement : MonoBehaviour, IControllable
     [SerializeField]
     private MovementStateVariableSO _currentMovementStateVariable;
 
+    [SerializeField]
+    private BoolVariable _isGroundedVariable;
+
     public float Speed
     {
         get => baseSpeed;
@@ -193,6 +196,14 @@ public class PlayerMovement : MonoBehaviour, IControllable
 
     public void SetMovementState(MovementState state)
     {
+        //We look for the locomotive state changes to update the movement state variable
+        if (!IsLocomotiveState(state))
+        {
+            _isGroundedVariable.Value = false;
+        }
+        else
+            _isGroundedVariable.Value = true;
+
         _lastMovementState = _currentMovementState;
         _currentMovementState = state;
         _currentMovementStateVariable.Value = state; // Update the ScriptableObject with the new movement state
@@ -216,6 +227,13 @@ public class PlayerMovement : MonoBehaviour, IControllable
     public void AddPostDashMomentum()
     {
         AddMomentum(postDashGain);
+    }
+
+    private static bool IsLocomotiveState(MovementState state)
+    {
+        return state == MovementState.Walking
+            || state == MovementState.Sprinting
+            || state == MovementState.Crouching;
     }
 
     public void AddSlideMomentumTick(float weight = 1f)
