@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfc089a442263524aa1f845d4f25f9ef, type: 3}
   m_Name: Shotgun_Recoil
   m_EditorClassIdentifier: 
-  _recoilAmount: 30
-  _recoilShakeAmount: 4
+  _recoilAmount: 100
+  _recoilShakeAmount: 40
   _kickbackAmount: 3
+  _kickAmount: 15
+  _kickYawAmount: 10

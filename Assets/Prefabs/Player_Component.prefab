@@ -96,6 +96,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponData: {fileID: 11400000, guid: 8ed15876548d88f44969d02b6256de37, type: 2}
   muzzlePos: {fileID: 749669372301003475}
+  _impactSpawner: {fileID: 0}
   pelletCount: 8
 --- !u!1 &3382626885331823557
 GameObject:
@@ -4565,6 +4566,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5175777452939998505, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3126476862252800247}
+    - targetCorrespondingSourceObject: {fileID: 5583302822191927768, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 382952629734158565}
   m_SourcePrefab: {fileID: 100100000, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
 --- !u!20 &2010122178922117388 stripped
 Camera:
@@ -4576,6 +4580,29 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4156755491132913342, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
   m_PrefabInstance: {fileID: 734074365964983419}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5139756073485307299 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5583302822191927768, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
+  m_PrefabInstance: {fileID: 734074365964983419}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &382952629734158565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5139756073485307299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c2286ad43b15e84c97f4c371ea48bee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _adsBlendWeight: {fileID: 11400000, guid: 34738cf8910ab714cb01d546f0630aa4, type: 2}
+  _dynamicFov: {fileID: 6686197593717342899}
+  _adsFovMultiplier: 0.55
+  _adsZoomSpeed: 8
+  _adsSensitivityMultiplier: 0.6
+  _crosshairGroup: {fileID: 0}
 --- !u!1 &5619360477275941202 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5175777452939998505, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
@@ -4597,6 +4624,17 @@ MonoBehaviour:
   _cameraRecoilSpring:
     stiffness: 100
     damping: 10
+--- !u!114 &6686197593717342899 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6261641712654360264, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
+  m_PrefabInstance: {fileID: 734074365964983419}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5139756073485307299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38c419aefd69b134fb4f2df2ca4996bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &7961660479843525182 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7228968690023595589, guid: 0c78acad45a2cb942ab19aefff3cc3ff, type: 3}
@@ -4716,7 +4754,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6632174613987314061, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
       propertyPath: m_VersionIndex
-      value: 2376
+      value: 2379
       objectReference: {fileID: 0}
     - target: {fileID: 6632174613987314061, guid: 56f9b9efe21711f458af35bc570cfb12, type: 3}
       propertyPath: m_SelectedEdges.Array.size

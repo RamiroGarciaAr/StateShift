@@ -18,7 +18,9 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     protected Transform muzzlePos;
 
     [Header("VFX")]
-    [Tooltip("Shared pooled impact effect spawner injected into every projectile this weapon fires.")]
+    [Tooltip(
+        "Shared pooled impact effect spawner injected into every projectile this weapon fires."
+    )]
     [SerializeField]
     private ImpactEffectSpawner _impactSpawner;
 

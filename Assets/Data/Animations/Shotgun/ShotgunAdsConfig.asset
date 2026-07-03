@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f97b42da67443ba489052b03c29643ca, type: 3}
   m_Name: ShotgunAdsConfig
   m_EditorClassIdentifier: 
-  _hipPosition: {x: 0, y: 0, z: 0}
-  _hipRotation: {x: 0, y: 0, z: 0}
-  _adsPosition: {x: 0, y: 0, z: 0}
+  _hipPosition: {x: 0.05, y: -0.26, z: -0.62}
+  _hipRotation: {x: 0, y: 0, z: 6}
+  _adsPosition: {x: -0.19, y: -0.12, z: -0.5}
   _adsRotation: {x: 0, y: 0, z: 0}
   _blendDuration: 0.22
   _blendCurve:
