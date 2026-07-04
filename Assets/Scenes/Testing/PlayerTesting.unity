@@ -8587,17 +8587,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!114 &1536974336 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7431206323135557724, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
-  m_PrefabInstance: {fileID: 3654773361432584329}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9022fab1cac45242b4262cf0cf8e4b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &1536974349 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 3507859536057376565, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
@@ -11161,8 +11150,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 362469ef3bba9ee40a865d2e2ffb39aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  action: {fileID: 11400000, guid: 5cf7ed3df376f974ebdf18b6bcd8535f, type: 2}
-  prompt: 'E: Usar'
 --- !u!43 &2147198333
 Mesh:
   m_ObjectHideFlags: 0
@@ -11384,6 +11371,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1776907803219441436, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1776907803219441436, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1776907803219441436, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1947898572578400190, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -11519,7 +11518,7 @@ PrefabInstance:
     - target: {fileID: 4949639121717207963, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
       propertyPath: interactor
       value: 
-      objectReference: {fileID: 1536974336}
+      objectReference: {fileID: 0}
     - target: {fileID: 5000710937619690437, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -11615,6 +11614,22 @@ PrefabInstance:
     - target: {fileID: 6068508654620076476, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
       propertyPath: m_Name
       value: UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 6181476115937802941, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6181476115937802941, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6181476115937802941, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6181476115937802941, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6761574553700700672, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
       propertyPath: m_AnchorMax.y
@@ -11966,8 +11981,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 362469ef3bba9ee40a865d2e2ffb39aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  action: {fileID: 11400000, guid: 5cf7ed3df376f974ebdf18b6bcd8535f, type: 2}
-  prompt: 'E: Usar'
 --- !u!65 &2552724834645269651
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12036,6 +12049,10 @@ PrefabInstance:
     - target: {fileID: 2844818379994879216, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5994839513884466263, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
+      propertyPath: _brain
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6822372658577589386, guid: 820b97f549b5eb442bc117a18de74725, type: 3}
       propertyPath: m_Name

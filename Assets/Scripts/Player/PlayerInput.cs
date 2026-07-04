@@ -1,8 +1,9 @@
-using UnityEngine.InputSystem;
-using UnityEngine;
-using Strategies;
-using Core;
 using System;
+using Core;
+using Strategies;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
 namespace Entities.Controllers
 {
     //TODO: THIS IS AWFUL THIS SCRIPT NEEDS TO ONLY SEND SIGNALS NOT HANDLE ANYTHING ELSE OR KNOW THAT OTHER COMPONENTS EXIST
@@ -16,17 +17,43 @@ namespace Entities.Controllers
     public class PlayerInput : Controller
     {
         private UnityEngine.InputSystem.PlayerInput _playerInput;
-        private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction, _grappleAction, _dashAction,_shootAction, _changeWeaponAction,_reloadAction;
+        private InputAction _moveAction,
+            _jumpAction,
+            _sprintAction,
+            _crouchAction,
+            _grappleAction,
+            _lookAction,
+            _dashAction,
+            _shootAction,
+            _changeWeaponAction,
+            _reloadAction,
+            _aimAction;
 
         //Events
 
         // Weapon Events
-        public static event Action OnShoot, OnChangeWeapon, OnReload;
-        
+        public static event Action<bool> OnShoot,
+            OnAim;
+        public static event Action OnChangeWeapon,
+            OnReload;
+
+        // Look Event
+        public static event Action<Vector2> OnLook;
+
+        // Movement Events
+        public static event Action<Vector2> OnMove;
 
         // State Machine
         private StateMachine<MovementState> _stateMachine;
         private PlayerMovementContext _context;
+
+        private Vector2 _lastMovementInput = Vector2.zero;
+        private Camera cam;
+
+        private void Start()
+        {
+            cam = Camera.main;
+        }
 
         protected override void Awake()
         {
@@ -35,7 +62,10 @@ namespace Entities.Controllers
 
             if (Controllable == null)
             {
-                Debug.LogError("No se encontró un componente IControllable en " + gameObject.name, this);
+                Debug.LogError(
+                    "No se encontró un componente IControllable en " + gameObject.name,
+                    this
+                );
             }
 
             InitializeStateMachine();
@@ -55,7 +85,7 @@ namespace Entities.Controllers
                 PlayerWallRun = GetComponent<PlayerWallRun>(),
                 PlayerDash = GetComponent<PlayerDash>(),
                 PlayerGrapple = GetComponent<PlayerGrapple>(),
-                Rigidbody = GetComponent<Rigidbody>()
+                Rigidbody = GetComponent<Rigidbody>(),
             };
 
             _stateMachine = new StateMachine<MovementState>();
@@ -85,6 +115,8 @@ namespace Entities.Controllers
             _shootAction = _playerInput.actions["Shoot"];
             _changeWeaponAction = _playerInput.actions["ChangeWeapon"];
             _reloadAction = _playerInput.actions["Reload"];
+            _lookAction = _playerInput.actions["MouseLook"];
+            _aimAction = _playerInput.actions["Aim"];
 
             _moveAction.Enable();
             _jumpAction.Enable();
@@ -92,6 +124,11 @@ namespace Entities.Controllers
             _sprintAction.Enable();
             _dashAction.Enable();
             _grappleAction.Enable();
+            _lookAction.Enable();
+            _shootAction.Enable();
+            _changeWeaponAction.Enable();
+            _reloadAction.Enable();
+            _aimAction.Enable();
         }
 
         private void OnDisable()
@@ -103,33 +140,56 @@ namespace Entities.Controllers
             _dashAction?.Disable();
             _grappleAction?.Disable();
             _shootAction?.Disable();
+            _lookAction?.Disable();
+            _changeWeaponAction?.Disable();
+            _reloadAction?.Disable();
+            _aimAction?.Disable();
         }
 
         private void Update()
         {
-            if (Controllable == null) return;
+            if (Controllable == null)
+                return;
 
             //Weapon Actions
-
             if (_shootAction.WasPressedThisFrame())
+                OnShoot?.Invoke(true);
+            else if (_shootAction.WasReleasedThisFrame())
+                OnShoot?.Invoke(false);
+
+            if (_aimAction.WasPressedThisFrame())
+                OnAim?.Invoke(true);
+            else if (_aimAction.WasReleasedThisFrame())
+                OnAim?.Invoke(false);
+
+            if (
+                _changeWeaponAction.ReadValue<float>() > 0f
+                || _changeWeaponAction.ReadValue<float>() < 0f
+            )
+                OnChangeWeapon?.Invoke();
+
+            if (_reloadAction.WasPressedThisFrame())
             {
-                OnShoot?.Invoke();
+                OnReload?.Invoke();
+                Debug.Log("Reload");
             }
-
-            if (_changeWeaponAction.ReadValue<float>() > 0f  || _changeWeaponAction.ReadValue<float>() < 0f ) OnChangeWeapon?.Invoke();
-            
-            if (_reloadAction.WasPressedThisFrame()) OnReload?.Invoke();
-
 
             //Movement Actions
             Vector2 movementInput = _moveAction.ReadValue<Vector2>();
             Vector2 direction = CalculateCameraRelativeDirection(movementInput);
 
+            if ((direction - _lastMovementInput).sqrMagnitude > 0.001f)
+            {
+                _lastMovementInput = direction;
+                OnMove?.Invoke(direction);
+            }
             UpdateContext(direction, movementInput);
             _stateMachine.Update();
 
             Controllable.Move(direction);
             HandleJump();
+
+            OnLook?.Invoke(_lookAction.ReadValue<Vector2>());
         }
 
         private void FixedUpdate()
@@ -140,7 +200,6 @@ namespace Entities.Controllers
         //TODO: THIS IS A TEMPORARY SOLUTION, IDEALLY THE INPUT SYSTEM SHOULD BE ABSTRACTED AWAY AND NOT KNOW ANYTHING ABOUT THE CAMERA OR HOW THE CHARACTER MOVES
         private Vector2 CalculateCameraRelativeDirection(Vector2 input)
         {
-            var cam = Camera.main;
             if (cam != null)
             {
                 var camTransform = cam.transform;

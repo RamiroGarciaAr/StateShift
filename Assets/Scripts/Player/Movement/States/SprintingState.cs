@@ -2,7 +2,8 @@ using Core;
 
 public class SprintingState : BaseState<PlayerMovementContext>
 {
-    public SprintingState(PlayerMovementContext context) : base(context) { }
+    public SprintingState(PlayerMovementContext context)
+        : base(context) { }
 
     public override void OnEnter()
     {
@@ -35,4 +36,3 @@ public class SprintingState : BaseState<PlayerMovementContext>
         }
     }
 }
-

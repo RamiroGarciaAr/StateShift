@@ -1,0 +1,64 @@
+using System;
+using UnityEngine;
+
+[System.Serializable]
+public class WeaponRecoilModule : WeaponAnimationModule
+{
+    [Header("Profile")]
+    [SerializeField]
+    private WeaponRecoilProfileSO _profile;
+
+    [Header("Springs")]
+    [SerializeField]
+    private SpringVector3 _recoilSpringRotation = new SpringVector3();
+
+    [SerializeField]
+    private SpringVector3 _recoilSpringPosition = new SpringVector3();
+
+    [Header("Weapon Kick (X-axis punch)")]
+    [SerializeField]
+    private SpringVector3 _kickSpringRotation = new SpringVector3();
+
+    public static event Action<Vector3, Vector3> OnRecoilImpulse;
+
+    public override Pose AnimationPose =>
+        new Pose(
+            _recoilSpringPosition.Value,
+            Quaternion.Euler(_recoilSpringRotation.Value + _kickSpringRotation.Value)
+        );
+
+    public void ApplyRecoil()
+    {
+        if (_profile == null)
+            return;
+
+        Vector3 rotImpulse = new Vector3(
+            -_profile.RecoilAmount,
+            UnityEngine.Random.Range(-_profile.RecoilShakeAmount, _profile.RecoilShakeAmount),
+            0f
+        );
+
+        Vector3 posImpulse = new Vector3(0f, 0f, -_profile.KickbackAmount);
+
+        // Dedicated instantaneous punch: snap the value this frame (MW-style), then spring back.
+        // Randomized yaw on Y gives each shot a lively, hand-held weapon feel.
+        Vector3 kickSnap = new Vector3(
+            -_profile.KickAmount,
+            UnityEngine.Random.Range(-_profile.KickYawAmount, _profile.KickYawAmount),
+            0f
+        );
+
+        _recoilSpringRotation.AddImpulse(rotImpulse);
+        _recoilSpringPosition.AddImpulse(posImpulse);
+        _kickSpringRotation.AddValue(kickSnap);
+
+        OnRecoilImpulse?.Invoke(rotImpulse, posImpulse);
+    }
+
+    public override void Tick(float deltaTime)
+    {
+        _recoilSpringRotation.Update(deltaTime);
+        _recoilSpringPosition.Update(deltaTime);
+        _kickSpringRotation.Update(deltaTime);
+    }
+}

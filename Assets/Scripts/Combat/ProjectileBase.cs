@@ -1,29 +1,39 @@
+using Combat.VFX;
 using Health;
 using UnityEngine;
 
-// Manual simulation — NO Rigidbody needed. Remove it from the prefab.
+// Manual simulation — NO Rigidbody needed.
 public class ProjectileBase : MonoBehaviour
 {
     private WeaponDataSO _data;
-    private Vector3      _spawnPos;
-    private Vector3      _currentVelocity;
-    private bool         _hasHit;
-    private float        _timeAlive;
+    private ImpactEffectSpawner _impactSpawner;
+    private Vector3 _spawnPos;
+    private Vector3 _currentVelocity;
+    private bool _hasHit;
+    private float _timeAlive;
 
-    [SerializeField] private LayerMask _hitMask = ~0;
+    [SerializeField]
+    private LayerMask _hitMask = ~0;
 
-    public void Initialise(WeaponDataSO data)
+    /// <summary>
+    /// Configures the projectile with its weapon data and the injected impact effect spawner.
+    /// </summary>
+    /// <param name="data">Weapon data driving speed, lifetime, and damage.</param>
+    /// <param name="impactSpawner">Pooled spawner used to play impact VFX on every hit.</param>
+    public void Initialise(WeaponDataSO data, ImpactEffectSpawner impactSpawner)
     {
-        _data            = data;
-        _spawnPos        = transform.position;
+        _data = data;
+        _impactSpawner = impactSpawner;
+        _spawnPos = transform.position;
         _currentVelocity = transform.forward * _data.ProjectileSpeed;
-        _hasHit          = false;
-        _timeAlive       = 0f;
+        _hasHit = false;
+        _timeAlive = 0f;
     }
 
     private void Update()
     {
-        if (_hasHit || _data == null) return;
+        if (_hasHit || _data == null)
+            return;
 
         _timeAlive += Time.deltaTime;
         if (_timeAlive >= _data.ProjectileLifetime)
@@ -34,16 +44,20 @@ public class ProjectileBase : MonoBehaviour
 
         Vector3 frameTranslation = _currentVelocity * Time.deltaTime;
 
-        if (Physics.Raycast(
+        if (
+            Physics.Raycast(
                 transform.position,
                 _currentVelocity.normalized,
                 out RaycastHit hit,
                 frameTranslation.magnitude,
                 _hitMask,
-                QueryTriggerInteraction.Ignore))
+                QueryTriggerInteraction.Ignore
+            )
+        )
         {
-            _hasHit            = true;
+            _hasHit = true;
             transform.position = hit.point;
+            _impactSpawner?.SpawnImpact(hit.point, hit.normal);
             TryDealDamage(hit);
             DeactivateProjectile();
         }
@@ -56,17 +70,17 @@ public class ProjectileBase : MonoBehaviour
     private void TryDealDamage(RaycastHit hit)
     {
         IDamagable target = hit.collider.GetComponentInParent<IDamagable>();
-        if (target == null || !target.IsAlive) return;
+        if (target == null || !target.IsAlive)
+            return;
 
-        float distance    = Vector3.Distance(_spawnPos, hit.point);
-        float multiplier  = _data.GetDamageMultiplierAtDistance(distance);
+        float distance = Vector3.Distance(_spawnPos, hit.point);
+        float multiplier = _data.GetDamageMultiplierAtDistance(distance);
         float finalDamage = _data.DamageAmount * multiplier;
 
-        // TODO: Use hit.normal for decals, VFX, hit direction effects
         var damageInfo = new DamageInfo(
             baseDamage: finalDamage,
             damageType: _data.DamageType,
-            hitPoint:   hit.point
+            hitPoint: hit.point
         );
 
         target.TakeDamage(damageInfo);

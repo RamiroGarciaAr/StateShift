@@ -20,7 +20,7 @@ public class AIMemory : MonoBehaviour
         if (CurrentAlertLevel == newLevel) return;
         
         CurrentAlertLevel = newLevel;
-        Debug.Log($"[AIMemory]Alert level changed to {CurrentAlertLevel} for {gameObject.name}");
+        // Debug.Log($"[AIMemory]Alert level changed to {CurrentAlertLevel} for {gameObject.name}");
     }
 
     private void OnDrawGizmos()

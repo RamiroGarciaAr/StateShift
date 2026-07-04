@@ -1,40 +1,57 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 
 //TODO: Bloom has to by defined per weapon, so we need to change this to be based on the weapon data or something like that, for now we will just hard code it in the inspector
 [DisallowMultipleComponent]
 public class CrosshairBloomController : MonoBehaviour
 {
     [Header("Material y propiedad del shader")]
-    [SerializeField] private Material crosshairMaterial;
-    [SerializeField] private string innerRadiusProp = "_InnerRadius";
+    [SerializeField]
+    private Material crosshairMaterial;
+
+    [SerializeField]
+    private string innerRadiusProp = "_InnerRadius";
 
     [Header("Valores base")]
-    [SerializeField, Min(0f)] private float baseInnerRadius = 0.20f;
+    [SerializeField, Min(0f)]
+    private float baseInnerRadius = 0.20f;
 
     [Header("Bloom")]
     [Tooltip("Cuánto aumenta el radio por cada click adicional mientras anima.")]
-    [SerializeField, Min(0f)] private float perClickAdd = 0.06f;
+    [SerializeField, Min(0f)]
+    private float perClickAdd = 0.06f;
+
     [Tooltip("Límite superior del bloom.")]
-    [SerializeField, Min(0f)] private float maxBloomRadius = 0.45f;
+    [SerializeField, Min(0f)]
+    private float maxBloomRadius = 0.45f;
 
     [Header("Tiempos")]
-    [SerializeField, Min(0.01f)] private float growDuration = 0.06f;   // subida rápida
-    [SerializeField, Min(0.01f)] private float decayDuration = 0.25f;  // bajada + lenta
+    [SerializeField, Min(0.01f)]
+    private float growDuration = 0.06f; // subida rápida
+
+    [SerializeField, Min(0.01f)]
+    private float decayDuration = 0.25f; // bajada + lenta
+
     [Tooltip("Pausa antes de empezar a decaer (opcional).")]
-    [SerializeField, Min(0f)] private float decayDelay = 0.0f;
+    [SerializeField, Min(0f)]
+    private float decayDelay = 0.0f;
 
     [Header("Curvas")]
-    [SerializeField] private AnimationCurve growCurve = AnimationCurve.EaseInOut(0,0,1,1);
-    [SerializeField] private AnimationCurve decayCurve = AnimationCurve.EaseInOut(0,0,1,1);
+    [SerializeField]
+    private AnimationCurve growCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+    [SerializeField]
+    private AnimationCurve decayCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
     [Header("Input System (Nuevo)")]
-    [SerializeField] private InputActionReference fireAction;
+    [SerializeField]
+    private InputActionReference fireAction;
 
     [Header("Extras")]
     [Tooltip("Tiempo mínimo entre disparos de bloom (seg). 0 = sin límite.")]
-    [SerializeField, Min(0f)] private float minInterval = 0.03f;
+    [SerializeField, Min(0f)]
+    private float minInterval = 0.03f;
 
     float lastBloomTime = -999f;
     Coroutine animCo;
@@ -47,26 +64,31 @@ public class CrosshairBloomController : MonoBehaviour
             Debug.LogWarning("[CrosshairBloomController] Asigná el material con _InnerRadius.");
         SetInner(baseInnerRadius);
     }
+
     void OnEnable()
     {
-        WeaponBase.OnApplyBloom += OnFire;
+        WeaponBase.OnShoot += OnFire;
     }
+
     void OnDisable()
     {
-        WeaponBase.OnApplyBloom -= OnFire;
+        WeaponBase.OnShoot -= OnFire;
     }
 
     void OnFire()
     {
-        if (!crosshairMaterial) return;
-        if (minInterval > 0f && (Time.time - lastBloomTime) < minInterval) return;
+        if (!crosshairMaterial)
+            return;
+        if (minInterval > 0f && (Time.time - lastBloomTime) < minInterval)
+            return;
         lastBloomTime = Time.time;
 
         //Acumular bloom.
         float current = GetInner();
         float desired = Mathf.Min(current + perClickAdd, maxBloomRadius);
 
-        if (animCo != null) StopCoroutine(animCo);
+        if (animCo != null)
+            StopCoroutine(animCo);
         animCo = StartCoroutine(BloomRoutine(desired));
     }
 
@@ -118,13 +140,14 @@ public class CrosshairBloomController : MonoBehaviour
 
     void SetInner(float v)
     {
-        if (crosshairMaterial) crosshairMaterial.SetFloat(innerRadiusID, v);
+        if (crosshairMaterial)
+            crosshairMaterial.SetFloat(innerRadiusID, v);
     }
 
     float GetInner()
     {
-        if (!crosshairMaterial) return baseInnerRadius;
+        if (!crosshairMaterial)
+            return baseInnerRadius;
         return crosshairMaterial.GetFloat(innerRadiusID);
     }
-
 }

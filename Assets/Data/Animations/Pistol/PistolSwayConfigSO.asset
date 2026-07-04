@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fe617167eaf66542ac206e92a8b88bd, type: 3}
+  m_Name: PistolSwayConfigSO
+  m_EditorClassIdentifier: 
+  _swayAmount: 0.309
+  _breathAmplitude: 0.01
+  _breathRotationPitchAmplitude: 0.5
+  _breathRotationYawAmplitude: 0.8
+  _breathFrequency: 1
+  _breathRotationPitchFrequency: 1
+  _breathRotationYawFrequency: 0.4
+  _swayF: 1.2
+  _swayZ: 1.5
+  _swayR: 4
+  _breathF: 2.37
+  _breathZ: 1
+  _breathR: 0
