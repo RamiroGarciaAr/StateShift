@@ -16,7 +16,7 @@ MonoBehaviour:
   weaponPrefab: {fileID: 0}
   availableFireModes: 00000000
   burstCount: 0
-  spreadAngle: 15
+  spreadAngle: 5
   damageType: 2
   damageAmount: 12
   damageDropoff:

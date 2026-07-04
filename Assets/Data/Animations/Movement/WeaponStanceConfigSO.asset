@@ -15,22 +15,22 @@ MonoBehaviour:
   _stanceList:
   - movementState: 0
     stanceConfig:
-      PositionOffset: {x: 0, y: -7.28, z: 0}
+      PositionOffset: {x: 0, y: 0, z: 0}
       RotationOffset: {x: 0, y: 0, z: 0}
       poseF: 5
       poseZ: 1
       poseR: 1
   - movementState: 7
     stanceConfig:
-      PositionOffset: {x: 0, y: -2.78, z: 0}
-      RotationOffset: {x: 0, y: 0, z: 0}
+      PositionOffset: {x: 0, y: 0, z: 0}
+      RotationOffset: {x: 0, y: -0.39, z: 15}
       poseF: 4
       poseZ: 1
       poseR: 1
   - movementState: 8
     stanceConfig:
-      PositionOffset: {x: 0, y: 0, z: 0}
-      RotationOffset: {x: 0, y: 0, z: 0}
+      PositionOffset: {x: 0, y: 0.06, z: 0}
+      RotationOffset: {x: 0, y: 0, z: 30}
       poseF: 6
       poseZ: 0.7
       poseR: 1.5
