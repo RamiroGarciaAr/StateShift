@@ -266,7 +266,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4156755491132913342}
+  - {fileID: 7129231107796331784}
   m_Father: {fileID: 7228968690023595589}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5583302822191927768
@@ -301,7 +301,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5800718955581298918}
+  m_Father: {fileID: 7129231107796331784}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &1282003927643546999
 Camera:
@@ -406,3 +406,55 @@ MonoBehaviour:
   ignoreVerticalVelocity: 1
   velocitySmoothing: 0.1
   targetCamera: {fileID: 0}
+--- !u!1 &7803763296279946983
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7129231107796331784}
+  - component: {fileID: 8330529852599564885}
+  m_Layer: 0
+  m_Name: CameraTraumaShake
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7129231107796331784
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7803763296279946983}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4156755491132913342}
+  m_Father: {fileID: 5800718955581298918}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8330529852599564885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7803763296279946983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9147d3d3a28d0fb48a3a4a655d139763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _traumaPerShot: 0.25
+  _traumaDecayPerSecond: 1.8
+  _traumaExponent: 2
+  _noiseFrequency: 28
+  _maxAnglesDegrees: {x: 2, y: 2, z: 3}
+  _adsBlendWeight: {fileID: 11400000, guid: 34738cf8910ab714cb01d546f0630aa4, type: 2}
+  _adsShakeScale: 0.3
