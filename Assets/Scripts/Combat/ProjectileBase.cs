@@ -69,7 +69,7 @@ public class ProjectileBase : MonoBehaviour
 
     private void TryDealDamage(RaycastHit hit)
     {
-        IDamagable target = hit.collider.GetComponentInParent<IDamagable>();
+        IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
         if (target == null || !target.IsAlive)
             return;
 

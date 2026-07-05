@@ -2,13 +2,14 @@ using Health;
 using UnityEngine;
 
 // Temporary test component
-public class DamageTestTarget : MonoBehaviour, IDamagable
+public class DamageTestTarget : MonoBehaviour, IDamageable
 {
     public bool IsAlive => true;
 
     public void TakeDamage(DamageInfo damageInfo)
     {
-        Debug.Log($"[HIT] Damage: {damageInfo.FinalDamage:F1} | " +
-                  $"Type: {damageInfo.DamageType}");
+        Debug.Log(
+            $"[HIT] Damage: {damageInfo.FinalDamage:F1} | " + $"Type: {damageInfo.DamageType}"
+        );
     }
 }

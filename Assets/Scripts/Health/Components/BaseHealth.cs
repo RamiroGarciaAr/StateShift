@@ -5,9 +5,10 @@ using UnityEngine;
 
 namespace Health
 {
-    public abstract class BaseHealth : MonoBehaviour, IHealth, IDamagable, IHealable
+    public abstract class BaseHealth : MonoBehaviour, IHealth, IDamageable, IHealable
     {
-        [SerializeField] protected DamageMatrixSO damageMatrix;
+        [SerializeField]
+        protected DamageMatrixSO damageMatrix;
 
         protected List<HealthChunk> healthChunks = new();
         protected List<IDamageModifier> damageModifiers = new();
@@ -31,7 +32,8 @@ namespace Health
 
         public virtual void TakeDamage(DamageInfo damageInfo)
         {
-            if (!IsAlive) return;
+            if (!IsAlive)
+                return;
 
             float previousHealth = CurrentHealth;
 
@@ -43,10 +45,17 @@ namespace Health
             float remainingDamage = modifiedDamage;
             for (int i = 0; i < healthChunks.Count && remainingDamage > 0; i++)
             {
-                if (healthChunks[i].IsDepleted) continue;
+                if (healthChunks[i].IsDepleted)
+                    continue;
 
                 // Get multiplier from DamageMatrix SO
-                float multiplier = damageMatrix != null ? damageMatrix.GetMultiplier(damageInfo.DamageType, healthChunks[i].HealthType): 1f;
+                float multiplier =
+                    damageMatrix != null
+                        ? damageMatrix.GetMultiplier(
+                            damageInfo.DamageType,
+                            healthChunks[i].HealthType
+                        )
+                        : 1f;
 
                 bool wasDepletedBefore = healthChunks[i].IsDepleted;
                 remainingDamage = healthChunks[i].ApplyDamage(remainingDamage * multiplier);
@@ -59,8 +68,12 @@ namespace Health
 
             float damageDealt = previousHealth - CurrentHealth;
             var args = new HealthChangeEventArgs(
-                previousHealth, CurrentHealth, MaxHealth,
-                damageDealt, GetCurrentChunkIndex(), false
+                previousHealth,
+                CurrentHealth,
+                MaxHealth,
+                damageDealt,
+                GetCurrentChunkIndex(),
+                false
             );
             OnHealthChanged?.Invoke(args);
 
@@ -98,7 +111,8 @@ namespace Health
         {
             for (int i = 0; i < healthChunks.Count; i++)
             {
-                if (!healthChunks[i].IsDepleted) return i;
+                if (!healthChunks[i].IsDepleted)
+                    return i;
             }
             return healthChunks.Count - 1;
         }
