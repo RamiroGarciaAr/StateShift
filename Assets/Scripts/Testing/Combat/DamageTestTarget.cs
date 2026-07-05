@@ -59,10 +59,10 @@ public class DamageTestTarget : MonoBehaviour, IDamageable
     private void ResetTarget()
     {
         Debug.Log("Resetting target to Idle state.");
+        _animator.SetTrigger("Reset");
         _health = _maxHealth;
         _animator.ResetTrigger(HasHitTrigger);
         _animator.ResetTrigger(HasDiedTrigger);
-        _animator.Play(IdleStateName, 0, 0f);
         _resetRoutine = null;
     }
 

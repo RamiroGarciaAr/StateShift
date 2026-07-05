@@ -10,12 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2a588ccc44558c54ea23f6b1ee4f4e2c, type: 3}
-  m_Name: TestEH
+  m_Name: TestDummyHealth
   m_EditorClassIdentifier: 
   chunks:
   - maxHealth: 100
     healthType: 1
-  - maxHealth: 100
-    healthType: 2
-  - maxHealth: 100
-    healthType: 3

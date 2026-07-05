@@ -5,7 +5,8 @@ namespace Health
 {
     public class EnemyHealth : BaseHealth
     {
-        [SerializeField] private EnemyHealthConfigSO healthConfig;
+        [SerializeField]
+        private EnemyHealthConfigSO healthConfig;
 
         public IReadOnlyList<HealthChunk> Chunks => healthChunks;
         public int CurrentChunkIndex => GetCurrentChunkIndex();
@@ -26,15 +27,18 @@ namespace Health
             }
         }
 
-        public override void Heal(float amount)
-        {
-            var currentChunk = healthChunks.Find(c => !c.IsDepleted);
-            currentChunk?.Heal(amount);
-        }
+        /*
+               public override void Heal(float amount)
+               {
+                   var currentChunk = healthChunks.Find(c => !c.IsDepleted);
+                   currentChunk?.Heal(amount);
+               }
+               */
 
         public float GetChunkHealthNormalized(int index)
         {
-            if (index < 0 || index >= healthChunks.Count) return 0f;
+            if (index < 0 || index >= healthChunks.Count)
+                return 0f;
             return healthChunks[index].HealthNormalized;
         }
     }

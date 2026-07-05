@@ -183,6 +183,6 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     protected void SpawnProjectile(Vector3 position, Quaternion rotation)
     {
         GameObject bullet = Instantiate(weaponData.ProjectilePrefab, position, rotation);
-        bullet.GetComponent<ProjectileBase>().Initialise(weaponData, _impactSpawner);
+        bullet.GetComponent<ProjectileBase>().Initialize(weaponData, _impactSpawner);
     }
 }

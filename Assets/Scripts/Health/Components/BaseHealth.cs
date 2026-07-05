@@ -34,13 +34,14 @@ namespace Health
         {
             if (!IsAlive)
                 return;
-
             float previousHealth = CurrentHealth;
 
             // Apply damage modifiers (adrenaline, armor, etc.)
             float modifiedDamage = ApplyDamageModifiers(damageInfo);
             damageInfo.FinalDamage = modifiedDamage;
-
+            Debug.Log(
+                $"[{gameObject.name}] Taking {modifiedDamage} damage of type {damageInfo.DamageType} (base: {damageInfo.BaseDamage})"
+            );
             // Flow damage through chunks
             float remainingDamage = modifiedDamage;
             for (int i = 0; i < healthChunks.Count && remainingDamage > 0; i++)
@@ -117,6 +118,17 @@ namespace Health
             return healthChunks.Count - 1;
         }
 
-        public abstract void Heal(float amount);
+        public virtual void Heal(float amount)
+        {
+            Debug.Log("Healing");
+            float current_amount = amount;
+            int idx = 0;
+            while (current_amount > 0)
+            {
+                healthChunks[idx].Heal(current_amount);
+                current_amount -= healthChunks[idx].MaxHealth;
+                idx++;
+            }
+        }
     }
 }

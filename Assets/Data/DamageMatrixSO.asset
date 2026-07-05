@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 847620607db60bf4c91b37195b13e360, type: 3}
-  m_Name: TestDM
+  m_Name: DamageMatrixSO
   m_EditorClassIdentifier: 
   Flesh:
     Kinetic: 1
     Fire: 1.5
-    Plasma: 1
+    Plasma: 1.25
     Energy: 0.5
   Exo:
     Kinetic: 0.75

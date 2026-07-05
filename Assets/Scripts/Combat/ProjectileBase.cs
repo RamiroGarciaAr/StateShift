@@ -20,7 +20,7 @@ public class ProjectileBase : MonoBehaviour
     /// </summary>
     /// <param name="data">Weapon data driving speed, lifetime, and damage.</param>
     /// <param name="impactSpawner">Pooled spawner used to play impact VFX on every hit.</param>
-    public void Initialise(WeaponDataSO data, ImpactEffectSpawner impactSpawner)
+    public void Initialize(WeaponDataSO data, ImpactEffectSpawner impactSpawner)
     {
         _data = data;
         _impactSpawner = impactSpawner;
@@ -57,8 +57,12 @@ public class ProjectileBase : MonoBehaviour
         {
             _hasHit = true;
             transform.position = hit.point;
-            _impactSpawner?.SpawnImpact(hit.point, hit.normal);
-            TryDealDamage(hit);
+
+            // Resolve the damageable once: gate the decal on it and reuse it for damage dealing.
+            // GetComponentInParent so colliders on child bones/limbs still count as damageable.
+            IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
+            _impactSpawner?.SpawnImpact(hit.point, hit.normal, spawnDecal: target == null);
+            TryDealDamage(target, hit);
             DeactivateProjectile();
         }
         else
@@ -67,9 +71,8 @@ public class ProjectileBase : MonoBehaviour
         }
     }
 
-    private void TryDealDamage(RaycastHit hit)
+    private void TryDealDamage(IDamageable target, RaycastHit hit)
     {
-        IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
         if (target == null || !target.IsAlive)
             return;
 
