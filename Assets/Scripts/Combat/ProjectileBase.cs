@@ -95,7 +95,6 @@ public class ProjectileBase : MonoBehaviour
         );
 
         target.TakeDamage(damageInfo);
-        Debug.Log($"instigator: {_instigator}");
     }
 
     private void DeactivateProjectile()
