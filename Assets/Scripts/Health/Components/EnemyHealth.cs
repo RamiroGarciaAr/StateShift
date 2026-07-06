@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,9 @@ namespace Health
     {
         [SerializeField]
         private EnemyHealthConfigSO healthConfig;
+
+        [SerializeField]
+        DamageDealtChannelSO damageDealtChannelSO;
 
         public IReadOnlyList<HealthChunk> Chunks => healthChunks;
         public int CurrentChunkIndex => GetCurrentChunkIndex();
@@ -26,6 +30,9 @@ namespace Health
                 healthChunks.Add(new HealthChunk(chunkData.maxHealth, chunkData.healthType));
             }
         }
+
+        //We grab the event so we can use it in other things
+        protected override void OnDamageApplied(in DamageDealtEvent result) { }
 
         public float GetChunkHealthNormalized(int index)
         {

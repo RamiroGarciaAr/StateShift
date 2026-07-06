@@ -13,6 +13,7 @@ namespace Health
         protected List<HealthChunk> healthChunks = new();
         protected List<IDamageModifier> damageModifiers = new();
 
+        //TODO: Fix LINQ on hot path
         public float CurrentHealth => healthChunks.Sum(c => c.CurrentHealth);
         public float MaxHealth => healthChunks.Sum(c => c.MaxHealth);
         public float HealthNormalize => MaxHealth > 0 ? CurrentHealth / MaxHealth : 0f;
@@ -34,36 +35,13 @@ namespace Health
         {
             if (!IsAlive)
                 return;
-            float previousHealth = CurrentHealth;
 
+            float previousHealth = CurrentHealth;
             // Apply damage modifiers (adrenaline, armor, etc.)
             float modifiedDamage = ApplyDamageModifiers(damageInfo);
             damageInfo.FinalDamage = modifiedDamage;
 
-            // Flow damage through chunks
-            float remainingDamage = modifiedDamage;
-            for (int i = 0; i < healthChunks.Count && remainingDamage > 0; i++)
-            {
-                if (healthChunks[i].IsDepleted)
-                    continue;
-
-                // Get multiplier from DamageMatrix SO
-                float multiplier =
-                    damageMatrix != null
-                        ? damageMatrix.GetMultiplier(
-                            damageInfo.DamageType,
-                            healthChunks[i].HealthType
-                        )
-                        : 1f;
-
-                bool wasDepletedBefore = healthChunks[i].IsDepleted;
-                remainingDamage = healthChunks[i].ApplyDamage(remainingDamage * multiplier);
-
-                if (!wasDepletedBefore && healthChunks[i].IsDepleted)
-                {
-                    OnChunkDepleted?.Invoke(i);
-                }
-            }
+            float effectiveness = FlowDamage(damageInfo, modifiedDamage);
 
             float damageDealt = previousHealth - CurrentHealth;
 
@@ -76,11 +54,46 @@ namespace Health
                 false
             );
             OnHealthChanged?.Invoke(args);
-
+            //TODO: Replace accurate body part when body modifiers are implements
+            OnDamageApplied(new DamageDealtEvent(effectiveness, BodyPart.None, !IsAlive));
             if (!IsAlive)
             {
                 OnDeath?.Invoke();
             }
+        }
+
+        private float FlowDamage(DamageInfo info, float modifiedDamage)
+        {
+            //Captured Variables there has to be a cleaner way to get this
+            float effectiveness = 1f;
+            bool captured = false;
+
+            float remainingDamage = modifiedDamage;
+            for (int i = 0; i < healthChunks.Count && remainingDamage > 0; i++)
+            {
+                if (healthChunks[i].IsDepleted)
+                    continue;
+
+                // Get multiplier from DamageMatrix SO
+                float multiplier =
+                    damageMatrix != null
+                        ? damageMatrix.GetMultiplier(info.DamageType, healthChunks[i].HealthType)
+                        : 1f;
+
+                //Yeah...I hate this
+                if (!captured)
+                {
+                    effectiveness = multiplier;
+                    captured = true;
+                }
+                remainingDamage = healthChunks[i].ApplyDamage(remainingDamage * multiplier);
+
+                if (healthChunks[i].IsDepleted)
+                {
+                    OnChunkDepleted?.Invoke(i);
+                }
+            }
+            return effectiveness;
         }
 
         protected float ApplyDamageModifiers(DamageInfo damageInfo)
@@ -117,14 +130,18 @@ namespace Health
             return healthChunks.Count - 1;
         }
 
+        //We create the hook for the ui
+        protected virtual void OnDamageApplied(in DamageDealtEvent result) { }
+
         public virtual void Heal(float amount)
         {
             float current_amount = amount;
             int idx = 0;
-            while (current_amount > 0)
+            while (current_amount > 0 && idx < healthChunks.Count)
             {
-                healthChunks[idx].Heal(current_amount);
-                current_amount -= healthChunks[idx].MaxHealth;
+                healthChunks[idx].Heal(current_amount); //it does not care for overflow
+                if (current_amount > healthChunks[idx].MaxHealth) // we check if we need to
+                    current_amount -= healthChunks[idx].MaxHealth; //We subtract what we already healed
                 idx++;
             }
         }
