@@ -49,7 +49,6 @@ public class RespawnOnDeath : MonoBehaviour
     void ResetTarget()
     {
         _baseHealth.Heal(maxHealth);
-        Debug.Log($"Healing {maxHealth}");
         _animator.SetTrigger("Reset");
         _animator.ResetTrigger("HasDied");
     }

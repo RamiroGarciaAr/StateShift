@@ -120,7 +120,6 @@ namespace Health
 
         public virtual void Heal(float amount)
         {
-            Debug.Log("Healing");
             float current_amount = amount;
             int idx = 0;
             while (current_amount > 0)
