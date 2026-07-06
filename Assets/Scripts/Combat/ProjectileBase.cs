@@ -15,12 +15,18 @@ public class ProjectileBase : MonoBehaviour
     [SerializeField]
     private LayerMask _hitMask = ~0;
 
+    private Instigator _instigator;
+
     /// <summary>
     /// Configures the projectile with its weapon data and the injected impact effect spawner.
     /// </summary>
     /// <param name="data">Weapon data driving speed, lifetime, and damage.</param>
     /// <param name="impactSpawner">Pooled spawner used to play impact VFX on every hit.</param>
-    public void Initialize(WeaponDataSO data, ImpactEffectSpawner impactSpawner)
+    public void Initialize(
+        WeaponDataSO data,
+        ImpactEffectSpawner impactSpawner,
+        Instigator instigator
+    )
     {
         _data = data;
         _impactSpawner = impactSpawner;
@@ -28,6 +34,7 @@ public class ProjectileBase : MonoBehaviour
         _currentVelocity = transform.forward * _data.ProjectileSpeed;
         _hasHit = false;
         _timeAlive = 0f;
+        _instigator = instigator;
     }
 
     private void Update()
@@ -83,10 +90,12 @@ public class ProjectileBase : MonoBehaviour
         var damageInfo = new DamageInfo(
             baseDamage: finalDamage,
             damageType: _data.DamageType,
+            instigator: _instigator,
             hitPoint: hit.point
         );
 
         target.TakeDamage(damageInfo);
+        Debug.Log($"instigator: {_instigator}");
     }
 
     private void DeactivateProjectile()

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Entities.Controllers;
+using Health;
 using UnityEngine;
 
 //TODO: We are going to change this system to only shoot the current weapon
@@ -12,6 +13,8 @@ public class WeaponInventory : MonoBehaviour
 
     public static event Action<string> OnWeaponChanged;
     private int _currentWeaponIndex = 0;
+
+    private Instigator entity = Instigator.Player;
 
     private void Start()
     {
@@ -55,6 +58,7 @@ public class WeaponInventory : MonoBehaviour
         WeaponBase weapon = weaponList[_currentWeaponIndex];
         OnWeaponChanged?.Invoke(weapon.GetWeaponName());
         weapon.gameObject.SetActive(true);
+        weapon.SetOwner(entity);
         weapon.Equip();
     }
 

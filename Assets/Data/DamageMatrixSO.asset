@@ -18,7 +18,7 @@ MonoBehaviour:
     Plasma: 1.25
     Energy: 0.5
   Exo:
-    Kinetic: 0.75
+    Kinetic: 1
     Fire: 1
     Plasma: 1
     Energy: 1.5
@@ -26,4 +26,4 @@ MonoBehaviour:
     Kinetic: 1
     Fire: 0.5
     Plasma: 2
-    Energy: 1
+    Energy: 0.2

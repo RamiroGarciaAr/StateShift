@@ -8,7 +8,7 @@ namespace Health
         public float FinalDamage { get; set; }
         public DamageType DamageType { get; }
         public Vector3 HitPoint { get; }
-        public Instigator Instigator { get; set; } = Instigator.Other;
+        public Instigator Instigator { get; set; } = Instigator.None;
         public BodyPart BodyPart { get; set; } = BodyPart.None;
         public Vector3 HitDirection { get; set; } = Vector3.zero;
         public Vector3 HitNormal { get; set; } = Vector3.zero;
@@ -17,7 +17,7 @@ namespace Health
             float baseDamage,
             DamageType damageType,
             Vector3 hitPoint = default,
-            Instigator instigator = Instigator.Other,
+            Instigator instigator = Instigator.None,
             BodyPart bodyPart = BodyPart.None,
             Vector3 hitDirection = default,
             Vector3 hitNormal = default
@@ -31,6 +31,9 @@ namespace Health
             BodyPart = bodyPart;
             HitDirection = hitDirection;
             HitNormal = hitNormal;
+
+            if (Instigator == Instigator.None)
+                Debug.LogError("[Damage Info]There is an Instigator being set to NONE");
         }
     }
 }

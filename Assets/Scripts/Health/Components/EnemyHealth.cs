@@ -27,14 +27,6 @@ namespace Health
             }
         }
 
-        /*
-               public override void Heal(float amount)
-               {
-                   var currentChunk = healthChunks.Find(c => !c.IsDepleted);
-                   currentChunk?.Heal(amount);
-               }
-               */
-
         public float GetChunkHealthNormalized(int index)
         {
             if (index < 0 || index >= healthChunks.Count)

@@ -30,9 +30,10 @@ public class RespawnOnDeath : MonoBehaviour
         _baseHealth.OnDeath += StartRespawn;
     }
 
-    void Onsable()
+    void OnDisable()
     {
         _baseHealth.OnDeath -= StartRespawn;
+        StopCoroutine(ResetAfterDelay());
     }
 
     private void StartRespawn()

@@ -19,7 +19,7 @@ public class BulletTestSpawner : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
-            bullet.GetComponent<ProjectileBase>().Initialize(weaponData, _impactSpawner);
+            //bullet.GetComponent<ProjectileBase>().Initialize(weaponData, _impactSpawner);
         }
     }
 }

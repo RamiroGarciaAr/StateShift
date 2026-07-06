@@ -3,6 +3,7 @@ using Combat.FireModes;
 using Combat.Interfaces;
 using Combat.VFX;
 using Entities.Controllers;
+using Health;
 using UnityEngine;
 
 public abstract class WeaponBase : MonoBehaviour, IEquipable
@@ -50,6 +51,8 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
 
     private IFireMode _currentFireMode;
     private int _currentFireModeIdx;
+
+    private Instigator _owner;
     #endregion
     public virtual void Initialize(WeaponDataSO data)
     {
@@ -149,6 +152,8 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
 
     public virtual void Unequip() { }
 
+    public void SetOwner(Instigator instigator) => _owner = instigator;
+
     //TODO: We need to expand this system to handle different reload systems
     public virtual void TryReload()
     {
@@ -183,6 +188,6 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     protected void SpawnProjectile(Vector3 position, Quaternion rotation)
     {
         GameObject bullet = Instantiate(weaponData.ProjectilePrefab, position, rotation);
-        bullet.GetComponent<ProjectileBase>().Initialize(weaponData, _impactSpawner);
+        bullet.GetComponent<ProjectileBase>().Initialize(weaponData, _impactSpawner, _owner);
     }
 }

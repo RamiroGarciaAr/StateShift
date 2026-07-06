@@ -39,9 +39,7 @@ namespace Health
             // Apply damage modifiers (adrenaline, armor, etc.)
             float modifiedDamage = ApplyDamageModifiers(damageInfo);
             damageInfo.FinalDamage = modifiedDamage;
-            Debug.Log(
-                $"[{gameObject.name}] Taking {modifiedDamage} damage of type {damageInfo.DamageType} (base: {damageInfo.BaseDamage})"
-            );
+
             // Flow damage through chunks
             float remainingDamage = modifiedDamage;
             for (int i = 0; i < healthChunks.Count && remainingDamage > 0; i++)
@@ -68,6 +66,7 @@ namespace Health
             }
 
             float damageDealt = previousHealth - CurrentHealth;
+
             var args = new HealthChangeEventArgs(
                 previousHealth,
                 CurrentHealth,
