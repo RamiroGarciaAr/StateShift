@@ -10,7 +10,7 @@ namespace Health
         private EnemyHealthConfigSO healthConfig;
 
         [SerializeField]
-        DamageDealtChannelSO damageDealtChannelSO;
+        DamageDealtChannelSO damageDealtChannel;
 
         public IReadOnlyList<HealthChunk> Chunks => healthChunks;
         public int CurrentChunkIndex => GetCurrentChunkIndex();
@@ -32,7 +32,16 @@ namespace Health
         }
 
         //We grab the event so we can use it in other things
-        protected override void OnDamageApplied(in DamageDealtEvent result) { }
+        protected override void OnDamageApplied(in DamageDealtEvent result)
+        {
+            if (damageDealtChannel == null)
+            {
+                Debug.LogError("[EnemyHealth]DamageDealtChannel not assigned", this);
+                return;
+            }
+
+            damageDealtChannel.Raise(in result);
+        }
 
         public float GetChunkHealthNormalized(int index)
         {
