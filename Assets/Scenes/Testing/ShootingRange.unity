@@ -7768,7 +7768,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1148335709
 MonoBehaviour:
@@ -7814,11 +7814,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1148335707}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba85715d4bf3e9c4c8ec567042d4d743, type: 3}
+  m_Script: {fileID: 11500000, guid: 3e4cfb528588e8b45abc83793e16f7fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   channel: {fileID: 11400000, guid: 1cd4f7c14aa7489419addccb8ef0393f, type: 2}
-  hitmarker: {fileID: 0}
+  hitTimer: 0.15
+  killSplayAmount: 0.1
+  maxAngle: 25
+  neutralColor: {r: 0.98039216, g: 0.98039216, b: 0.98039216, a: 1}
+  resistedColor: {r: 0.26666668, g: 0.46666667, b: 0.8980392, a: 1}
+  effectiveColor: {r: 1, g: 0.64705884, b: 0.14901961, a: 1}
+  killColor: {r: 0.6, g: 0.09803922, b: 0.09803922, a: 1}
 --- !u!1 &1268257551
 GameObject:
   m_ObjectHideFlags: 0

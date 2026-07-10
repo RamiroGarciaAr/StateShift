@@ -12,6 +12,10 @@ public class HitmarkerController : MonoBehaviour
     [SerializeField, Range(0.01f, 0.5f)]
     private float hitTimer = 0.4f;
 
+    [Tooltip("How much the Gap/Length grows")]
+    [SerializeField]
+    private float killSplayAmount = 0.2f;
+
     [SerializeField]
     private float maxAngle = 15f;
 
@@ -30,6 +34,12 @@ public class HitmarkerController : MonoBehaviour
     private RawImage _hitMarkerImg;
     private float _hideHitMarkerIn;
     private Material _hitMarkerMaterial;
+
+    private float _initialGap;
+    private float _initialLength;
+    private bool _hasToPlayKillAnim = false;
+    private const string prop_gap = "_Gap";
+    private const string prop_length = "_Length";
 
     void Awake()
     {
@@ -51,7 +61,10 @@ public class HitmarkerController : MonoBehaviour
 
     void Start()
     {
+        //set up hitmarker
         _hitMarkerImg.enabled = false;
+        _initialGap = _hitMarkerMaterial.GetFloat(prop_gap);
+        _initialLength = _hitMarkerMaterial.GetFloat(prop_length);
     }
 
     private void OnDestroy()
@@ -66,22 +79,46 @@ public class HitmarkerController : MonoBehaviour
         if (_hideHitMarkerIn > 0f)
         {
             _hideHitMarkerIn -= Time.deltaTime;
+            if (_hasToPlayKillAnim)
+                PlayKillAnim();
         }
         if (_hideHitMarkerIn <= 0f)
         {
             _hitMarkerImg.enabled = false;
+            _hasToPlayKillAnim = false;
         }
     }
 
     private void HandleHit(DamageDealtEvent evt)
     {
+        //reset our values just in case
+        _hitMarkerMaterial.SetFloat(prop_gap, _initialGap);
+        _hitMarkerMaterial.SetFloat(prop_length, _initialLength);
+
         _hideHitMarkerIn = hitTimer;
         //then we set up our shader
-        transform.localEulerAngles = new Vector3(0, 0, Random.Range(-maxAngle, maxAngle));
-
         _hitMarkerMaterial.color = GetColor(evt);
+        if (evt.isKillShot)
+        {
+            transform.localEulerAngles = new Vector3(0, 0, 0);
+            _hasToPlayKillAnim = true;
+        }
+        else
+        {
+            transform.localEulerAngles = new Vector3(0, 0, Random.Range(-maxAngle, maxAngle));
+        }
 
         _hitMarkerImg.enabled = true;
+    }
+
+    private void PlayKillAnim()
+    {
+        float t = 1f - (_hideHitMarkerIn / hitTimer);
+        float current_length = Mathf.Lerp(_initialLength, _initialLength + killSplayAmount, t);
+        _hitMarkerMaterial.SetFloat(prop_length, current_length);
+
+        float current_gap = Mathf.Lerp(_initialGap, _initialGap + killSplayAmount, t);
+        _hitMarkerMaterial.SetFloat(prop_gap, current_gap);
     }
 
     private Color GetColor(DamageDealtEvent evt)
