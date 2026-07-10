@@ -75,9 +75,9 @@ Shader "Custom/HitMarkerShader"
                 d = min(d, sdf_segment(uv, float2(-_Gap, _Gap), float2(-_Length, _Length)));
                 d = min(d, sdf_segment(uv, float2( _Gap, _Gap), float2( _Length, _Length)));
 
-                // HARD edge for now: inside thickness -> draw, else transparent.
-                // (Anti-aliasing comes next, once you've seen this render.)
-                float alpha = d < _Thickness ? 1.0 : 0.0;
+
+                float fw = fwidth(d);
+                float alpha = 1.0 - smoothstep(_Thickness - fw, _Thickness + fw,d);
 
                 fixed4 col = _Color * i.color;
                 col.a *= alpha;
