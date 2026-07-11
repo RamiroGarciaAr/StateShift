@@ -15,8 +15,8 @@ MonoBehaviour:
   Flesh:
     Kinetic: 1
     Fire: 1.5
-    Plasma: 1.25
-    Energy: 0.5
+    Plasma: 0
+    Energy: 0.7
   Exo:
     Kinetic: 1
     Fire: 1
@@ -24,6 +24,6 @@ MonoBehaviour:
     Energy: 1.5
   Shield:
     Kinetic: 1
-    Fire: 0.5
-    Plasma: 2
-    Energy: 0.2
+    Fire: 0.7
+    Plasma: 0
+    Energy: 1.5

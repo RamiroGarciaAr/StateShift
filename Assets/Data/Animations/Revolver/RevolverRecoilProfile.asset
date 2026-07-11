@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfc089a442263524aa1f845d4f25f9ef, type: 3}
   m_Name: RevolverRecoilProfile
   m_EditorClassIdentifier: 
-  _recoilAmount: 5
-  _recoilShakeAmount: 2
-  _kickbackAmount: 0.1
-  _kickAmount: 8
-  _kickYawAmount: 3
+  _recoilAmount: 100
+  _recoilShakeAmount: 25
+  _kickbackAmount: 3
+  _kickAmount: 75
+  _kickYawAmount: 40

@@ -12,21 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2491053cc2e35841b851ad9d274c553, type: 3}
   m_Name: Revolver_Data
   m_EditorClassIdentifier: 
-  weaponName: 
+  weaponName: Ionbreaker
   weaponPrefab: {fileID: 0}
-  availableFireModes: 
+  availableFireModes: 00000000
   burstCount: 0
-  spreadAngle: 0
-  damageType: 0
-  damageAmount: 0
+  spreadAngle: 0.5
+  damageType: 3
+  damageAmount: 45
   damageDropoff:
-    midRange: 50
-    longRange: 100
-    longRangeDamage: 50
-  roundsPerMinute: 0
-  magazineSize: 0
-  reloadTime: 0
-  totalAmmo: 0
-  projectilePrefab: {fileID: 0}
-  projectileSpeed: 0
-  projectileLifetime: 0
+    midRange: 40
+    longRange: 60
+    longRangeDamage: 80
+  roundsPerMinute: 120
+  magazineSize: 6
+  reloadTime: 2.2
+  totalAmmo: 36
+  projectilePrefab: {fileID: 4128576527009579452, guid: 2a5d9a4da5b4a77459e68d230c4ca324, type: 3}
+  projectileSpeed: 1000
+  projectileLifetime: 4
