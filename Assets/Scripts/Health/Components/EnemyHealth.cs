@@ -15,6 +15,15 @@ namespace Health
         public IReadOnlyList<HealthChunk> Chunks => healthChunks;
         public int CurrentChunkIndex => GetCurrentChunkIndex();
 
+        protected override void Awake()
+        {
+            base.Awake();
+
+            //we register its respective modifiers
+            if (healthConfig != null)
+                RegisterDamageModifier(new BodyPartModifier(healthConfig.HealthModifier));
+        }
+
         protected override void InitializeChunks()
         {
             healthChunks.Clear();

@@ -55,7 +55,7 @@ namespace Health
             );
             OnHealthChanged?.Invoke(args);
             //TODO: Replace accurate body part when body modifiers are implements
-            OnDamageApplied(new DamageDealtEvent(effectiveness, BodyPart.None, !IsAlive));
+            OnDamageApplied(new DamageDealtEvent(effectiveness, damageInfo.BodyPart, !IsAlive));
             if (!IsAlive)
             {
                 OnDeath?.Invoke();

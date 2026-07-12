@@ -62,14 +62,35 @@ public class ProjectileBase : MonoBehaviour
             )
         )
         {
+            //We set the hiy with position
             _hasHit = true;
             transform.position = hit.point;
 
             // Resolve the damageable once: gate the decal on it and reuse it for damage dealing.
             // GetComponentInParent so colliders on child bones/limbs still count as damageable.
-            IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
-            _impactSpawner?.SpawnImpact(hit.point, hit.normal, spawnDecal: target == null);
-            TryDealDamage(target, hit);
+            // IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
+
+            Hitbox enemyHitbox = hit.collider.GetComponent<Hitbox>();
+            bool spawnDecal;
+
+            if (enemyHitbox != null)
+            {
+                TryDealDamage(enemyHitbox, hit);
+                spawnDecal = false; // hit an enemy, no scorch mark
+            }
+            else
+            {
+                bool isDamageable = hit.collider.GetComponentInParent<IDamageable>() != null;
+                if (isDamageable)
+                    Debug.LogWarning(
+                        $"[Projectile] Hit damageable '{hit.collider.name}' with no Hitbox — no damage.",
+                        hit.collider
+                    );
+
+                spawnDecal = !isDamageable; // decal on walls only
+            }
+
+            _impactSpawner?.SpawnImpact(hit.point, hit.normal, spawnDecal);
             DeactivateProjectile();
         }
         else
@@ -78,9 +99,9 @@ public class ProjectileBase : MonoBehaviour
         }
     }
 
-    private void TryDealDamage(IDamageable target, RaycastHit hit)
+    private void TryDealDamage(Hitbox hitbox, RaycastHit hit)
     {
-        if (target == null || !target.IsAlive)
+        if (hitbox.Damageable == null || !hitbox.Damageable.IsAlive)
             return;
 
         float distance = Vector3.Distance(_spawnPos, hit.point);
@@ -90,11 +111,12 @@ public class ProjectileBase : MonoBehaviour
         var damageInfo = new DamageInfo(
             baseDamage: finalDamage,
             damageType: _data.DamageType,
+            bodyPart: hitbox.BodyPart,
             instigator: _instigator,
             hitPoint: hit.point
         );
 
-        target.TakeDamage(damageInfo);
+        hitbox.Damageable.TakeDamage(damageInfo);
     }
 
     private void DeactivateProjectile()
