@@ -15,3 +15,12 @@ MonoBehaviour:
   chunks:
   - maxHealth: 100
     healthType: 1
+  healthModifier:
+  - modifier: 0.8
+    bodyPart: 3
+  - modifier: 1
+    bodyPart: 2
+  - modifier: 5
+    bodyPart: 1
+  - modifier: 1
+    bodyPart: 0
