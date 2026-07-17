@@ -1,3 +1,4 @@
+using Health;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,8 +39,9 @@ public class HitmarkerController : MonoBehaviour
     private float _initialGap;
     private float _initialLength;
     private bool _hasToPlayKillAnim = false;
-    private const string prop_gap = "_Gap";
-    private const string prop_length = "_Length";
+    private static readonly int GapID = Shader.PropertyToID("_Gap");
+    private static readonly int LengthID = Shader.PropertyToID("_Length");
+    private static readonly int WeakSpotID = Shader.PropertyToID("_WeakSpot");
 
     void Awake()
     {
@@ -63,8 +65,8 @@ public class HitmarkerController : MonoBehaviour
     {
         //set up hitmarker
         _hitMarkerImg.enabled = false;
-        _initialGap = _hitMarkerMaterial.GetFloat(prop_gap);
-        _initialLength = _hitMarkerMaterial.GetFloat(prop_length);
+        _initialGap = _hitMarkerMaterial.GetFloat(GapID);
+        _initialLength = _hitMarkerMaterial.GetFloat(LengthID);
     }
 
     private void OnDestroy()
@@ -92,8 +94,11 @@ public class HitmarkerController : MonoBehaviour
     private void HandleHit(DamageDealtEvent evt)
     {
         //reset our values just in case
-        _hitMarkerMaterial.SetFloat(prop_gap, _initialGap);
-        _hitMarkerMaterial.SetFloat(prop_length, _initialLength);
+        _hitMarkerMaterial.SetFloat(GapID, _initialGap);
+        _hitMarkerMaterial.SetFloat(LengthID, _initialLength);
+
+        float ws = (evt.bodyPart == BodyPart.WeakSpot) ? 1f : 0f;
+        _hitMarkerMaterial.SetFloat(WeakSpotID, ws);
 
         _hideHitMarkerIn = hitTimer;
         //then we set up our shader
@@ -115,10 +120,10 @@ public class HitmarkerController : MonoBehaviour
     {
         float t = 1f - (_hideHitMarkerIn / hitTimer);
         float current_length = Mathf.Lerp(_initialLength, _initialLength + killSplayAmount, t);
-        _hitMarkerMaterial.SetFloat(prop_length, current_length);
+        _hitMarkerMaterial.SetFloat(LengthID, current_length);
 
         float current_gap = Mathf.Lerp(_initialGap, _initialGap + killSplayAmount, t);
-        _hitMarkerMaterial.SetFloat(prop_gap, current_gap);
+        _hitMarkerMaterial.SetFloat(GapID, current_gap);
     }
 
     private Color GetColor(DamageDealtEvent evt)

@@ -6,6 +6,7 @@ Shader "Custom/HitMarkerShader"
         _Gap ("Gap", Range(0,0.5)) = 0.15       // inner endpoint distance from center (hole size)
         _Length ("Length", Range(0,0.7)) = 0.4  // outer endpoint distance from center (arm reach)
         _Thickness ("Thickness", Range(0,0.1)) = 0.02
+        [Toggle] _WeakSpot("Weak Spot",float)=0
     }
     SubShader
     {
@@ -42,6 +43,7 @@ Shader "Custom/HitMarkerShader"
             float _Gap;
             float _Length;
             float _Thickness;
+            float _WeakSpot;
 
             v2f vert (appdata v)
             {
@@ -75,7 +77,16 @@ Shader "Custom/HitMarkerShader"
                 d = min(d, sdf_segment(uv, float2(-_Gap, _Gap), float2(-_Length, _Length)));
                 d = min(d, sdf_segment(uv, float2( _Gap, _Gap), float2( _Length, _Length)));
 
+                float wsDist = 1.0;
+                wsDist = min(wsDist, sdf_segment(uv, float2(0, _Gap), float2(0, _Length)));   // up
+                wsDist = min(wsDist, sdf_segment(uv, float2(0,-_Gap), float2(0,-_Length)));   // down
+                wsDist = min(wsDist, sdf_segment(uv, float2(_Gap, 0), float2(_Length, 0)));   // right
+                wsDist = min(wsDist, sdf_segment(uv, float2(-_Gap,0), float2(-_Length,0)));   // left
 
+                // Gate: only fold the + in when _WeakSpot is on.
+                // lerp keeps wsDist "far away" (1.0) when _WeakSpot=0, so it never draws.
+                float gatedWs = lerp(1.0, wsDist, _WeakSpot);
+                d = min(d, gatedWs);
                 float fw = fwidth(d);
                 float alpha = 1.0 - smoothstep(_Thickness - fw, _Thickness + fw,d);
 
