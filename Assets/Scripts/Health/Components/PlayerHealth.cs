@@ -6,10 +6,12 @@ namespace Health
 {
     public class PlayerHealth : BaseHealth
     {
-        [SerializeField] private PlayerHealthConfigSO healthConfig;
+        [SerializeField]
+        private PlayerHealthConfigSO healthConfig;
 
         // UI properties (following Momentum01 pattern)
-        public float MainChunkHealth01 => healthChunks.Count > 0 ? healthChunks[0].HealthNormalized : 0f;
+        public float MainChunkHealth01 =>
+            healthChunks.Count > 0 ? healthChunks[0].HealthNormalized : 0f;
         public int ActiveSideChunks => healthChunks.Skip(1).Count(c => !c.IsDepleted);
         public int TotalSideChunks => healthConfig != null ? healthConfig.SideChunkCount : 0;
         public bool HasLostChunks => healthChunks.Any(c => c.IsDepleted);

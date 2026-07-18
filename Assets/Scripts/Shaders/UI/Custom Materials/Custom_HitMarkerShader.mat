@@ -79,6 +79,7 @@ Material:
     - _SrcBlend: 1
     - _Thickness: 0.005
     - _UVSec: 0
+    - _WeakSpot: 0
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
