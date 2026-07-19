@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using Health;
-using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HealthBarController : MonoBehaviour
 {
@@ -10,7 +8,10 @@ public class HealthBarController : MonoBehaviour
     private PlayerHealth health;
 
     [SerializeField]
-    private List<Image> healthContainerUI;
+    private Image mainHealthBar;
+
+    [SerializeField]
+    private Image[] segmentsBar;
 
     void Awake()
     {
@@ -27,5 +28,12 @@ public class HealthBarController : MonoBehaviour
         health.OnHealthChanged -= OnUpdateHealthUI;
     }
 
-    private void OnUpdateHealthUI(HealthChangeEventArgs args) { }
+    private void OnUpdateHealthUI(HealthChangeEventArgs args)
+    {
+        mainHealthBar.fillAmount = health.MainChunkHealthNormalized;
+        for (int i = 0; i < health.TotalSideChunks; i++)
+        {
+            segmentsBar[i].fillAmount = health.GetSideChunkHealthNormalized(i);
+        }
+    }
 }

@@ -10,8 +10,15 @@ namespace Health
 
         private int _mainChunkIndex = -1;
 
-        public float MainChunkHealth01 =>
+        public float MainChunkHealthNormalized =>
             _mainChunkIndex >= 0 ? healthChunks[_mainChunkIndex].HealthNormalized : 0f;
+
+        public float GetSideChunkHealthNormalized(int sideIndex)
+        {
+            if (sideIndex < 0 || sideIndex >= healthChunks.Count || sideIndex == _mainChunkIndex)
+                return 0f;
+            return healthChunks[sideIndex].HealthNormalized;
+        }
 
         public int TotalSideChunks => healthConfig != null ? healthConfig.SideChunkCount : 0;
 
