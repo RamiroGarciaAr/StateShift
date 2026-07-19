@@ -54,7 +54,6 @@ namespace Health
                 false
             );
             OnHealthChanged?.Invoke(args);
-            //TODO: Replace accurate body part when body modifiers are implements
             OnDamageApplied(new DamageDealtEvent(effectiveness, damageInfo.BodyPart, !IsAlive));
             if (!IsAlive)
             {
@@ -87,6 +86,8 @@ namespace Health
                     captured = true;
                 }
                 remainingDamage = healthChunks[i].ApplyDamage(remainingDamage * multiplier);
+                if (healthChunks[i].AbsorbsOverflow)
+                    remainingDamage = 0f;
 
                 if (healthChunks[i].IsDepleted)
                 {

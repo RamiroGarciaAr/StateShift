@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainChunkHealth: 100
   sideChunkHealth: 20
-  sideChunkCount: 2
+  sideChunkCount: 3
