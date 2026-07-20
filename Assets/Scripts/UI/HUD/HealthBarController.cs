@@ -21,6 +21,11 @@ public class HealthBarController : MonoBehaviour
         {
             health.OnHealthChanged += OnUpdateHealthUI;
         }
+
+        if (segmentsBar.Length != health.TotalSideChunks)
+        {
+            Debug.LogWarning("[HealthBarController] ");
+        }
     }
 
     void OnDestroy()
