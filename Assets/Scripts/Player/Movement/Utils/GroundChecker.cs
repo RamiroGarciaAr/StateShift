@@ -6,6 +6,8 @@ public class GroundChecker : MonoBehaviour
 {
     [Header("Ground Detection")]
     [SerializeField] private float groundCheckDistance = 0.1f;
+    [Tooltip("Radius of the sphere used to detect the ground beneath the character.")]
+    [SerializeField] private float groundCheckSphereRadius = 0.2f;
     [SerializeField] private float legHeight = 0.5f;
     [SerializeField] private LayerMask groundLayerMask;
 
@@ -77,11 +79,14 @@ public class GroundChecker : MonoBehaviour
         ModifyColliderHeight();
     }
 
+    /// <summary>
+    /// Casts a sphere downward from the capsule center to detect the ground, updating
+    /// grounded state, slope info, and firing landed/left-ground/slope events accordingly.
+    /// </summary>
     public void CheckGround()
     {
         var origin = capsuleCollider.bounds.center;
         var maxDistance = Vector3.Distance(origin, _rb.position + groundCheckDistance * Vector3.down);
-        var ray = new Ray(origin, Vector3.down);
 
         WasGrounded = IsGrounded;
         bool wasOnSlope = IsOnSlope;
@@ -90,7 +95,9 @@ public class GroundChecker : MonoBehaviour
             _lastAirVelocityY = _rb.velocity.y;
         }
 
-        if (Physics.Raycast(ray, out var hit, maxDistance, groundLayerMask) && !hit.collider.isTrigger)
+        if (Physics.SphereCast(origin, groundCheckSphereRadius, Vector3.down, out var hit, maxDistance, groundLayerMask) &&
+            !hit.collider.isTrigger &&
+            IsWalkableGroundHit(hit))
         {
             Debug.DrawLine(origin, origin + Vector3.down * maxDistance, Color.green);
 
@@ -127,6 +134,11 @@ public class GroundChecker : MonoBehaviour
             }
             if (wasOnSlope) OnExitedSlope?.Invoke();
         }
+    }
+
+    private bool IsWalkableGroundHit(RaycastHit hit)
+    {
+        return Vector3.Angle(Vector3.up, hit.normal) <= maxSlopeAngle;
     }
 
     private void CalculateSlopeInfo()
@@ -167,5 +179,7 @@ public class GroundChecker : MonoBehaviour
 
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(origin, extent);
+        Gizmos.DrawWireSphere(origin, groundCheckSphereRadius);
+        Gizmos.DrawWireSphere(extent, groundCheckSphereRadius);
     }
 }

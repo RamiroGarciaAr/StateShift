@@ -67990,7 +67990,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3020422218868482849, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: _mantleDuration
-      value: 0.25
+      value: 0.45
       objectReference: {fileID: 0}
     - target: {fileID: 3020422218868482849, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: _mantleLayerMask.m_Bits

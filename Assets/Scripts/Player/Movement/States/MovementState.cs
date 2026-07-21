@@ -48,5 +48,8 @@ namespace Core
         public bool WantsToJump { get; set; }
         public bool WantsToGrapple { get; set; }
         public bool WantsToDash { get; set; }
+
+        /// <summary>True while the raw forward move input (e.g. holding W) is pressed, regardless of camera facing.</summary>
+        public bool IsMovingForward => DashInputDirection.y > 0f;
     }
 }
