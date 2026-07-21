@@ -145,6 +145,7 @@ MonoBehaviour:
     weaponStanceConfig: {fileID: 11400000, guid: 166e5fc67c415154aaa6d384ae14ac54, type: 2}
     movementStateVariable: {fileID: 11400000, guid: 367eb9adc8f2d1049ae0f79ad225142e, type: 2}
   _playerMovement: {fileID: 3181275876027056110}
+  _isGroundedVariable: {fileID: 0}
   _animator: {fileID: 0}
 --- !u!1 &3382626885331823557
 GameObject:

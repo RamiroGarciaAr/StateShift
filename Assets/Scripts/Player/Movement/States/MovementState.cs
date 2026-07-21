@@ -13,6 +13,7 @@ namespace Core
         Dashing,
         Grappling,
         InAir,
+        Mantling,
 
         // Grounded sub-states
         Walking,
@@ -32,6 +33,7 @@ namespace Core
         public PlayerWallRun PlayerWallRun { get; set; }
         public Rigidbody Rigidbody { get; set; }
         public PlayerGrapple PlayerGrapple { get; set; }
+        public PlayerMantle PlayerMantle { get; set; }
 
         // State Machines
         public StateMachine<MovementState> StateMachine { get; set; }

@@ -30,6 +30,17 @@ public class GroundedState : BaseState<PlayerMovementContext>
             return;
         }
 
+        // A mantle wins over a normal jump when facing a valid ledge.
+        if (Context.WantsToJump && Context.PlayerMantle.CanMantle && Context.PlayerMantle.HasMantleableLedge())
+        {
+            if (Context.PlayerMantle.TryStartMantle())
+            {
+                Context.WantsToJump = false;
+                Context.StateMachine.ChangeState(MovementState.Mantling);
+                return;
+            }
+        }
+
         if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)
         {
             if (Context.PlayerGrapple.TryStartGrapple())

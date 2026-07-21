@@ -37,10 +37,24 @@ MonoBehaviour:
   - movementState: 6
     stanceConfig:
       PositionOffset: {x: -0.11, y: -0.1, z: 0}
-      RotationOffset: {x: 25, y: -3.78, z: 0}
+      RotationOffset: {x: 0, y: -3.78, z: 0}
       poseF: 4
       poseZ: 1
       poseR: 0.1
+  - movementState: 9
+    stanceConfig:
+      PositionOffset: {x: 0, y: 0, z: 0}
+      RotationOffset: {x: -5, y: 0, z: 30}
+      poseF: 4
+      poseZ: 1
+      poseR: 0.1
+  - movementState: 5
+    stanceConfig:
+      PositionOffset: {x: 0, y: 0.1, z: -0.5}
+      RotationOffset: {x: -5, y: 0, z: -10}
+      poseF: 4
+      poseZ: 4.06
+      poseR: 2.2
   _fallbackPoseF: 5
   _fallbackPoseZ: 1
   _fallbackPoseR: 1

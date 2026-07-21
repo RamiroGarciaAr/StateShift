@@ -19,10 +19,12 @@ public class AIAiming : MonoBehaviour
         if (_hasTarget)
         {
             Vector3 toTarget = _target - transform.position;
+
+            RotateAIHorizontal(toTarget);
         }
     }
 
-    private void RotateAI(Vector3 target)
+    private void RotateAIHorizontal(Vector3 target)
     {
         target.y = 0f;
 
