@@ -21,6 +21,7 @@ namespace Health
         public virtual bool CanHeal => IsAlive && CurrentHealth < MaxHealth;
 
         public event Action<HealthChangeEventArgs> OnHealthChanged;
+        public event Action<DamageInfo> OnDamageAppliedToHealth;
         public event Action OnDeath;
         public event Action<int> OnChunkDepleted;
 
@@ -54,6 +55,9 @@ namespace Health
                 false
             );
             OnHealthChanged?.Invoke(args);
+            if (damageDealt > 0f)
+                OnDamageAppliedToHealth?.Invoke(damageInfo);
+
             OnDamageApplied(new DamageDealtEvent(effectiveness, damageInfo.BodyPart, !IsAlive));
             if (!IsAlive)
             {

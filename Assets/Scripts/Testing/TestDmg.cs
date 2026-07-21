@@ -3,32 +3,49 @@ using UnityEngine;
 
 public class TestDmg : MonoBehaviour
 {
-    [Range(1f, 100f)]
-    public float dmgTestAmount = 25f;
-
-    private BaseHealth playerHealth;
-
-    void Start()
+    private enum IncomingDirectionMode
     {
-        playerHealth = GetComponentInChildren<PlayerHealth>();
-        if (playerHealth == null)
-            Debug.LogWarning("[TEST Damage] Could not find player health");
+        Fallback,
+        ConfiguredDirection
     }
 
-    void Update()
+    [Header("Damage")]
+    [Tooltip("Base damage applied when the temporary damage trigger is pressed.")]
+    [SerializeField, Range(1f, 100f)] private float _damageAmount = 25f;
+
+    [Tooltip("Controls whether the test hit supplies an incoming projectile direction or exercises the top-center fallback.")]
+    [SerializeField] private IncomingDirectionMode _incomingDirectionMode = IncomingDirectionMode.Fallback;
+
+    [Tooltip("Representative world-space projectile travel direction used when Configured Direction is selected.")]
+    [SerializeField] private Vector3 _incomingDirection = Vector3.forward;
+
+    private PlayerHealth _playerHealth;
+
+    private void Awake()
     {
-        if (Input.GetKeyDown(KeyCode.K) && playerHealth != null)
-        {
-            DamageInfo damageInfo = new DamageInfo(
-                dmgTestAmount,
-                DamageType.Kinetic,
-                default,
-                Instigator.Enemy
-            );
-            playerHealth.TakeDamage(damageInfo);
-            Debug.Log(
-                $"[TEST Damage] Base: {damageInfo.BaseDamage}, Final: {damageInfo.FinalDamage}, Health Remaining: {playerHealth.CurrentHealth}"
-            );
-        }
+        _playerHealth = GetComponentInChildren<PlayerHealth>();
+        if (_playerHealth == null)
+            Debug.LogWarning("[TestDmg] No PlayerHealth found in children.", this);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.K) && _playerHealth != null)
+            ApplyTestDamage();
+    }
+
+    private void ApplyTestDamage()
+    {
+        Vector3 hitDirection = _incomingDirectionMode == IncomingDirectionMode.ConfiguredDirection
+            ? _incomingDirection
+            : Vector3.zero;
+
+        DamageInfo damageInfo = new DamageInfo(
+            baseDamage: _damageAmount,
+            damageType: DamageType.Kinetic,
+            instigator: Instigator.Enemy,
+            hitDirection: hitDirection
+        );
+        _playerHealth.TakeDamage(damageInfo);
     }
 }

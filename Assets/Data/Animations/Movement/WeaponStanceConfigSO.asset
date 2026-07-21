@@ -55,6 +55,13 @@ MonoBehaviour:
       poseF: 0.94
       poseZ: 1.52
       poseR: 2.2
+  - movementState: 3
+    stanceConfig:
+      PositionOffset: {x: 2, y: -1.85, z: -0.61}
+      RotationOffset: {x: -6.14, y: 0, z: -10}
+      poseF: 0.94
+      poseZ: 1.52
+      poseR: 2.2
   _fallbackPoseF: 5
   _fallbackPoseZ: 1
   _fallbackPoseR: 1

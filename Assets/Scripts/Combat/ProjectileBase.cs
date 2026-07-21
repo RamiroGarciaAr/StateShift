@@ -78,25 +78,15 @@ public class ProjectileBase : MonoBehaviour
             _hasHit = true;
             _cachedTransform.position = hit.point;
 
-            Hitbox enemyHitbox = hit.collider.GetComponent<Hitbox>();
-            bool spawnDecal;
-            if (enemyHitbox != null)
+            bool spawnDecal = true;
+            if (TryGetHitbox(hit.collider, out Hitbox hitbox))
             {
-                TryDealDamage(enemyHitbox, hit);
+                TryDealDamage(hitbox, hit);
                 spawnDecal = false;
             }
-            else
+            else if (hit.collider.GetComponentInParent<IDamageable>() != null)
             {
-                bool isDamageable = hit.collider.GetComponentInParent<IDamageable>() != null;
-                if (isDamageable)
-                {
-                    Debug.LogWarning(
-                        $"[Projectile] Hit damageable '{hit.collider.name}' with no Hitbox — no damage.",
-                        hit.collider
-                    );
-                }
-
-                spawnDecal = !isDamageable;
+                spawnDecal = false;
             }
 
             _impactSpawner?.SpawnImpact(hit.point, hit.normal, spawnDecal);
@@ -115,14 +105,35 @@ public class ProjectileBase : MonoBehaviour
         float distance = Vector3.Distance(_spawnPos, hit.point);
         float multiplier = _data.GetDamageMultiplierAtDistance(distance);
         float finalDamage = _data.DamageAmount * multiplier;
+        Vector3 hitDirection = _currentVelocity.sqrMagnitude > Mathf.Epsilon
+            ? _currentVelocity.normalized
+            : Vector3.zero;
         DamageInfo damageInfo = new DamageInfo(
             baseDamage: finalDamage,
             damageType: _data.DamageType,
             bodyPart: hitbox.BodyPart,
             instigator: _instigator,
-            hitPoint: hit.point
+            hitPoint: hit.point,
+            hitDirection: hitDirection
         );
         hitbox.Damageable.TakeDamage(damageInfo);
+    }
+
+    private static bool TryGetHitbox(Collider hitCollider, out Hitbox hitbox)
+    {
+        hitbox = null;
+        if (hitCollider == null)
+            return false;
+
+        if (hitCollider.TryGetComponent(out hitbox))
+            return true;
+
+        Transform parentTransform = hitCollider.transform.parent;
+        if (parentTransform == null)
+            return false;
+
+        hitbox = parentTransform.GetComponentInParent<Hitbox>();
+        return hitbox != null;
     }
 
     private void DeactivateProjectile()

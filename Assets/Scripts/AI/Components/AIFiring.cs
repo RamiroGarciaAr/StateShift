@@ -6,26 +6,38 @@ public class AIFiring : MonoBehaviour
 {
     [Header("Firing")]
     [Tooltip("Muzzle transforms used in sequence when firing.")]
-    [SerializeField] private Transform[] _firePoints;
+    [SerializeField]
+    private Transform[] _firePoints;
 
     [Tooltip("Transform whose forward direction is compared against the target.")]
-    [SerializeField] private Transform _aimReference;
+    [SerializeField]
+    private Transform _aimReference;
 
-    [Tooltip("Maximum angle in degrees between the aim direction and target direction before firing.")]
-    [SerializeField, Range(0f, 90f)] private float _fireCone = 10f;
+    [Tooltip(
+        "Maximum angle in degrees between the aim direction and target direction before firing."
+    )]
+    [SerializeField, Range(0f, 90f)]
+    private float _fireCone = 10f;
 
     [Tooltip("Minimum time in seconds between shots.")]
-    [SerializeField, Min(0f)] private float _fireInterval = 0.6f;
+    [SerializeField, Min(0f)]
+    private float _fireInterval = 0.6f;
 
     [Header("Projectile")]
     [Tooltip("Pool that provides this enemy's projectiles.")]
-    [SerializeField] private ProjectilePool _projectilePool;
+    [SerializeField]
+    private ProjectilePool _projectilePool;
 
     [Tooltip("Weapon data used to configure projectile speed, lifetime, and damage.")]
-    [SerializeField] private WeaponDataSO _weaponData;
+    [SerializeField]
+    private WeaponDataSO _weaponData;
 
     [Tooltip("Optional pooled impact effect spawner passed to each projectile.")]
-    [SerializeField] private ImpactEffectSpawner _impactSpawner;
+    [SerializeField]
+    private ImpactEffectSpawner _impactSpawner;
+
+    [SerializeField, Tooltip("Random spread in degrees applied per shot")]
+    private float spreadDegrees = 2f;
 
     private bool _canSee;
     private Vector3 _target;
@@ -43,7 +55,10 @@ public class AIFiring : MonoBehaviour
 
         if (_aimReference == null || _projectilePool == null || _weaponData == null)
         {
-            Debug.LogError($"[AIFiring] Aim reference, projectile pool, and weapon data must be configured on {name}.", this);
+            Debug.LogError(
+                $"[AIFiring] Aim reference, projectile pool, and weapon data must be configured on {name}.",
+                this
+            );
             enabled = false;
         }
     }
@@ -81,9 +96,17 @@ public class AIFiring : MonoBehaviour
         Transform barrelTransform = _firePoints[_nextBarrel];
         _nextBarrel = (_nextBarrel + 1) % _firePoints.Length;
 
+        Vector3 dir = _target - barrelTransform.position;
+        dir =
+            Quaternion.Euler(
+                Random.Range(-spreadDegrees, spreadDegrees),
+                Random.Range(-spreadDegrees, spreadDegrees),
+                0f
+            ) * dir;
+
         _projectilePool.Spawn(
             barrelTransform.position,
-            barrelTransform.rotation,
+            Quaternion.LookRotation(dir),
             _weaponData,
             _impactSpawner,
             Instigator.Enemy
