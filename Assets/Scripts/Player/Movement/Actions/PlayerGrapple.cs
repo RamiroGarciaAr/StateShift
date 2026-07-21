@@ -21,6 +21,7 @@ public class PlayerGrapple : MonoBehaviour
     private Camera _mainCamera;
     private PlayerMovement _playerMovement;
     private bool _isGrappling = false;
+    private bool _isGrappleStarting = false;
     private Vector3 _grapplePoint;
     private float _cooldownTimer = 0f;
     private Vector3 _grappleDirection;
@@ -29,7 +30,9 @@ public class PlayerGrapple : MonoBehaviour
 
     #region Properties
     public bool IsGrappling => _isGrappling;
-    public bool CanGrapple => _cooldownTimer <= 0 && !_isGrappling;
+    /// <summary>True while the grapple is engaged or pending during the startup delay window.</summary>
+    public bool IsGrappleActive => _isGrappling || _isGrappleStarting;
+    public bool CanGrapple => _cooldownTimer <= 0 && !_isGrappling && !_isGrappleStarting;
     public Vector3 GrapplePoint => _grapplePoint;
     public float CooldownProgress => 1f - (_cooldownTimer / grappleCooldown);
     #endregion
@@ -69,6 +72,7 @@ public class PlayerGrapple : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, maxGrappleDistance, grappleLayerMask))
         {
             _grapplePoint = hit.point;
+            _isGrappleStarting = true;
             Invoke(nameof(StartGrapple),grappleDelayTime);
             return true;
         }
@@ -79,6 +83,7 @@ public class PlayerGrapple : MonoBehaviour
     private void StartGrapple()
     {
         _isGrappling = true;
+        _isGrappleStarting = false;
         _grappleDirection = (_grapplePoint - transform.position).normalized;
 
         // Retain some current velocity
@@ -113,9 +118,15 @@ public class PlayerGrapple : MonoBehaviour
         _playerMovement.AddMomentum(GetMomentumGain());
     }
 
+    /// <summary>Cancels the grapple. Aborts a pending grapple during the startup delay (no cooldown or momentum), or ends an engaged grapple with momentum and cooldown.</summary>
     public void CancelGrapple()
     {
-        if (_isGrappling)
+        if (_isGrappleStarting)
+        {
+            CancelInvoke(nameof(StartGrapple));
+            _isGrappleStarting = false;
+        }
+        else if (_isGrappling)
         {
             EndGrapple();
         }

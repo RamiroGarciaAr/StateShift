@@ -5,8 +5,12 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyHealth))]
 public class AIBrain : MonoBehaviour, ITickable
 {
+    [Header("References")]
     [SerializeField]
     private AIPerception perception;
+
+    [SerializeField]
+    private AIAiming aiming;
 
     private AIMemory _memory;
     private EnemyHealth _health;
@@ -16,6 +20,8 @@ public class AIBrain : MonoBehaviour, ITickable
     public void OnTick(float dt)
     {
         _memory.Report(perception.Sample());
+        if (_memory.LastSeenPlayerTime >= 0f)
+            aiming.SetTarget(_memory.LastKnownPlayerPosition);
     }
 
     private void Awake()
@@ -26,6 +32,12 @@ public class AIBrain : MonoBehaviour, ITickable
         if (perception == null)
         {
             Debug.LogError($"[AIBrain] No Perception assigned on {gameObject.name}", this);
+            enabled = false;
+            return;
+        }
+        if (aiming == null)
+        {
+            Debug.LogError($"[AIBrain] No Aiming assigned on {gameObject.name}", this);
             enabled = false;
             return;
         }
@@ -56,5 +68,6 @@ public class AIBrain : MonoBehaviour, ITickable
     private void HandleDeath()
     {
         enabled = false;
+        aiming.enabled = false;
     }
 }

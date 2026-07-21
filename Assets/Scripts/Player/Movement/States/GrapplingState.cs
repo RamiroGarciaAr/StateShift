@@ -14,7 +14,7 @@ public class GrapplingState : BaseState<PlayerMovementContext>
     public override void OnUpdate()
     {
         // Exit grapple when it's complete
-        if (!Context.PlayerGrapple.IsGrappling)
+        if (!Context.PlayerGrapple.IsGrappleActive)
         {
             ExitToAppropriateState();
             return;
