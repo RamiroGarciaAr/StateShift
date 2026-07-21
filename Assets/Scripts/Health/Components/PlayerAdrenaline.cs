@@ -125,7 +125,7 @@ namespace Health
                 return 0f;
             }
 
-            int tierIndex = Mathf.Clamp(_currentLevel, 0, _damageReductionPerTier.Length - 1);
+            int tierIndex = Mathf.Clamp(GetTierForMeter(), 0, _damageReductionPerTier.Length - 1);
             return Mathf.Clamp01(_damageReductionPerTier[tierIndex]);
         }
 
@@ -188,6 +188,7 @@ namespace Health
         private void AddToMeter(float amount)
         {
             _adrenalineMeter = Mathf.Clamp01(_adrenalineMeter + amount);
+            UpdateTier();
         }
 
         private void ResetDisengagement()
@@ -197,10 +198,7 @@ namespace Health
 
         private void UpdateTier()
         {
-            int tierCount = MaxLevel;
-            int newLevel = tierCount > 0
-                ? Mathf.Clamp(Mathf.FloorToInt(_adrenalineMeter * (tierCount + 1)), 0, tierCount)
-                : 0;
+            int newLevel = GetTierForMeter();
 
             if (newLevel == _currentLevel)
             {
@@ -209,6 +207,14 @@ namespace Health
 
             _currentLevel = newLevel;
             OnLevelChanged?.Invoke(_currentLevel);
+        }
+
+        private int GetTierForMeter()
+        {
+            int tierCount = MaxLevel;
+            return tierCount > 0
+                ? Mathf.Clamp(Mathf.FloorToInt(_adrenalineMeter * (tierCount + 1)), 0, tierCount)
+                : 0;
         }
 
         private void WarnMissingMovementOnce()

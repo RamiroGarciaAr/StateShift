@@ -19,11 +19,15 @@ public class TestDmg : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.K) && playerHealth != null)
         {
-            playerHealth.TakeDamage(
-                new DamageInfo(dmgTestAmount, DamageType.Kinetic, default, Instigator.Enemy)
+            DamageInfo damageInfo = new DamageInfo(
+                dmgTestAmount,
+                DamageType.Kinetic,
+                default,
+                Instigator.Enemy
             );
+            playerHealth.TakeDamage(damageInfo);
             Debug.Log(
-                $"Amount Dmg: {dmgTestAmount} Health Remaining: {playerHealth.CurrentHealth}"
+                $"[TEST Damage] Base: {damageInfo.BaseDamage}, Final: {damageInfo.FinalDamage}, Health Remaining: {playerHealth.CurrentHealth}"
             );
         }
     }
