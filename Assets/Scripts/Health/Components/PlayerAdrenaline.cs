@@ -20,7 +20,10 @@ namespace Health
         // UI Properties
         public int CurrentLevel => _currentLevel;
         public int MaxLevel => maxLevel;
-        public float LevelNormalized => (float)_currentLevel / maxLevel;
+        /// <summary>
+        /// Gets the normalized adrenaline meter value used to determine adrenaline tiers.
+        /// </summary>
+        public float AdrenalineNormalized => _playerMovement == null ? 0f : _playerMovement.Momentum01;
         public float DamageReduction => _currentLevel * damageReductionPerLevel;
 
         // IDamageModifier
