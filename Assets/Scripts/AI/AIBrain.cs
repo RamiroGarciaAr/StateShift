@@ -13,7 +13,10 @@ public class AIBrain : MonoBehaviour, ITickable
 
     public bool IsTickable => true; // reserved for stuns or culls OR maybe its a sign that we need to remove it
 
-    public void OnTick(float dt) => _memory.Report(perception.Sample());
+    public void OnTick(float dt)
+    {
+        _memory.Report(perception.Sample());
+    }
 
     private void Awake()
     {

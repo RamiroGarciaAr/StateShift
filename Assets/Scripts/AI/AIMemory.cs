@@ -3,8 +3,9 @@ using UnityEngine;
 public class AIMemory : MonoBehaviour
 {
 #if UNITY_EDITOR
-    const float GizmoHeightOffset = 2f;
+    const float GizmoHeightOffset = 1.5f;
     const float GizmoSphereRadius = 0.2f;
+    const float LastKnownGizmoRadius = 0.35f;
 
     private void OnDrawGizmosSelected()
     {
@@ -15,7 +16,27 @@ public class AIMemory : MonoBehaviour
             AlertLevel.Alerted => Color.red,
             _ => Color.white,
         };
-        Vector3 indicatorPosition = transform.position + Vector3.up * GizmoHeightOffset;
+
+        Vector3 indicatorPosition;
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        if (renderers.Length == 0)
+        {
+            // No mesh to measure against; place the indicator above the pivot.
+            indicatorPosition = transform.position + Vector3.up * GizmoHeightOffset;
+        }
+        else
+        {
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+                bounds.Encapsulate(renderers[i].bounds);
+
+            // Horizontally centered on the mesh, vertically just above its top,
+            // so the indicator is pivot-independent for any NPC.
+            indicatorPosition = new Vector3(
+                bounds.center.x,
+                bounds.max.y + GizmoHeightOffset,
+                bounds.center.z);
+        }
 
         Gizmos.DrawSphere(indicatorPosition, GizmoSphereRadius);
 
@@ -23,7 +44,7 @@ public class AIMemory : MonoBehaviour
             return; // never seen anything
 
         Gizmos.color = CanSeePlayer ? Color.green : Color.red;
-        Gizmos.DrawLine(indicatorPosition, LastKnownPlayerPosition);
+        Gizmos.DrawWireSphere(LastKnownPlayerPosition, LastKnownGizmoRadius);
     }
 #endif
 
