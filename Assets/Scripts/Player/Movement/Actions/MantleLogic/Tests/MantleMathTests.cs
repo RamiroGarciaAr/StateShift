@@ -127,5 +127,36 @@ namespace StateShift.Player.MantleLogic.Tests
             Assert.AreEqual(2f, pos.x, Tolerance);
             Assert.AreEqual(1f, pos.y, Tolerance);
         }
+
+        [Test]
+        public void SampleMantlePositionWithApex_SameHeightEndpoints_RisesToApex()
+        {
+            Vector3 start = Vector3.zero;
+            Vector3 end = new Vector3(2f, 0f, 0f);
+            AnimationCurve linear = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+            AnimationCurve lift = AnimationCurve.EaseInOut(0f, 0f, 0.5f, 1f);
+            lift.AddKey(1f, 0f);
+
+            Vector3 position = MantleMath.SampleMantlePositionWithApex(start, end, 1.2f, linear, lift, 0.5f);
+
+            Assert.AreEqual(1f, position.x, Tolerance);
+            Assert.AreEqual(1.2f, position.y, Tolerance);
+        }
+
+        [Test]
+        public void SampleMantlePositionWithApex_AtEnd_ReturnsLandingPosition()
+        {
+            Vector3 start = new Vector3(0f, 0f, 0f);
+            Vector3 end = new Vector3(2f, -0.5f, 1f);
+            AnimationCurve linear = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+            AnimationCurve lift = AnimationCurve.Linear(0f, 1f, 1f, 0f);
+
+            Vector3 position = MantleMath.SampleMantlePositionWithApex(start, end, 1.2f, linear, lift, 1f);
+
+            Assert.AreEqual(end.x, position.x, Tolerance);
+            Assert.AreEqual(end.y, position.y, Tolerance);
+            Assert.AreEqual(end.z, position.z, Tolerance);
+        }
+
     }
 }

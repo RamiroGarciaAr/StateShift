@@ -9,6 +9,8 @@ namespace StateShift.Player.MantleLogic
     /// </summary>
     public static class MantleMath
     {
+        private const float LiftDescentStart = 0.7f;
+        private const float LiftDescentEnd = 1f;
         /// <summary>
         /// Returns true when the measured ledge height falls inside the inclusive
         /// waist-to-chest window that the player is allowed to mantle.
@@ -65,6 +67,39 @@ namespace StateShift.Player.MantleLogic
             float y = Mathf.Lerp(start.y, end.y, verticalProgress);
 
             return new Vector3(x, y, z);
+        }
+
+        /// <summary>
+        /// Samples a mantle trajectory whose lift is independent from its landing height, allowing
+        /// a narrow obstacle to be vaulted onto lower ground without losing the vertical arc.
+        /// </summary>
+        /// <param name="start">Trajectory start position.</param>
+        /// <param name="end">Trajectory landing position.</param>
+        /// <param name="apexY">World-space feet height required to clear the obstacle.</param>
+        /// <param name="horizontalCurve">Curve controlling horizontal progress.</param>
+        /// <param name="liftCurve">Zero-to-one envelope controlling lift toward the apex.</param>
+        /// <param name="normalizedTime">Progress through the mantle in [0,1].</param>
+        public static Vector3 SampleMantlePositionWithApex(
+            Vector3 start,
+            Vector3 end,
+            float apexY,
+            AnimationCurve horizontalCurve,
+            AnimationCurve liftCurve,
+            float normalizedTime)
+        {
+            float t = Mathf.Clamp01(normalizedTime);
+            float horizontalProgress = horizontalCurve != null ? Mathf.Clamp01(horizontalCurve.Evaluate(t)) : t;
+            float authoredLift = liftCurve != null ? Mathf.Clamp01(liftCurve.Evaluate(t)) : Mathf.Sin(Mathf.PI * t);
+            float descentTime = Mathf.InverseLerp(LiftDescentStart, LiftDescentEnd, t);
+            float forcedDescent = 1f - Mathf.SmoothStep(0f, 1f, descentTime);
+            float lift = authoredLift * forcedDescent;
+            float baselineY = Mathf.Lerp(start.y, end.y, t);
+            float y = Mathf.Lerp(baselineY, Mathf.Max(apexY, baselineY), lift);
+
+            return new Vector3(
+                Mathf.Lerp(start.x, end.x, horizontalProgress),
+                y,
+                Mathf.Lerp(start.z, end.z, horizontalProgress));
         }
     }
 }

@@ -30,15 +30,12 @@ public class GroundedState : BaseState<PlayerMovementContext>
             return;
         }
 
-        // A mantle wins over a normal jump when facing a valid ledge.
-        if (Context.WantsToJump && Context.PlayerMantle.CanMantle && Context.PlayerMantle.HasMantleableLedge())
+        // A buffered mantle request wins over the normal jump while the player approaches the obstacle.
+        if (Context.PlayerMantle.TryStartBufferedMantle())
         {
-            if (Context.PlayerMantle.TryStartMantle())
-            {
-                Context.WantsToJump = false;
-                Context.StateMachine.ChangeState(MovementState.Mantling);
-                return;
-            }
+            Context.WantsToJump = false;
+            Context.StateMachine.ChangeState(MovementState.Mantling);
+            return;
         }
 
         if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)

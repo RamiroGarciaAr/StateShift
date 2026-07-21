@@ -63547,15 +63547,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5510664228113683369, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5510664228113683369, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5510664228113683369, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5731039626726658230, guid: 6025d2c398e2538478d2f73e19d9a48b, type: 3}
       propertyPath: m_AnchorMax.y
@@ -68206,7 +68206,7 @@ PrefabInstance:
       objectReference: {fileID: 1131117595}
     - target: {fileID: 7867987661234847449, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_VersionIndex
-      value: 3637
+      value: 3643
       objectReference: {fileID: 0}
     - target: {fileID: 7867987661234847449, guid: 69f732304d8af4d4ca0279a1f0e31161, type: 3}
       propertyPath: m_Faces.Array.size

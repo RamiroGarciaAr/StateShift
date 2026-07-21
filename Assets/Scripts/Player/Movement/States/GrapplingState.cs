@@ -48,15 +48,11 @@ public class GrapplingState : BaseState<PlayerMovementContext>
 
     private void ExitToAppropriateState()
     {
-        // Auto-mantle if the grapple ended near a low ledge, so grapple points can be
-        // authored slightly below a lip. Uses the more permissive grapple reach/height window.
-        if (Context.PlayerMantle.CanMantle && Context.PlayerMantle.HasMantleableLedgeFromGrapple())
+        // Use one authoritative detection/start attempt so physics cannot change between two queries.
+        if (Context.PlayerMantle.TryStartMantleFromGrapple())
         {
-            if (Context.PlayerMantle.TryStartMantleFromGrapple())
-            {
-                Context.StateMachine.ChangeState(MovementState.Mantling);
-                return;
-            }
+            Context.StateMachine.ChangeState(MovementState.Mantling);
+            return;
         }
 
         if (Context.PlayerMovement.IsGrounded)

@@ -224,7 +224,13 @@ namespace Entities.Controllers
             _context.DashInputDirection = inputRaw;
             _context.WantsToCrouch = _crouchAction != null && _crouchAction.IsPressed();
             _context.WantsToSprint = _sprintAction != null && _sprintAction.IsPressed();
-            _context.WantsToJump = _jumpAction != null && _jumpAction.WasPressedThisFrame();
+            bool jumpPressedThisFrame = _jumpAction != null && _jumpAction.WasPressedThisFrame();
+            _context.WantsToJump = jumpPressedThisFrame;
+            if (jumpPressedThisFrame)
+            {
+                _context.PlayerMantle.BufferMantleRequest();
+            }
+
             _context.WantsToDash = _dashAction != null && _dashAction.WasPressedThisFrame();
             _context.WantsToGrapple = _grappleAction != null && _grappleAction.IsPressed();
         }

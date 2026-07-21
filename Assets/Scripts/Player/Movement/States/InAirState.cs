@@ -11,15 +11,12 @@ public class InAirState : BaseState<PlayerMovementContext>
 
     public override void OnUpdate()
     {
-        // Mantle onto a ledge mid-air when Jump is pressed at a valid ledge.
-        if (Context.WantsToJump && Context.PlayerMantle.CanMantle && Context.PlayerMantle.HasMantleableLedge())
+        // Keep retrying the buffered Jump request during the initial rise toward the obstacle.
+        if (Context.PlayerMantle.TryStartBufferedMantle())
         {
-            if (Context.PlayerMantle.TryStartMantle())
-            {
-                Context.WantsToJump = false;
-                Context.StateMachine.ChangeState(MovementState.Mantling);
-                return;
-            }
+            Context.WantsToJump = false;
+            Context.StateMachine.ChangeState(MovementState.Mantling);
+            return;
         }
 
         // Land
