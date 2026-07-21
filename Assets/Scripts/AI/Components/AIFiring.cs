@@ -1,0 +1,92 @@
+using Combat.VFX;
+using Health;
+using UnityEngine;
+
+public class AIFiring : MonoBehaviour
+{
+    [Header("Firing")]
+    [Tooltip("Muzzle transforms used in sequence when firing.")]
+    [SerializeField] private Transform[] _firePoints;
+
+    [Tooltip("Transform whose forward direction is compared against the target.")]
+    [SerializeField] private Transform _aimReference;
+
+    [Tooltip("Maximum angle in degrees between the aim direction and target direction before firing.")]
+    [SerializeField, Range(0f, 90f)] private float _fireCone = 10f;
+
+    [Tooltip("Minimum time in seconds between shots.")]
+    [SerializeField, Min(0f)] private float _fireInterval = 0.6f;
+
+    [Header("Projectile")]
+    [Tooltip("Pool that provides this enemy's projectiles.")]
+    [SerializeField] private ProjectilePool _projectilePool;
+
+    [Tooltip("Weapon data used to configure projectile speed, lifetime, and damage.")]
+    [SerializeField] private WeaponDataSO _weaponData;
+
+    [Tooltip("Optional pooled impact effect spawner passed to each projectile.")]
+    [SerializeField] private ImpactEffectSpawner _impactSpawner;
+
+    private bool _canSee;
+    private Vector3 _target;
+    private float _coolDown;
+    private int _nextBarrel;
+
+    private void Awake()
+    {
+        if (_firePoints == null || _firePoints.Length == 0)
+        {
+            Debug.LogError($"[AIFiring] Fire points are not configured on {name}.", this);
+            enabled = false;
+            return;
+        }
+
+        if (_aimReference == null || _projectilePool == null || _weaponData == null)
+        {
+            Debug.LogError($"[AIFiring] Aim reference, projectile pool, and weapon data must be configured on {name}.", this);
+            enabled = false;
+        }
+    }
+
+    /// <summary>
+    /// Updates the AI's current line-of-sight and target position for firing decisions.
+    /// </summary>
+    public void SetFiringState(bool canSee, Vector3 point)
+    {
+        _canSee = canSee;
+        _target = point;
+    }
+
+    private void Update()
+    {
+        _coolDown -= Time.deltaTime;
+        if (!CanFire())
+            return;
+
+        Fire();
+        _coolDown = _fireInterval;
+    }
+
+    private bool CanFire()
+    {
+        if (!_canSee || _coolDown > 0f)
+            return false;
+
+        Vector3 toTarget = _target - _aimReference.position;
+        return Vector3.Angle(_aimReference.forward, toTarget) <= _fireCone;
+    }
+
+    private void Fire()
+    {
+        Transform barrelTransform = _firePoints[_nextBarrel];
+        _nextBarrel = (_nextBarrel + 1) % _firePoints.Length;
+
+        _projectilePool.Spawn(
+            barrelTransform.position,
+            barrelTransform.rotation,
+            _weaponData,
+            _impactSpawner,
+            Instigator.Enemy
+        );
+    }
+}

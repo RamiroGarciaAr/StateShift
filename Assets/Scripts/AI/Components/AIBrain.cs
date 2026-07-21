@@ -12,6 +12,9 @@ public class AIBrain : MonoBehaviour, ITickable
     [SerializeField]
     private AIAiming aiming;
 
+    [SerializeField]
+    private AIFiring firing;
+
     private AIMemory _memory;
     private EnemyHealth _health;
 
@@ -22,6 +25,7 @@ public class AIBrain : MonoBehaviour, ITickable
         _memory.Report(perception.Sample());
         if (_memory.LastSeenPlayerTime >= 0f)
             aiming.SetTarget(_memory.LastKnownPlayerPosition);
+        firing.SetFiringState(_memory.CanSeePlayer, _memory.LastKnownPlayerPosition);
     }
 
     private void Awake()
@@ -38,6 +42,12 @@ public class AIBrain : MonoBehaviour, ITickable
         if (aiming == null)
         {
             Debug.LogError($"[AIBrain] No Aiming assigned on {gameObject.name}", this);
+            enabled = false;
+            return;
+        }
+        if (firing == null)
+        {
+            Debug.LogError($"[AIBrain] No Firing assigned on {gameObject.name}", this);
             enabled = false;
             return;
         }
@@ -65,9 +75,11 @@ public class AIBrain : MonoBehaviour, ITickable
         AITickManager.Instance?.UnregisterAgent(this);
     }
 
+    //we can change this to a list so we dont have to manually unsub from every event
     private void HandleDeath()
     {
         enabled = false;
         aiming.enabled = false;
+        firing.enabled = false;
     }
 }
