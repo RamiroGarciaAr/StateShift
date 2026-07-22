@@ -40,14 +40,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2630719429196055229}
     m_Modifications:
-    - target: {fileID: 591663898721672750, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1018994454978713410, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 1227051583610816350, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: capsuleCollider
       value: 
@@ -75,10 +67,6 @@ PrefabInstance:
     - target: {fileID: 2321903993149630621, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: grappleableLayers.m_Bits
       value: 4294967295
-      objectReference: {fileID: 0}
-    - target: {fileID: 2343943162986897809, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
-      propertyPath: m_Mesh
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2580716373554534634, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: playerCam
@@ -123,10 +111,6 @@ PrefabInstance:
     - target: {fileID: 3130340792650396895, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3185761695296752854, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
-      propertyPath: m_Mesh
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3306734593851655564, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: collider
@@ -266,7 +250,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7851319021639402683, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: m_VersionIndex
-      value: 2400
+      value: 2403
       objectReference: {fileID: 0}
     - target: {fileID: 8385160106023303043, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       propertyPath: m_Drag
@@ -330,6 +314,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8737292798387105240, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8059585326807052533}
+    - targetCorrespondingSourceObject: {fileID: 8737292798387105240, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 359881452498016021}
   m_SourcePrefab: {fileID: 100100000, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
 --- !u!4 &1656827844465601387 stripped
 Transform:
@@ -481,6 +468,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 2
+--- !u!114 &359881452498016021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8684296433054750650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c71183b4fc204240a776a8d8f3e225d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioPool: {fileID: 0}
+  characterScreamSound:
+    Name: char_scream
+    clips:
+    - {fileID: 8300000, guid: 9152e75c2fef63a4c907a17af599320f, type: 3}
+    - {fileID: 8300000, guid: 4991e719446f02b4a8641a0918f940d6, type: 3}
+    - {fileID: 8300000, guid: f624ded9dde683840b17bfe916496f09, type: 3}
+    loop: 0
+    volume: 0.6
+    pitch: 1
+  impactSound:
+    Name: char_impact
+    clips:
+    - {fileID: 8300000, guid: e52cecf20282e09488b71222eca5475c, type: 3}
+    loop: 0
+    volume: 0.4
+    pitch: 1
+  chunkBrokenSound:
+    Name: char_brokeChunk
+    clips:
+    - {fileID: 8300000, guid: ae37f87ace64c22468d4d4326e2cf44a, type: 3}
+    loop: 0
+    volume: 0.3
+    pitch: 1
 --- !u!136 &8779403106288727874 stripped
 CapsuleCollider:
   m_CorrespondingSourceObject: {fileID: 8652396224484625696, guid: 122eb8028f7a4424db5eded7468053c0, type: 3}
