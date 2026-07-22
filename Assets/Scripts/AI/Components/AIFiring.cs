@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class AIFiring : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField]
+    private AudioPool audioPool;
+
     [Header("Firing")]
     [Tooltip("Muzzle transforms used in sequence when firing.")]
     [SerializeField]
@@ -49,6 +53,9 @@ public class AIFiring : MonoBehaviour
     [SerializeField, Tooltip("Time of Continued LOS to go from inaccurate to accurate")]
     private float rampUpTime = 2f;
 
+    [Header("AI Sounds")]
+    [SerializeField]
+    private Sound detectedSound;
     private bool _canSee;
     private Vector3 _target;
     private float _rateOfFireTimer;
@@ -83,6 +90,7 @@ public class AIFiring : MonoBehaviour
     {
         if (canSee && !_canSee) // we are seeing him for the first time
         {
+            audioPool.PlayAt(detectedSound, transform.position);
             _reactionTimer = newTargetDelay;
             _lineOfSightTimer = 0f;
         }
@@ -130,7 +138,7 @@ public class AIFiring : MonoBehaviour
         dir =
             Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), 0f)
             * dir;
-
+        audioPool.PlayAt(_weaponData.FireSounds, barrelTransform.position);
         _projectilePool.Spawn(
             barrelTransform.position,
             Quaternion.LookRotation(dir),

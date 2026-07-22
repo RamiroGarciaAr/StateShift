@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SpiderBotHealthConfig
   m_EditorClassIdentifier: 
   chunks:
-  - maxHealth: 1000
+  - maxHealth: 100
     healthType: 3
   healthModifier:
   - modifier: 0

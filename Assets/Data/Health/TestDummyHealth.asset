@@ -20,7 +20,7 @@ MonoBehaviour:
     bodyPart: 3
   - modifier: 1
     bodyPart: 2
-  - modifier: 5
+  - modifier: 2
     bodyPart: 1
   - modifier: 1
     bodyPart: 0

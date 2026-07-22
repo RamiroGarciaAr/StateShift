@@ -30,3 +30,10 @@ MonoBehaviour:
   projectilePrefab: {fileID: 4128576527009579452, guid: 2a5d9a4da5b4a77459e68d230c4ca324, type: 3}
   projectileSpeed: 900
   projectileLifetime: 3
+  fireSounds:
+    Name: pistol_fire
+    clips:
+    - {fileID: 8300000, guid: b0b6aedccb2d0094dbaee5db13bace6a, type: 3}
+    loop: 0
+    volume: 0.5
+    pitch: 1
