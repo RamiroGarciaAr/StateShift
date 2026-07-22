@@ -13,6 +13,7 @@ public class AINavMove : MonoBehaviour
     [SerializeField]
     private float _arriveRadius = 0.5f;
 
+    [SerializeField]
     private NavMeshAgent _agent;
     private bool _hasDestination;
 
