@@ -1,6 +1,8 @@
+using Health;
 using UnityEngine;
 
 [RequireComponent(typeof(AIMemory))]
+[RequireComponent(typeof(EnemyHealth))]
 public class AIBrain : MonoBehaviour, ITickable
 {
     [Header("References")]
@@ -13,47 +15,104 @@ public class AIBrain : MonoBehaviour, ITickable
     [SerializeField]
     private AIFiring firing;
 
+    [Header("Alert")]
+    [SerializeField, Tooltip("Seconds of lost LOS before Alerted drops to Suspicious")]
+    private float _losGraceTime = 2f;
+
+    [SerializeField, Tooltip("Seconds in Suspicious with no reacquire before giving up to Unaware")]
+    private float _searchGiveUpTime = 8f;
+
     private AIMemory _memory;
+    private EnemyHealth _health;
 
-    public bool IsTickable => true; // reserved for stuns or culls OR maybe its a sign that we need to remove it
+    private StateMachine<AIMemory.AlertLevel> _alertMachine;
+    private SuspiciousState _suspiciousState; // held instance so we can read ElapsedSearch
+    private float _timeSinceLostLOS;
 
-    public void OnTick(float dt)
-    {
-        _memory.Report(perception.Sample());
-        if (_memory.LastSeenPlayerTime >= 0f)
-            aiming.SetTarget(_memory.LastKnownPlayerPosition);
-        firing.SetFiringState(_memory.CanSeePlayer, _memory.LastKnownPlayerPosition);
-    }
+    // Exposed to the alert states:
+    public float TickDelta { get; private set; }
+    public AIMemory Memory => _memory;
+    public AIAiming Aiming => aiming;
+
+    public bool IsTickable => true; // reserved for stun/cull
 
     private void Awake()
     {
         _memory = GetComponent<AIMemory>();
+        _health = GetComponent<EnemyHealth>();
 
-        if (perception == null)
+        if (perception == null || aiming == null || firing == null)
         {
-            Debug.LogError($"[AIBrain] No Perception assigned on {gameObject.name}", this);
+            Debug.LogError($"[AIBrain] Missing references on {name}", this);
             enabled = false;
             return;
         }
-        if (aiming == null)
+        _health.OnDeath += HandleDeath;
+
+        _alertMachine = new StateMachine<AIMemory.AlertLevel>();
+        _suspiciousState = new SuspiciousState(this);
+        _alertMachine.RegisterState(AIMemory.AlertLevel.Unaware, new UnawareState(this));
+        _alertMachine.RegisterState(AIMemory.AlertLevel.Suspicious, _suspiciousState);
+        _alertMachine.RegisterState(AIMemory.AlertLevel.Alerted, new AlertedState(this));
+        _alertMachine.Initialize(AIMemory.AlertLevel.Unaware);
+    }
+
+    public void OnTick(float dt)
+    {
+        TickDelta = dt;
+
+        _memory.Report(perception.Sample());
+        firing.SetFiringState(_memory.CanSeePlayer, _memory.LastKnownPlayerPosition);
+
+        EvaluateTransitions();
+        _alertMachine.Update(); // current state acts
+    }
+
+    private void EvaluateTransitions()
+    {
+        AIMemory.AlertLevel level = _alertMachine.CurrentStateType;
+        bool canSee = _memory.CanSeePlayer;
+
+        switch (level)
         {
-            Debug.LogError($"[AIBrain] No Aiming assigned on {gameObject.name}", this);
-            enabled = false;
-            return;
+            case AIMemory.AlertLevel.Unaware:
+                if (canSee)
+                    _alertMachine.ChangeState(AIMemory.AlertLevel.Alerted);
+                break;
+
+            case AIMemory.AlertLevel.Alerted:
+                if (canSee)
+                {
+                    _timeSinceLostLOS = 0f;
+                }
+                else
+                {
+                    _timeSinceLostLOS += TickDelta;
+                    if (_timeSinceLostLOS >= _losGraceTime)
+                        _alertMachine.ChangeState(AIMemory.AlertLevel.Suspicious);
+                }
+                break;
+
+            case AIMemory.AlertLevel.Suspicious:
+                if (canSee)
+                    _alertMachine.ChangeState(AIMemory.AlertLevel.Alerted);
+                else if (_suspiciousState.ElapsedSearch >= _searchGiveUpTime)
+                    _alertMachine.ChangeState(AIMemory.AlertLevel.Unaware);
+                break;
         }
-        if (firing == null)
-        {
-            Debug.LogError($"[AIBrain] No Firing assigned on {gameObject.name}", this);
-            enabled = false;
-            return;
-        }
+    }
+
+    private void OnDestroy()
+    {
+        if (_health != null)
+            _health.OnDeath -= HandleDeath;
     }
 
     private void OnEnable()
     {
         if (AITickManager.Instance == null)
         {
-            Debug.LogError("[AI Tick] No tick manager was found", this);
+            Debug.LogError("[AIBrain] No tick manager found", this);
             return;
         }
         AITickManager.Instance.RegisterAgent(this);
@@ -62,5 +121,12 @@ public class AIBrain : MonoBehaviour, ITickable
     private void OnDisable()
     {
         AITickManager.Instance?.UnregisterAgent(this);
+    }
+
+    private void HandleDeath()
+    {
+        enabled = false;
+        aiming.enabled = false;
+        firing.enabled = false;
     }
 }
