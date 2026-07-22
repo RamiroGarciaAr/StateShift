@@ -17,6 +17,9 @@ public class PlayerAudioResponder : MonoBehaviour
 
     [SerializeField]
     private Sound chunkBrokenSound;
+
+    [SerializeField]
+    private Sound deathSound;
     private PlayerHealth _health;
 
     private void Awake()
@@ -37,6 +40,7 @@ public class PlayerAudioResponder : MonoBehaviour
 
         _health.OnHealthChanged += HandleHealthChanged;
         _health.OnChunkDepleted += HandleBrokenChunk;
+        _health.OnDeath += HandleDeath;
     }
 
     private void OnDestroy()
@@ -45,6 +49,7 @@ public class PlayerAudioResponder : MonoBehaviour
         {
             _health.OnHealthChanged -= HandleHealthChanged;
             _health.OnChunkDepleted -= HandleBrokenChunk;
+            _health.OnDeath -= HandleDeath;
         }
     }
 
@@ -61,5 +66,10 @@ public class PlayerAudioResponder : MonoBehaviour
     private void HandleBrokenChunk(int idx)
     {
         _audioPool.PlayAt(chunkBrokenSound, is3D: false);
+    }
+
+    private void HandleDeath()
+    {
+        _audioPool.PlayAt(deathSound, pitchRandomization: false, is3D: false);
     }
 }

@@ -34,7 +34,7 @@ Material:
     - _DashSoftness: 0
     - _GlowIntensity: 2.45
     - _GlowWidth: 0.031
-    - _InnerRadius: 0.2
+    - _InnerRadius: 0.25868583
     - _OuterRadius: 0.3
     - _OutlineThickness: 0.02
     - _Rotation: 166

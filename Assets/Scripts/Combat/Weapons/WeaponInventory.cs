@@ -16,21 +16,49 @@ public class WeaponInventory : MonoBehaviour
 
     private Instigator entity = Instigator.Player;
 
+    private bool _isDisabled;
+
     private void Start()
     {
         EquipCurrentWeapon();
         PlayerInput.OnChangeWeapon += NextWeapon;
         PlayerInput.OnShoot += HandleShoot;
+
+        if (EventsManager.Instance != null)
+            EventsManager.Instance.OnGameOver += GameOverListener;
     }
 
     private void OnDestroy()
     {
         PlayerInput.OnChangeWeapon -= NextWeapon;
         PlayerInput.OnShoot -= HandleShoot;
+
+        if (EventsManager.Instance != null)
+            EventsManager.Instance.OnGameOver -= GameOverListener;
+    }
+
+    /// <summary>
+    /// Stops the active weapon and detaches from shoot/weapon-switch input so the player
+    /// cannot fire or swap weapons while the death screen is shown.
+    /// </summary>
+    private void GameOverListener()
+    {
+        _isDisabled = true;
+
+        if (weaponList.Count > 0)
+            weaponList[_currentWeaponIndex].StopFiring();
+
+        PlayerInput.OnShoot -= HandleShoot;
+        PlayerInput.OnChangeWeapon -= NextWeapon;
+
+        if (EventsManager.Instance != null)
+            EventsManager.Instance.OnGameOver -= GameOverListener;
     }
 
     private void HandleShoot(bool pressed)
     {
+        if (_isDisabled)
+            return;
         if (weaponList.Count == 0)
             return;
         WeaponBase current = weaponList[_currentWeaponIndex];
