@@ -3,14 +3,15 @@ using UnityEngine;
 
 public class HealthPickup : MonoBehaviour, IPickupEffect
 {
-    [SerializeField]
-    private AudioPool audioPool;
+    private AudioPool _audioPool;
 
     [SerializeField]
     private Sound pickupSound;
 
     [SerializeField]
     private float healAmount = 25f;
+
+    public void SetAudioPool(AudioPool pool) => _audioPool = pool;
 
     public bool CanApply(GameObject collector)
     {
@@ -21,6 +22,6 @@ public class HealthPickup : MonoBehaviour, IPickupEffect
     public void Apply(GameObject collector)
     {
         collector.GetComponent<PlayerHealth>().Heal(healAmount);
-        audioPool?.PlayAt(pickupSound, null, is3D: false);
+        _audioPool?.PlayAt(pickupSound, null, is3D: false);
     }
 }

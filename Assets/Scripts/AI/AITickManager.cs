@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Combat.FireModes;
 using UnityEngine;
 
 public class AITickManager : Singleton<AITickManager>
@@ -9,11 +8,11 @@ public class AITickManager : Singleton<AITickManager>
         "The number of AI ticks to process per frame. "
             + "Lower values can improve performance but may result in less responsive AI behavior."
     )]
-    [SerializeField]
-    [Range(1, 5)]
+    [SerializeField, Range(1, 5)]
     private int _ticksPerFrame = 1;
 
-    private readonly List<ITickable> _agents = new List<ITickable>();
+    private readonly List<ITickable> _agents = new();
+    private readonly List<float> _lastTickTime = new(); // parallel to _agents, same index
 
     private readonly List<ITickable> _pendingAdd = new();
     private readonly List<ITickable> _pendingRemove = new();
@@ -26,7 +25,7 @@ public class AITickManager : Singleton<AITickManager>
         if (EventsManager.Instance == null)
         {
             Debug.LogWarning(
-                "[AITickManager] EventsManager not found Pause/GameOver integration disabled."
+                "[AITickManager] EventsManager not found. Pause/GameOver integration disabled."
             );
             return;
         }
@@ -38,7 +37,7 @@ public class AITickManager : Singleton<AITickManager>
     protected override void OnDestroy()
     {
         if (EventsManager.Instance == null)
-            return; // Check if EventsManager still exists before unsubscribing
+            return;
 
         EventsManager.Instance.OnGamePause -= HandleGamePause;
         EventsManager.Instance.OnGameOver -= HandleGameOver;
@@ -60,13 +59,19 @@ public class AITickManager : Singleton<AITickManager>
         int inspected = 0;
         while (ticked < _ticksPerFrame && inspected < _agents.Count)
         {
-            ITickable agent = _agents[_currentIndex];
-            _currentIndex = (_currentIndex + 1) % _agents.Count; // the advance — this line stays
+            int idx = _currentIndex;
+            ITickable agent = _agents[idx];
+            _currentIndex = (_currentIndex + 1) % _agents.Count;
             inspected++;
 
             if (agent.IsTickable)
             {
-                agent.OnTick(Time.deltaTime);
+                // True elapsed time since THIS agent was last ticked — not one frame.
+                float now = Time.time;
+                float agentDelta = now - _lastTickTime[idx];
+                _lastTickTime[idx] = now;
+
+                agent.OnTick(agentDelta);
                 ticked++;
             }
         }
@@ -82,6 +87,7 @@ public class AITickManager : Singleton<AITickManager>
 
     public void UnregisterAgent(ITickable agent)
     {
+        _pendingAdd.Remove(agent);
         if (!_pendingRemove.Contains(agent))
             _pendingRemove.Add(agent);
     }
@@ -96,12 +102,17 @@ public class AITickManager : Singleton<AITickManager>
 
             if (idx < _currentIndex)
                 _currentIndex--;
+
             _agents.RemoveAt(idx);
+            _lastTickTime.RemoveAt(idx); // keep the parallel list aligned
         }
+
         foreach (var agent in _pendingAdd)
         {
             _agents.Add(agent);
+            _lastTickTime.Add(Time.time); // init to NOW, not 0 — avoids a first-tick spike
         }
+
         _pendingAdd.Clear();
         _pendingRemove.Clear();
     }
@@ -119,7 +130,7 @@ public class AITickManager : Singleton<AITickManager>
     [ContextMenu("Log Registered Agents")]
     private void LogRegisteredAgents()
     {
-        Debug.Log($"$[AI Tick Manager] Registered Agents ({_agents.Count}):");
+        Debug.Log($"[AITickManager] Registered Agents ({_agents.Count}):");
         foreach (var agent in _agents)
         {
             Debug.Log($" - {agent}");

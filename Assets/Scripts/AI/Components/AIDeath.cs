@@ -15,6 +15,9 @@ public sealed class AIDeath : MonoBehaviour
     [SerializeField]
     private AudioPool audioPool;
 
+    [SerializeField]
+    private PickupPool pickupPool;
+
     [Header("Death VFX")]
     [Tooltip("Optional shared pool used to spawn the death explosion.")]
     [SerializeField]
@@ -32,6 +35,7 @@ public sealed class AIDeath : MonoBehaviour
     private AIAiming _aiming;
     private AIFiring _firing;
     private bool _hasHandledDeath;
+    private float _dropHeightOffset = 1f;
 
     private void Awake()
     {
@@ -74,6 +78,8 @@ public sealed class AIDeath : MonoBehaviour
 
         _deathVfxPool.Spawn(transform.position, transform.rotation, _vfxDimensions);
         audioPool.PlayAt(_deathSound, transform.position);
+        if (pickupPool != null)
+            pickupPool.Spawn(transform.position + Vector3.up * _dropHeightOffset);
         gameObject.SetActive(false);
     }
 }
