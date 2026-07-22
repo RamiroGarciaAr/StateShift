@@ -1,6 +1,6 @@
-using UnityEngine.Audio;
 using System;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
@@ -11,16 +11,18 @@ public class AudioManager : MonoBehaviour
         foreach (Sound s in sounds)
         {
             s.source = gameObject.AddComponent<AudioSource>();
-            s.source.clip = s.clip;
+            s.source.clip = s.GetClip();
             s.source.volume = s.volume;
             s.source.pitch = s.pitch;
             //s.source.loop = s.loop;
         }
     }
+
     void Start()
     {
         Play("Flight");
     }
+
     public void Play(string name)
     {
         Sound s = Array.Find(sounds, sound => sound.Name == name);

@@ -9,6 +9,9 @@ public class HitmarkerController : MonoBehaviour
     [SerializeField]
     private DamageDealtChannelSO channel;
 
+    [SerializeField]
+    private AudioPool audioPool;
+
     [Header("Hit Marker Behaviour")]
     [SerializeField, Range(0.01f, 0.5f)]
     private float hitTimer = 0.4f;
@@ -32,6 +35,23 @@ public class HitmarkerController : MonoBehaviour
 
     [SerializeField]
     private Color killColor = Color.red;
+
+    [Header("Hit Marker Sounds")]
+    [SerializeField]
+    private Sound normalHitMarkerSound;
+
+    [SerializeField]
+    private Sound resistHitMarkerSound;
+
+    [SerializeField]
+    private Sound effectiveHitMarkerSound;
+
+    [SerializeField]
+    private Sound killHitMarkerSound;
+
+    [SerializeField]
+    private Sound weakSpotAccentSound;
+
     private RawImage _hitMarkerImg;
     private float _hideHitMarkerIn;
     private Material _hitMarkerMaterial;
@@ -59,6 +79,8 @@ public class HitmarkerController : MonoBehaviour
         }
         if (channel != null)
             channel.OnRaised += HandleHit;
+        if (audioPool == null)
+            Debug.LogError("[HitmarkerController] No AudioPool");
     }
 
     void Start()
@@ -112,6 +134,10 @@ public class HitmarkerController : MonoBehaviour
         {
             transform.localEulerAngles = new Vector3(0, 0, Random.Range(-maxAngle, maxAngle));
         }
+        Sound _hitSound = GetHitmarkerSound(evt);
+        audioPool.PlayAt(_hitSound, is3D: false);
+        if (evt.bodyPart == BodyPart.WeakSpot)
+            audioPool.PlayAt(weakSpotAccentSound, is3D: false);
 
         _hitMarkerImg.enabled = true;
     }
@@ -136,5 +162,17 @@ public class HitmarkerController : MonoBehaviour
             return resistedColor;
 
         return neutralColor;
+    }
+
+    private Sound GetHitmarkerSound(DamageDealtEvent evt)
+    {
+        if (evt.isKillShot)
+            return killHitMarkerSound;
+        else if (evt.dmgEffectiveness > 1f)
+            return effectiveHitMarkerSound;
+        else if (evt.dmgEffectiveness < 1f)
+            return resistHitMarkerSound;
+
+        return normalHitMarkerSound;
     }
 }

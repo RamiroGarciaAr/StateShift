@@ -25,6 +25,9 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     [SerializeField]
     private ImpactEffectSpawner _impactSpawner;
 
+    [SerializeField]
+    private AudioPool audioPool;
+
     // ** Events to communicate with other systems (like UI, audio, etc.)
     /// <summary>
     /// Ammo Changed: This event is triggered whenever there is a change in the ammo count, whether it's shooting or reloading. It can be used to update the ammo count on the UI.
@@ -86,6 +89,7 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
         _currentFireMode?.Tick(Time.deltaTime);
         if (_wantsToFire && _fireTimer <= 0f && HasAmmo())
         {
+            audioPool.PlayAt(weaponData.FireSounds, null, is3D: false);
             Shoot();
             OnShoot?.Invoke();
             ConsumeAmmo(1); // todo: yes we are hard coding this for now but then we will need to change this to be based on the weapons data
