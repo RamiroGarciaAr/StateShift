@@ -16,17 +16,12 @@ public class IKFootStepper : MonoBehaviour
     ]
     private Vector3 _localAnchor = new(0.5f, 0f, 0.5f);
 
-    [Header("Stepping")]
-    [SerializeField]
     private float _stepThreshold = 0.4f; // anchor drift before a step
 
-    [SerializeField]
     private float _overshoot = 0.3f; // how far past the anchor, along travel
 
-    [SerializeField]
     private float _stepDuration = 0.15f;
 
-    [SerializeField]
     private float _stepHeight = 0.3f;
 
     [Header("Ground")]
@@ -129,6 +124,14 @@ public class IKFootStepper : MonoBehaviour
         Vector3 from = pos + Vector3.up * _rayHeight;
         if (Physics.Raycast(from, Vector3.down, out RaycastHit hit, _rayHeight * 2f, _groundMask))
             pos = hit.point;
+    }
+
+    public void Configure(float threshold, float overshoot, float duration, float height)
+    {
+        _stepThreshold = threshold;
+        _overshoot = overshoot;
+        _stepDuration = duration;
+        _stepHeight = height;
     }
 
 #if UNITY_EDITOR
