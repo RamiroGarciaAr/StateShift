@@ -1,4 +1,5 @@
 using Health;
+using Unity.AI;
 using UnityEngine;
 
 [RequireComponent(typeof(AIMemory))]
@@ -59,6 +60,7 @@ public class AIBrain : MonoBehaviour, ITickable
             return;
         }
         _health.OnDeath += HandleDeath;
+        _health.OnDamaged += HandleDamaged;
 
         _alertMachine = new StateMachine<AIMemory.AlertLevel>();
         _suspiciousState = new SuspiciousState(this);
@@ -123,7 +125,10 @@ public class AIBrain : MonoBehaviour, ITickable
     private void OnDestroy()
     {
         if (_health != null)
+        {
             _health.OnDeath -= HandleDeath;
+            _health.OnDamaged -= HandleDamaged;
+        }
     }
 
     private void OnEnable()
@@ -139,6 +144,23 @@ public class AIBrain : MonoBehaviour, ITickable
     private void OnDisable()
     {
         AITickManager.Instance?.UnregisterAgent(this);
+    }
+
+    private void HandleDamaged(DamageInfo info)
+    {
+        if (_memory.CanSeePlayer)
+            return;
+
+        float guessDist = 8f;
+        Vector3 approx = transform.position - info.HitDirection.normalized * guessDist;
+        approx += Random.insideUnitSphere * 2f;
+        approx.y = transform.position.y;
+
+        if (UnityEngine.AI.NavMesh.SamplePosition(approx, out UnityEngine.AI.NavMeshHit hit, 4f, UnityEngine.AI.NavMesh.AllAreas))
+            approx = hit.position;
+
+        _memory.SeedSuspicion(approx);
+        _alertMachine.ChangeState(AIMemory.AlertLevel.Suspicious);
     }
 
     private void HandleDeath()

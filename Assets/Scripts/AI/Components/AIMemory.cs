@@ -35,7 +35,8 @@ public class AIMemory : MonoBehaviour
             indicatorPosition = new Vector3(
                 bounds.center.x,
                 bounds.max.y + GizmoHeightOffset,
-                bounds.center.z);
+                bounds.center.z
+            );
         }
 
         Gizmos.DrawSphere(indicatorPosition, GizmoSphereRadius);
@@ -57,6 +58,8 @@ public class AIMemory : MonoBehaviour
 
     public AlertLevel CurrentAlertLevel { get; private set; } = AlertLevel.Unaware;
     public Vector3 LastKnownPlayerPosition { get; private set; }
+    public Vector3 LastKnownVelocity { get; private set; }
+
     public float LastSeenPlayerTime { get; private set; } = -1f;
     public bool CanSeePlayer { get; private set; } = false;
 
@@ -69,12 +72,28 @@ public class AIMemory : MonoBehaviour
         Debug.Log($"[AIMemory] Alert level changed to {CurrentAlertLevel} for {gameObject.name}");
     }
 
+    public void SeedSuspicion(Vector3 approxPlayerPos)
+    {
+        LastKnownPlayerPosition = approxPlayerPos;
+        LastSeenPlayerTime = Time.time;
+        // deliberately not touching CanSeePlayer (suspect, don't see) or LastKnownVelocity
+    }
+
     public void Report(in PerceptionResult perceptionResult)
     {
+        bool wasVisible = CanSeePlayer;
         bool seen = perceptionResult.IsVisible;
         CanSeePlayer = seen;
+
         if (seen)
         {
+            // Derive velocity from two consecutive sightings — compute BEFORE overwriting.
+            if (wasVisible)
+            {
+                float dt = Time.time - LastSeenPlayerTime;
+                if (dt > 0.0001f)
+                    LastKnownVelocity = (perceptionResult.Position - LastKnownPlayerPosition) / dt;
+            }
             LastKnownPlayerPosition = perceptionResult.Position;
             LastSeenPlayerTime = Time.time;
         }

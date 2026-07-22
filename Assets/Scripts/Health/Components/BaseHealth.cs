@@ -21,6 +21,7 @@ namespace Health
         public virtual bool CanHeal => IsAlive && CurrentHealth < MaxHealth;
 
         public event Action<HealthChangeEventArgs> OnHealthChanged;
+        public event Action<DamageInfo> OnDamaged;
         public event Action<DamageInfo> OnDamageAppliedToHealth;
         public event Action OnDeath;
         public event Action<int> OnChunkDepleted;
@@ -54,7 +55,9 @@ namespace Health
                 GetCurrentChunkIndex(),
                 false
             );
+
             OnHealthChanged?.Invoke(args);
+            OnDamaged?.Invoke(damageInfo);
             if (damageDealt > 0f)
                 OnDamageAppliedToHealth?.Invoke(damageInfo);
 
