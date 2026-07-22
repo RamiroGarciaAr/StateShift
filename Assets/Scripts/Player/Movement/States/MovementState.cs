@@ -13,6 +13,7 @@ namespace Core
         Dashing,
         Grappling,
         InAir,
+        Mantling,
 
         // Grounded sub-states
         Walking,
@@ -32,6 +33,7 @@ namespace Core
         public PlayerWallRun PlayerWallRun { get; set; }
         public Rigidbody Rigidbody { get; set; }
         public PlayerGrapple PlayerGrapple { get; set; }
+        public PlayerMantle PlayerMantle { get; set; }
 
         // State Machines
         public StateMachine<MovementState> StateMachine { get; set; }
@@ -46,5 +48,8 @@ namespace Core
         public bool WantsToJump { get; set; }
         public bool WantsToGrapple { get; set; }
         public bool WantsToDash { get; set; }
+
+        /// <summary>True while the raw forward move input (e.g. holding W) is pressed, regardless of camera facing.</summary>
+        public bool IsMovingForward => DashInputDirection.y > 0f;
     }
 }

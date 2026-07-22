@@ -30,6 +30,16 @@ public class GroundedState : BaseState<PlayerMovementContext>
             return;
         }
 
+        // A buffered mantle request wins over the normal jump while the player approaches the obstacle.
+        // Mantling is only allowed while jumping AND holding forward, so pressing jump near a ledge
+        // while just looking at it (e.g. to drop off or strafe past it) does not pull the player up.
+        if (Context.IsMovingForward && Context.PlayerMantle.TryStartBufferedMantle())
+        {
+            Context.WantsToJump = false;
+            Context.StateMachine.ChangeState(MovementState.Mantling);
+            return;
+        }
+
         if (Context.WantsToGrapple && Context.PlayerGrapple.CanGrapple)
         {
             if (Context.PlayerGrapple.TryStartGrapple())

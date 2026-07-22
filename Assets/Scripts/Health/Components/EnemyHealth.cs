@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,10 +6,23 @@ namespace Health
 {
     public class EnemyHealth : BaseHealth
     {
-        [SerializeField] private EnemyHealthConfigSO healthConfig;
+        [SerializeField]
+        private EnemyHealthConfigSO healthConfig;
+
+        [SerializeField]
+        DamageDealtChannelSO damageDealtChannel;
 
         public IReadOnlyList<HealthChunk> Chunks => healthChunks;
         public int CurrentChunkIndex => GetCurrentChunkIndex();
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            //we register its respective modifiers
+            if (healthConfig != null)
+                RegisterDamageModifier(new BodyPartModifier(healthConfig.HealthModifier));
+        }
 
         protected override void InitializeChunks()
         {
@@ -26,15 +40,22 @@ namespace Health
             }
         }
 
-        public override void Heal(float amount)
+        //We grab the event so we can use it in other things
+        protected override void OnDamageApplied(in DamageDealtEvent result)
         {
-            var currentChunk = healthChunks.Find(c => !c.IsDepleted);
-            currentChunk?.Heal(amount);
+            if (damageDealtChannel == null)
+            {
+                Debug.LogError("[EnemyHealth]DamageDealtChannel not assigned", this);
+                return;
+            }
+
+            damageDealtChannel.Raise(in result);
         }
 
         public float GetChunkHealthNormalized(int index)
         {
-            if (index < 0 || index >= healthChunks.Count) return 0f;
+            if (index < 0 || index >= healthChunks.Count)
+                return 0f;
             return healthChunks[index].HealthNormalized;
         }
     }

@@ -14,6 +14,7 @@ namespace Entities.Controllers
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(PlayerMovement))]
     [RequireComponent(typeof(PlayerGrapple))]
+    [RequireComponent(typeof(PlayerMantle))]
     public class PlayerInput : Controller
     {
         private UnityEngine.InputSystem.PlayerInput _playerInput;
@@ -85,6 +86,7 @@ namespace Entities.Controllers
                 PlayerWallRun = GetComponent<PlayerWallRun>(),
                 PlayerDash = GetComponent<PlayerDash>(),
                 PlayerGrapple = GetComponent<PlayerGrapple>(),
+                PlayerMantle = GetComponent<PlayerMantle>(),
                 Rigidbody = GetComponent<Rigidbody>(),
             };
 
@@ -97,6 +99,7 @@ namespace Entities.Controllers
             _stateMachine.RegisterState(MovementState.Dashing, new DashingState(_context));
             _stateMachine.RegisterState(MovementState.Grappling, new GrapplingState(_context));
             _stateMachine.RegisterState(MovementState.InAir, new InAirState(_context));
+            _stateMachine.RegisterState(MovementState.Mantling, new MantlingState(_context));
 
             _stateMachine.Initialize(MovementState.Grounded);
         }
@@ -221,13 +224,26 @@ namespace Entities.Controllers
             _context.DashInputDirection = inputRaw;
             _context.WantsToCrouch = _crouchAction != null && _crouchAction.IsPressed();
             _context.WantsToSprint = _sprintAction != null && _sprintAction.IsPressed();
-            _context.WantsToJump = _jumpAction != null && _jumpAction.WasPressedThisFrame();
+            bool jumpPressedThisFrame = _jumpAction != null && _jumpAction.WasPressedThisFrame();
+            _context.WantsToJump = jumpPressedThisFrame;
+            if (jumpPressedThisFrame)
+            {
+                _context.PlayerMantle.BufferMantleRequest();
+            }
+
             _context.WantsToDash = _dashAction != null && _dashAction.WasPressedThisFrame();
             _context.WantsToGrapple = _grappleAction != null && _grappleAction.IsPressed();
         }
 
         private void HandleJump()
         {
+            // Suppress the normal jump when a mantle consumed this Jump press.
+            if (_context.PlayerMantle != null && _context.PlayerMantle.IsMantling)
+            {
+                Controllable.SetHoldingJump(_jumpAction.IsPressed());
+                return;
+            }
+
             if (_jumpAction.WasPressedThisFrame())
             {
                 Controllable.Jump();

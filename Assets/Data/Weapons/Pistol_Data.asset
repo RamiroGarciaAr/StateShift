@@ -14,19 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: JR-941A
   weaponPrefab: {fileID: 0}
-  availableFireModes: 01000000
-  burstCount: 3
-  spreadAngle: 0
+  availableFireModes: 00000000
+  burstCount: 0
+  spreadAngle: 1
   damageType: 0
-  damageAmount: 35
+  damageAmount: 30
   damageDropoff:
-    midRange: 25
-    longRange: 30
-    longRangeDamage: 53.1
-  roundsPerMinute: 500
+    midRange: 35
+    longRange: 55
+    longRangeDamage: 75
+  roundsPerMinute: 400
   magazineSize: 12
-  reloadTime: 1.8
-  totalAmmo: 120
+  reloadTime: 1.3
+  totalAmmo: 96
   projectilePrefab: {fileID: 4128576527009579452, guid: 2a5d9a4da5b4a77459e68d230c4ca324, type: 3}
-  projectileSpeed: 1000
+  projectileSpeed: 900
   projectileLifetime: 3
+  fireSounds:
+    Name: pistol_fire
+    clips:
+    - {fileID: 8300000, guid: b0b6aedccb2d0094dbaee5db13bace6a, type: 3}
+    loop: 0
+    volume: 0.5
+    pitch: 1

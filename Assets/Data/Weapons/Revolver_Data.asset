@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2491053cc2e35841b851ad9d274c553, type: 3}
+  m_Name: Revolver_Data
+  m_EditorClassIdentifier: 
+  weaponName: Ionbreaker
+  weaponPrefab: {fileID: 0}
+  availableFireModes: 00000000
+  burstCount: 0
+  spreadAngle: 0.5
+  damageType: 3
+  damageAmount: 45
+  damageDropoff:
+    midRange: 40
+    longRange: 60
+    longRangeDamage: 80
+  roundsPerMinute: 120
+  magazineSize: 6
+  reloadTime: 2.2
+  totalAmmo: 36
+  projectilePrefab: {fileID: 4128576527009579452, guid: 2a5d9a4da5b4a77459e68d230c4ca324, type: 3}
+  projectileSpeed: 1000
+  projectileLifetime: 4
+  fireSounds:
+    Name: revolver_fire
+    clips:
+    - {fileID: 8300000, guid: aef6434a40a483d45a0cafd3d6a8d8a5, type: 3}
+    - {fileID: 8300000, guid: d8a18a97ccf9de74faaa52a2d5cc7258, type: 3}
+    loop: 0
+    volume: 0.4
+    pitch: 1

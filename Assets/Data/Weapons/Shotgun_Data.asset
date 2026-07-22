@@ -16,17 +16,25 @@ MonoBehaviour:
   weaponPrefab: {fileID: 0}
   availableFireModes: 00000000
   burstCount: 0
-  spreadAngle: 5
-  damageType: 2
-  damageAmount: 12
+  spreadAngle: 9.5
+  damageType: 1
+  damageAmount: 25
   damageDropoff:
-    midRange: 50
-    longRange: 100
-    longRangeDamage: 50
-  roundsPerMinute: 500
+    midRange: 10
+    longRange: 25
+    longRangeDamage: 35
+  roundsPerMinute: 100
   magazineSize: 6
   reloadTime: 2.5
-  totalAmmo: 120
+  totalAmmo: 30
   projectilePrefab: {fileID: 4128576527009579452, guid: 2a5d9a4da5b4a77459e68d230c4ca324, type: 3}
   projectileSpeed: 400
   projectileLifetime: 10
+  fireSounds:
+    Name: shotgun_fire
+    clips:
+    - {fileID: 8300000, guid: 364dbfabda69afd42995fddcad883ac6, type: 3}
+    - {fileID: 8300000, guid: 5f590262745e9504c99eabde44d6cc89, type: 3}
+    loop: 0
+    volume: 0.8
+    pitch: 1

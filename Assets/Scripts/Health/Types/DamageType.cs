@@ -1,10 +1,10 @@
 namespace Health
 {
-    public enum DamageType 
+    public enum DamageType
     {
-        Kinetic, //Ok against everithing
+        Kinetic, //Ok against everything
         Fire, //Good against Flesh
         Plasma, //Good against shield
-        Energy //Good against Exo
+        Energy, //Good against Exo
     }
 }

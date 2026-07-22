@@ -11,6 +11,15 @@ public class InAirState : BaseState<PlayerMovementContext>
 
     public override void OnUpdate()
     {
+        // Keep retrying the buffered Jump request during the initial rise toward the obstacle.
+        // Mantling is only allowed while jumping AND holding forward.
+        if (Context.IsMovingForward && Context.PlayerMantle.TryStartBufferedMantle())
+        {
+            Context.WantsToJump = false;
+            Context.StateMachine.ChangeState(MovementState.Mantling);
+            return;
+        }
+
         // Land
         if (Context.PlayerMovement.IsGrounded)
         {

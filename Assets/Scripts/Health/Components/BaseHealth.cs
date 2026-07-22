@@ -5,13 +5,15 @@ using UnityEngine;
 
 namespace Health
 {
-    public abstract class BaseHealth : MonoBehaviour, IHealth, IDamagable, IHealable
+    public abstract class BaseHealth : MonoBehaviour, IHealth, IDamageable, IHealable
     {
-        [SerializeField] protected DamageMatrixSO damageMatrix;
+        [SerializeField]
+        protected DamageMatrixSO damageMatrix;
 
         protected List<HealthChunk> healthChunks = new();
         protected List<IDamageModifier> damageModifiers = new();
 
+        //TODO: Fix LINQ on hot path
         public float CurrentHealth => healthChunks.Sum(c => c.CurrentHealth);
         public float MaxHealth => healthChunks.Sum(c => c.MaxHealth);
         public float HealthNormalize => MaxHealth > 0 ? CurrentHealth / MaxHealth : 0f;
@@ -19,6 +21,8 @@ namespace Health
         public virtual bool CanHeal => IsAlive && CurrentHealth < MaxHealth;
 
         public event Action<HealthChangeEventArgs> OnHealthChanged;
+        public event Action<DamageInfo> OnDamaged;
+        public event Action<DamageInfo> OnDamageAppliedToHealth;
         public event Action OnDeath;
         public event Action<int> OnChunkDepleted;
 
@@ -31,43 +35,73 @@ namespace Health
 
         public virtual void TakeDamage(DamageInfo damageInfo)
         {
-            if (!IsAlive) return;
+            if (!IsAlive)
+                return;
 
             float previousHealth = CurrentHealth;
-
             // Apply damage modifiers (adrenaline, armor, etc.)
             float modifiedDamage = ApplyDamageModifiers(damageInfo);
             damageInfo.FinalDamage = modifiedDamage;
 
-            // Flow damage through chunks
-            float remainingDamage = modifiedDamage;
-            for (int i = 0; i < healthChunks.Count && remainingDamage > 0; i++)
-            {
-                if (healthChunks[i].IsDepleted) continue;
-
-                // Get multiplier from DamageMatrix SO
-                float multiplier = damageMatrix != null ? damageMatrix.GetMultiplier(damageInfo.DamageType, healthChunks[i].HealthType): 1f;
-
-                bool wasDepletedBefore = healthChunks[i].IsDepleted;
-                remainingDamage = healthChunks[i].ApplyDamage(remainingDamage * multiplier);
-
-                if (!wasDepletedBefore && healthChunks[i].IsDepleted)
-                {
-                    OnChunkDepleted?.Invoke(i);
-                }
-            }
+            float effectiveness = FlowDamage(damageInfo, modifiedDamage);
 
             float damageDealt = previousHealth - CurrentHealth;
-            var args = new HealthChangeEventArgs(
-                previousHealth, CurrentHealth, MaxHealth,
-                damageDealt, GetCurrentChunkIndex(), false
-            );
-            OnHealthChanged?.Invoke(args);
 
+            var args = new HealthChangeEventArgs(
+                previousHealth,
+                CurrentHealth,
+                MaxHealth,
+                damageDealt,
+                GetCurrentChunkIndex(),
+                false
+            );
+
+            OnHealthChanged?.Invoke(args);
+            OnDamaged?.Invoke(damageInfo);
+            if (damageDealt > 0f)
+                OnDamageAppliedToHealth?.Invoke(damageInfo);
+
+            OnDamageApplied(new DamageDealtEvent(effectiveness, damageInfo.BodyPart, !IsAlive));
             if (!IsAlive)
             {
                 OnDeath?.Invoke();
             }
+        }
+
+        private float FlowDamage(DamageInfo info, float modifiedDamage)
+        {
+            //Captured Variables there has to be a cleaner way to get this
+            float effectiveness = 1f;
+            bool captured = false;
+
+            float remainingDamage = modifiedDamage;
+            for (int i = 0; i < healthChunks.Count && remainingDamage > 0; i++)
+            {
+                if (healthChunks[i].IsDepleted)
+                    continue;
+
+                // Get multiplier from DamageMatrix SO
+                float multiplier =
+                    damageMatrix != null
+                        ? damageMatrix.GetMultiplier(info.DamageType, healthChunks[i].HealthType)
+                        : 1f;
+
+                //Yeah...I hate this
+                if (!captured)
+                {
+                    effectiveness = multiplier;
+                    captured = true;
+                }
+                remainingDamage = healthChunks[i].ApplyDamage(remainingDamage * multiplier);
+                if (healthChunks[i].AbsorbsOverflow)
+                    remainingDamage = 0f;
+
+                if (healthChunks[i].IsDepleted)
+                {
+                    OnChunkDepleted?.Invoke(i);
+                }
+            }
+            return effectiveness;
         }
 
         protected float ApplyDamageModifiers(DamageInfo damageInfo)
@@ -98,11 +132,47 @@ namespace Health
         {
             for (int i = 0; i < healthChunks.Count; i++)
             {
-                if (!healthChunks[i].IsDepleted) return i;
+                if (!healthChunks[i].IsDepleted)
+                    return i;
             }
             return healthChunks.Count - 1;
         }
 
-        public abstract void Heal(float amount);
+        //We create the hook for the ui
+        protected virtual void OnDamageApplied(in DamageDealtEvent result) { }
+
+        public virtual void Heal(float amount)
+        {
+            if (!IsAlive || amount <= 0f)
+                return;
+
+            float previousHealth = CurrentHealth;
+            float remaining = amount;
+
+            for (int i = healthChunks.Count - 1; i >= 0 && remaining > 0f; i--)
+            {
+                HealthChunk chunk = healthChunks[i];
+                float space = chunk.MaxHealth - chunk.CurrentHealth;
+                if (space <= 0f)
+                    continue; // full chunk: skip, cost nothing
+
+                float applied = Mathf.Min(remaining, space);
+                chunk.Heal(applied);
+                remaining -= applied; // subtract what actually went in
+            }
+
+            if (CurrentHealth != previousHealth)
+            {
+                var args = new HealthChangeEventArgs(
+                    previousHealth,
+                    CurrentHealth,
+                    MaxHealth,
+                    CurrentHealth - previousHealth, // was hardcoded 0f — real delta now
+                    GetCurrentChunkIndex(),
+                    false
+                );
+                OnHealthChanged?.Invoke(args);
+            }
+        }
     }
 }

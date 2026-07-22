@@ -22,8 +22,8 @@ MonoBehaviour:
       poseR: 1
   - movementState: 7
     stanceConfig:
-      PositionOffset: {x: 0, y: 0, z: 0}
-      RotationOffset: {x: 0, y: -0.39, z: 15}
+      PositionOffset: {x: 0, y: 0, z: -0.2}
+      RotationOffset: {x: 30, y: -0.39, z: 15}
       poseF: 4
       poseZ: 1
       poseR: 1
@@ -36,11 +36,32 @@ MonoBehaviour:
       poseR: 1.5
   - movementState: 6
     stanceConfig:
-      PositionOffset: {x: -0.11, y: -0.1, z: 0}
-      RotationOffset: {x: 25, y: -3.78, z: 0}
+      PositionOffset: {x: 0.06, y: -0.08, z: 0}
+      RotationOffset: {x: -2.79, y: -3.78, z: 0}
       poseF: 4
       poseZ: 1
       poseR: 0.1
+  - movementState: 9
+    stanceConfig:
+      PositionOffset: {x: 0, y: 0, z: 0}
+      RotationOffset: {x: -5, y: 0, z: 30}
+      poseF: 4
+      poseZ: 1
+      poseR: 0.1
+  - movementState: 5
+    stanceConfig:
+      PositionOffset: {x: 0, y: 0.1, z: -0.01}
+      RotationOffset: {x: -5, y: 0, z: -10}
+      poseF: 0.94
+      poseZ: 1.52
+      poseR: 2.2
+  - movementState: 3
+    stanceConfig:
+      PositionOffset: {x: 2, y: -1.85, z: -0.61}
+      RotationOffset: {x: -6.14, y: 0, z: -10}
+      poseF: 0.94
+      poseZ: 1.52
+      poseR: 2.2
   _fallbackPoseF: 5
   _fallbackPoseZ: 1
   _fallbackPoseR: 1

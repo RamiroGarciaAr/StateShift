@@ -108,6 +108,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
                 MovementState.WallRunning => baseSpeed * wallRunSpeedMultiplier,
                 MovementState.Dashing => 0f, // Dash handles its own speed
                 MovementState.Grappling => 0f,
+                MovementState.Mantling => 0f, // Mantle drives its own position
                 MovementState.InAir => baseSpeed * walkSpeedMultiplier,
                 _ => baseSpeed,
             };
@@ -310,6 +311,7 @@ public class PlayerMovement : MonoBehaviour, IControllable
         if (
             _currentMovementState == MovementState.Dashing
             || _currentMovementState == MovementState.Grappling
+            || _currentMovementState == MovementState.Mantling
         )
             return;
         if (_groundChecker.IsGrounded && _rb.drag < 1f)
@@ -339,6 +341,13 @@ public class PlayerMovement : MonoBehaviour, IControllable
     {
         // No aplicar drag si estamos en el aire
         if (!_groundChecker.IsGrounded)
+        {
+            _rb.drag = 0f;
+            return;
+        }
+
+        // No aplicar drag durante el mantle (la posición se controla por script)
+        if (_currentMovementState == MovementState.Mantling)
         {
             _rb.drag = 0f;
             return;

@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Testing/PlayerTesting.unity
     guid: aea68f8fe6db2ce4e8ec8eb5897355f9
+  - enabled: 1
+    path: Assets/Scenes/Testing/ShootingRange.unity
+    guid: 65b50fbc19913a94cb39ac17ab34d682
   m_configObjects: {}

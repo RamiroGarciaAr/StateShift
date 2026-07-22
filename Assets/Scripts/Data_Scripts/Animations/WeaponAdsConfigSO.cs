@@ -21,11 +21,18 @@ public class WeaponAdsConfigSO : ScriptableObject
     [SerializeField, Range(0.01f, 1f), Tooltip("Seconds to blend fully between hip and aimed.")]
     private float _blendDuration = 0.2f;
 
-    [SerializeField, Tooltip("Shapes the 0->1 blend. EaseInOut gives a snappy, overshoot-free feel.")]
+    [
+        SerializeField,
+        Tooltip("Shapes the 0->1 blend. EaseInOut gives a snappy, overshoot-free feel.")
+    ]
     private AnimationCurve _blendCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
     [Header("Steadiness (0 = unchanged, 1 = fully suppressed at full ADS)")]
-    [SerializeField, Range(0f, 1f), Tooltip("How much weapon sway/breathing is reduced while aiming.")]
+    [
+        SerializeField,
+        Range(0f, 1f),
+        Tooltip("How much weapon sway/breathing is reduced while aiming.")
+    ]
     private float _swaySteadiness = 0.8f;
 
     [SerializeField, Range(0f, 1f), Tooltip("How much movement bob is reduced while aiming.")]
@@ -37,7 +44,13 @@ public class WeaponAdsConfigSO : ScriptableObject
     [SerializeField, Range(0f, 1f), Tooltip("How much visual recoil kick is reduced while aiming.")]
     private float _recoilSteadiness = 0.25f;
 
-    [SerializeField, Range(0f, 1f), Tooltip("How much the movement-state stance offset is reduced while aiming. Keep at 1 so the sight aligns exactly with the camera at full ADS.")]
+    [
+        SerializeField,
+        Range(0f, 1f),
+        Tooltip(
+            "How much the movement-state stance offset is reduced while aiming. Keep at 1 so the sight aligns exactly with the camera at full ADS."
+        )
+    ]
     private float _stanceSteadiness = 1f;
 
     public Vector3 HipPosition => _hipPosition;

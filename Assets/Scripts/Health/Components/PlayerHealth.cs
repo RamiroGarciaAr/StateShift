@@ -1,24 +1,60 @@
 using System;
-using System.Linq;
 using UnityEngine;
 
 namespace Health
 {
     public class PlayerHealth : BaseHealth
     {
-        [SerializeField] private PlayerHealthConfigSO healthConfig;
+        [SerializeField]
+        private PlayerHealthConfigSO healthConfig;
 
-        // UI properties (following Momentum01 pattern)
-        public float MainChunkHealth01 => healthChunks.Count > 0 ? healthChunks[0].HealthNormalized : 0f;
-        public int ActiveSideChunks => healthChunks.Skip(1).Count(c => !c.IsDepleted);
+        private int _mainChunkIndex = -1;
+
+        public float MainChunkHealthNormalized =>
+            _mainChunkIndex >= 0 ? healthChunks[_mainChunkIndex].HealthNormalized : 0f;
+
+        public float GetSideChunkHealthNormalized(int sideIndex)
+        {
+            if (sideIndex < 0 || sideIndex >= healthChunks.Count || sideIndex == _mainChunkIndex)
+                return 0f;
+            return healthChunks[sideIndex].HealthNormalized;
+        }
+
         public int TotalSideChunks => healthConfig != null ? healthConfig.SideChunkCount : 0;
-        public bool HasLostChunks => healthChunks.Any(c => c.IsDepleted);
+
+        public int ActiveSideChunks
+        {
+            get
+            {
+                int active = 0;
+                for (int i = 0; i < healthChunks.Count; i++)
+                {
+                    if (i == _mainChunkIndex)
+                        continue;
+                    if (!healthChunks[i].IsDepleted)
+                        active++;
+                }
+                return active;
+            }
+        }
+
+        public bool HasLostChunks
+        {
+            get
+            {
+                for (int i = 0; i < healthChunks.Count; i++)
+                    if (healthChunks[i].IsDepleted)
+                        return true;
+                return false;
+            }
+        }
 
         public event Action<int> OnSideChunkRestored;
 
         protected override void InitializeChunks()
         {
             healthChunks.Clear();
+            _mainChunkIndex = -1;
 
             if (healthConfig == null)
             {
@@ -26,30 +62,38 @@ namespace Health
                 return;
             }
 
-            // Main chunk (100 HP, no weakness)
-            healthChunks.Add(new HealthChunk(healthConfig.MainChunkHealth, HealthType.Player));
-
-            // Side chunks (20 HP each, no weakness)
+            // Side chunks first: they absorb damage before main health is touched.
             for (int i = 0; i < healthConfig.SideChunkCount; i++)
             {
-                healthChunks.Add(new HealthChunk(healthConfig.SideChunkHealth, HealthType.Player));
+                healthChunks.Add(
+                    new HealthChunk(healthConfig.SideChunkHealth, HealthType.Player, absorbs: true)
+                );
             }
+
+            // Main chunk last: the core, only reached once the buffer is gone.
+            healthChunks.Add(new HealthChunk(healthConfig.MainChunkHealth, HealthType.Player));
+            _mainChunkIndex = healthChunks.Count - 1;
         }
 
-        public override void Heal(float amount)
-        {
-            // Only heal main chunk naturally
-            if (healthChunks.Count > 0 && !healthChunks[0].IsDepleted)
-            {
-                healthChunks[0].Heal(amount);
-            }
-        }
+        /*
+                public override void Heal(float amount)
+                {
+                    // Only the main chunk heals naturally. Side chunks come back via RestoreSideChunk.
+                    if (_mainChunkIndex >= 0 && !healthChunks[_mainChunkIndex].IsDepleted)
+                    {
+                        healthChunks[_mainChunkIndex].Heal(amount);
+                    }
+                }
+                */
 
         // Interface for health items
         public void RestoreSideChunk()
         {
-            for (int i = 1; i < healthChunks.Count; i++)
+            for (int i = 0; i < healthChunks.Count; i++)
             {
+                if (i == _mainChunkIndex)
+                    continue;
+
                 if (healthChunks[i].IsDepleted)
                 {
                     healthChunks[i].Restore();
@@ -61,7 +105,15 @@ namespace Health
 
         public bool CanRestoreSideChunk()
         {
-            return healthChunks.Skip(1).Any(c => c.IsDepleted);
+            for (int i = 0; i < healthChunks.Count; i++)
+            {
+                if (i == _mainChunkIndex)
+                    continue;
+
+                if (healthChunks[i].IsDepleted)
+                    return true;
+            }
+            return false;
         }
     }
 }

@@ -3,6 +3,7 @@ using Combat.FireModes;
 using Combat.Interfaces;
 using Combat.VFX;
 using Entities.Controllers;
+using Health;
 using UnityEngine;
 
 public abstract class WeaponBase : MonoBehaviour, IEquipable
@@ -23,6 +24,9 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     )]
     [SerializeField]
     private ImpactEffectSpawner _impactSpawner;
+
+    [SerializeField]
+    private AudioPool audioPool;
 
     // ** Events to communicate with other systems (like UI, audio, etc.)
     /// <summary>
@@ -50,6 +54,8 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
 
     private IFireMode _currentFireMode;
     private int _currentFireModeIdx;
+
+    private Instigator _owner;
     #endregion
     public virtual void Initialize(WeaponDataSO data)
     {
@@ -83,6 +89,7 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
         _currentFireMode?.Tick(Time.deltaTime);
         if (_wantsToFire && _fireTimer <= 0f && HasAmmo())
         {
+            audioPool.PlayAt(weaponData.FireSounds, null, is3D: false);
             Shoot();
             OnShoot?.Invoke();
             ConsumeAmmo(1); // todo: yes we are hard coding this for now but then we will need to change this to be based on the weapons data
@@ -149,6 +156,8 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
 
     public virtual void Unequip() { }
 
+    public void SetOwner(Instigator instigator) => _owner = instigator;
+
     //TODO: We need to expand this system to handle different reload systems
     public virtual void TryReload()
     {
@@ -183,6 +192,6 @@ public abstract class WeaponBase : MonoBehaviour, IEquipable
     protected void SpawnProjectile(Vector3 position, Quaternion rotation)
     {
         GameObject bullet = Instantiate(weaponData.ProjectilePrefab, position, rotation);
-        bullet.GetComponent<ProjectileBase>().Initialise(weaponData, _impactSpawner);
+        bullet.GetComponent<ProjectileBase>().Initialize(weaponData, _impactSpawner, _owner);
     }
 }

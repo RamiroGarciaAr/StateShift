@@ -18,35 +18,45 @@ namespace Combat.VFX
 
         [Header("Prefabs")]
         [Tooltip("Spark burst + flash effect spawned at every impact.")]
-        [SerializeField] private ImpactSparkEffect _sparkEffectPrefab;
+        [SerializeField]
+        private ImpactSparkEffect _sparkEffectPrefab;
 
         [Tooltip("Scorch decal quad spawned on the impacted surface.")]
-        [SerializeField] private ScorchDecal _scorchDecalPrefab;
+        [SerializeField]
+        private ScorchDecal _scorchDecalPrefab;
 
         [Header("Pooling")]
         [Tooltip("Initial capacity allocated for each effect pool.")]
-        [SerializeField] private int _defaultPoolSize = 16;
+        [SerializeField]
+        private int _defaultPoolSize = 16;
 
         [Tooltip("Maximum retained instances per pool before extras are destroyed on release.")]
-        [SerializeField] private int _maxPoolSize = 64;
+        [SerializeField]
+        private int _maxPoolSize = 64;
 
         [Header("Decal")]
         [Tooltip("Maximum number of scorch decals allowed to persist at once.")]
-        [SerializeField] private int _maxActiveDecals = 48;
+        [SerializeField]
+        private int _maxActiveDecals = 48;
 
         [Tooltip("Random lifetime range (min, max) in seconds for each scorch decal.")]
-        [SerializeField] private Vector2 _decalLifetimeSeconds = new Vector2(10f, 15f);
+        [SerializeField]
+        private Vector2 _decalLifetimeSeconds = new Vector2(10f, 15f);
 
         [Tooltip("Uniform world-space size of each scorch decal quad.")]
-        [SerializeField] private float _decalSize = 0.35f;
+        [SerializeField]
+        private float _decalSize = 0.35f;
 
         [Header("Materials")]
-        [Tooltip("Shared additive material for the spark and flash particles. Texture generated at runtime.")]
-        [SerializeField] private Material _sparkMaterial;
+        [Tooltip(
+            "Shared additive material for the spark and flash particles. Texture generated at runtime."
+        )]
+        [SerializeField]
+        private Material _sparkMaterial;
 
         [Tooltip("Shared decal material. Texture generated at runtime.")]
-        [SerializeField] private Material _scorchMaterial;
-
+        [SerializeField]
+        private Material _scorchMaterial;
         private ObjectPool<ImpactSparkEffect> _sparkPool;
         private ObjectPool<ScorchDecal> _decalPool;
         private readonly Queue<ScorchDecal> _activeDecals = new Queue<ScorchDecal>();
@@ -54,10 +64,17 @@ namespace Combat.VFX
 
         private void Awake()
         {
-            if (_sparkEffectPrefab == null || _scorchDecalPrefab == null ||
-                _sparkMaterial == null || _scorchMaterial == null)
+            if (
+                _sparkEffectPrefab == null
+                || _scorchDecalPrefab == null
+                || _sparkMaterial == null
+                || _scorchMaterial == null
+            )
             {
-                Debug.LogError($"{nameof(ImpactEffectSpawner)} is missing prefab or material references. Disabling.", this);
+                Debug.LogError(
+                    $"{nameof(ImpactEffectSpawner)} is missing prefab or material references. Disabling.",
+                    this
+                );
                 enabled = false;
                 return;
             }
@@ -72,7 +89,8 @@ namespace Combat.VFX
                 OnDestroySpark,
                 collectionCheck: true,
                 defaultCapacity: _defaultPoolSize,
-                maxSize: _maxPoolSize);
+                maxSize: _maxPoolSize
+            );
 
             _decalPool = new ObjectPool<ScorchDecal>(
                 CreateDecal,
@@ -81,17 +99,21 @@ namespace Combat.VFX
                 OnDestroyDecal,
                 collectionCheck: true,
                 defaultCapacity: _defaultPoolSize,
-                maxSize: _maxPoolSize);
+                maxSize: _maxPoolSize
+            );
 
             _isInitialised = true;
         }
 
         /// <summary>
-        /// Spawns a spark burst and a scorch decal oriented to the surface normal at the impact point.
+        /// Spawns a spark burst oriented to the surface normal at the impact point. The scorch decal
+        /// is only spawned when <paramref name="spawnDecal"/> is true, so callers can suppress the
+        /// persistent decal on moving targets (e.g. enemies) while still playing the spark.
         /// </summary>
         /// <param name="point">World-space impact position.</param>
         /// <param name="normal">Surface normal at the impact point.</param>
-        public void SpawnImpact(Vector3 point, Vector3 normal)
+        /// <param name="spawnDecal">When true, a scorch decal is placed on the impacted surface.</param>
+        public void SpawnImpact(Vector3 point, Vector3 normal, bool spawnDecal = true)
         {
             if (!_isInitialised)
                 return;
@@ -102,19 +124,25 @@ namespace Combat.VFX
             spark.transform.SetPositionAndRotation(point, orientation);
             spark.Play();
 
-            if (_activeDecals.Count >= _maxActiveDecals)
+            if (spawnDecal)
             {
-                ScorchDecal oldest = _activeDecals.Dequeue();
-                if (oldest != null)
-                    oldest.ForceRelease();
-            }
+                if (_activeDecals.Count >= _maxActiveDecals)
+                {
+                    ScorchDecal oldest = _activeDecals.Dequeue();
+                    if (oldest != null)
+                        oldest.ForceRelease();
+                }
 
-            ScorchDecal decal = _decalPool.Get();
-            decal.transform.SetPositionAndRotation(point + normal * DecalNormalOffset, orientation);
-            decal.transform.localScale = new Vector3(_decalSize, _decalSize, _decalSize);
-            float lifetime = Random.Range(_decalLifetimeSeconds.x, _decalLifetimeSeconds.y);
-            decal.Play(lifetime);
-            _activeDecals.Enqueue(decal);
+                ScorchDecal decal = _decalPool.Get();
+                decal.transform.SetPositionAndRotation(
+                    point + normal * DecalNormalOffset,
+                    orientation
+                );
+                decal.transform.localScale = new Vector3(_decalSize, _decalSize, _decalSize);
+                float lifetime = Random.Range(_decalLifetimeSeconds.x, _decalLifetimeSeconds.y);
+                decal.Play(lifetime);
+                _activeDecals.Enqueue(decal);
+            }
         }
 
         /// <summary>
@@ -127,9 +155,10 @@ namespace Combat.VFX
             if (normal.sqrMagnitude < Mathf.Epsilon)
                 return Quaternion.identity;
 
-            Vector3 up = Mathf.Abs(Vector3.Dot(normal.normalized, Vector3.up)) > VerticalNormalThreshold
-                ? Vector3.forward
-                : Vector3.up;
+            Vector3 up =
+                Mathf.Abs(Vector3.Dot(normal.normalized, Vector3.up)) > VerticalNormalThreshold
+                    ? Vector3.forward
+                    : Vector3.up;
 
             return Quaternion.LookRotation(normal, up);
         }

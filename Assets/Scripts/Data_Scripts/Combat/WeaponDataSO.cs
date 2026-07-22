@@ -72,6 +72,12 @@ public class WeaponDataSO : ScriptableObject
     [SerializeField]
     private float projectileLifetime;
 
+    [Header("Sounds")]
+    [SerializeField]
+    private Sound fireSounds;
+
+    public Sound FireSounds => fireSounds;
+
     public GameObject ProjectilePrefab => projectilePrefab;
     public float ProjectileSpeed => projectileSpeed;
     public float ProjectileLifetime => projectileLifetime;

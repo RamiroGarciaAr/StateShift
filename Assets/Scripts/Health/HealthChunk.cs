@@ -11,18 +11,23 @@ namespace Health
         [SerializeField]
         private HealthType healthType;
 
+        [SerializeField]
+        private bool absorbsOverflow = false;
+
         private float _currentHealth;
 
         public float CurrentHealth => _currentHealth;
         public float MaxHealth => maxHealth;
         public HealthType HealthType => healthType;
         public bool IsDepleted => _currentHealth <= 0f;
+        public bool AbsorbsOverflow => absorbsOverflow;
         public float HealthNormalized => maxHealth > 0 ? _currentHealth / maxHealth : 0f;
 
-        public HealthChunk(float maxHealth, HealthType healthType)
+        public HealthChunk(float maxHealth, HealthType healthType, bool absorbs = false)
         {
             this.maxHealth = maxHealth;
             this.healthType = healthType;
+            this.absorbsOverflow = absorbs;
             _currentHealth = maxHealth;
         }
 

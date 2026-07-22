@@ -1,29 +1,53 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Wires the main menu buttons to their actions. Both Continue and New Game
+/// load the gameplay scene through the loading screen, while Quit exits the app.
+/// </summary>
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] private Button _playButton;
+    [Header("Buttons")]
+    [Tooltip("Resumes play. Loads the gameplay scene through the loading screen.")]
+    [SerializeField] private Button _continueButton;
+
+    [Tooltip("Starts a fresh run. Loads the gameplay scene through the loading screen.")]
+    [SerializeField] private Button _newGameButton;
+
+    [Tooltip("Quits the application.")]
     [SerializeField] private Button _quitButton;
-    [SerializeField] private Button _testButton;
 
-    [SerializeField] private string _gameScene;
+    [Header("Scene")]
+    [Tooltip("Name of the gameplay scene to load. Must be added to Build Settings.")]
+    [SerializeField] private string _gameScene = "ShootingRange";
 
-    private void Start()
+    private void Awake()
     {
-        _playButton.onClick.AddListener(OnPlay);
+        _continueButton.onClick.AddListener(OnPlay);
+        _newGameButton.onClick.AddListener(OnPlay);
         _quitButton.onClick.AddListener(OnQuit);
-        _testButton.onClick.AddListener(() => SceneLoader.OpenLoadingScene("PlayerTesting"));
     }
 
+    private void OnDestroy()
+    {
+        _continueButton.onClick.RemoveListener(OnPlay);
+        _newGameButton.onClick.RemoveListener(OnPlay);
+        _quitButton.onClick.RemoveListener(OnQuit);
+    }
+
+    /// <summary>
+    /// Loads the configured gameplay scene through the loading screen.
+    /// </summary>
     public void OnPlay()
     {
         SceneLoader.OpenLoadingScene(_gameScene);
     }
 
+    /// <summary>
+    /// Quits the application.
+    /// </summary>
     public void OnQuit()
     {
-        Debug.Log("OnQuit");
         Application.Quit();
     }
 }

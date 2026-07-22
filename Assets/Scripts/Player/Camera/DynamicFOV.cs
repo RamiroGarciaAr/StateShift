@@ -41,6 +41,7 @@ public class DynamicFOV : MonoBehaviour
     private float _adsWeight;
     private float _adsFOVMultiplier = 1f;
     private float _speedFOV;
+    private float _wallRunFOVBoost;
 
     private void Awake()
     {
@@ -121,6 +122,10 @@ public class DynamicFOV : MonoBehaviour
             _targetFOV = baseFOV + (maxFOVIncrease * curveValue);
         }
 
+        // Additive wall-run kick flows through the same smoothing so DynamicFOV stays the
+        // single writer of the camera's field of view.
+        _targetFOV += _wallRunFOVBoost;
+
         // Speed-based FOV is smoothed on its own internal state so the ADS zoom cannot
         // contaminate it. This keeps aiming in and out perfectly symmetric.
         _speedFOV = Mathf.SmoothDamp(
@@ -145,6 +150,16 @@ public class DynamicFOV : MonoBehaviour
     {
         _adsWeight = Mathf.Clamp01(weight);
         _adsFOVMultiplier = fovMultiplier;
+    }
+
+    /// <summary>
+    /// Applies an additive wall-run FOV boost. Driven each frame by the wall-run tilt
+    /// component so this component remains the single writer of the camera's field of view.
+    /// </summary>
+    /// <param name="boost">Additive field of view boost in degrees.</param>
+    public void SetWallRunFOVBoost(float boost)
+    {
+        _wallRunFOVBoost = boost;
     }
 
     public void SetBaseFOV(float newBaseFOV)

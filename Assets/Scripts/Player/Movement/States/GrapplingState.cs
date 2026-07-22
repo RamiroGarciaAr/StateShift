@@ -14,7 +14,7 @@ public class GrapplingState : BaseState<PlayerMovementContext>
     public override void OnUpdate()
     {
         // Exit grapple when it's complete
-        if (!Context.PlayerGrapple.IsGrappling)
+        if (!Context.PlayerGrapple.IsGrappleActive)
         {
             ExitToAppropriateState();
             return;
@@ -48,6 +48,13 @@ public class GrapplingState : BaseState<PlayerMovementContext>
 
     private void ExitToAppropriateState()
     {
+        // Use one authoritative detection/start attempt so physics cannot change between two queries.
+        if (Context.PlayerMantle.TryStartMantleFromGrapple())
+        {
+            Context.StateMachine.ChangeState(MovementState.Mantling);
+            return;
+        }
+
         if (Context.PlayerMovement.IsGrounded)
             Context.StateMachine.ChangeState(MovementState.Grounded);
         else
