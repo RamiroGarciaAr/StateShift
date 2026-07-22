@@ -75,12 +75,16 @@ namespace Health
             _mainChunkIndex = healthChunks.Count - 1;
         }
 
-        public override void Heal(float amount)
-        {
-            // Only the main chunk heals naturally. Side chunks come back via RestoreSideChunk.
-            if (_mainChunkIndex >= 0 && !healthChunks[_mainChunkIndex].IsDepleted)
-                healthChunks[_mainChunkIndex].Heal(amount);
-        }
+        /*
+                public override void Heal(float amount)
+                {
+                    // Only the main chunk heals naturally. Side chunks come back via RestoreSideChunk.
+                    if (_mainChunkIndex >= 0 && !healthChunks[_mainChunkIndex].IsDepleted)
+                    {
+                        healthChunks[_mainChunkIndex].Heal(amount);
+                    }
+                }
+                */
 
         // Interface for health items
         public void RestoreSideChunk()

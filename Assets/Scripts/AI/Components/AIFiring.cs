@@ -138,6 +138,7 @@ public class AIFiring : MonoBehaviour
         dir =
             Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), 0f)
             * dir;
+
         audioPool.PlayAt(_weaponData.FireSounds, barrelTransform.position);
         _projectilePool.Spawn(
             barrelTransform.position,

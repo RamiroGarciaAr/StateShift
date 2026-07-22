@@ -140,14 +140,35 @@ namespace Health
 
         public virtual void Heal(float amount)
         {
-            float current_amount = amount;
-            int idx = 0;
-            while (current_amount > 0 && idx < healthChunks.Count)
+            if (!IsAlive || amount <= 0f)
+                return;
+
+            float previousHealth = CurrentHealth;
+            float remaining = amount;
+
+            for (int i = healthChunks.Count - 1; i >= 0 && remaining > 0f; i--)
             {
-                healthChunks[idx].Heal(current_amount); //it does not care for overflow
-                if (current_amount > healthChunks[idx].MaxHealth) // we check if we need to
-                    current_amount -= healthChunks[idx].MaxHealth; //We subtract what we already healed
-                idx++;
+                HealthChunk chunk = healthChunks[i];
+                float space = chunk.MaxHealth - chunk.CurrentHealth;
+                if (space <= 0f)
+                    continue; // full chunk: skip, cost nothing
+
+                float applied = Mathf.Min(remaining, space);
+                chunk.Heal(applied);
+                remaining -= applied; // subtract what actually went in
+            }
+
+            if (CurrentHealth != previousHealth)
+            {
+                var args = new HealthChangeEventArgs(
+                    previousHealth,
+                    CurrentHealth,
+                    MaxHealth,
+                    CurrentHealth - previousHealth, // was hardcoded 0f — real delta now
+                    GetCurrentChunkIndex(),
+                    false
+                );
+                OnHealthChanged?.Invoke(args);
             }
         }
     }
