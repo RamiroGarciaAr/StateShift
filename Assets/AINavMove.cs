@@ -16,6 +16,8 @@ public class AINavMove : MonoBehaviour
     private NavMeshAgent _agent;
     private bool _hasDestination;
 
+    public bool IsIdle => _hasDestination == false;
+
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -40,6 +42,7 @@ public class AINavMove : MonoBehaviour
 
     public void SetDestination(Vector3 pos)
     {
+        _agent.isStopped = false;
         _agent.SetDestination(pos);
         _hasDestination = true;
     }

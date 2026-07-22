@@ -15,6 +15,17 @@ public class AIBrain : MonoBehaviour, ITickable
     [SerializeField]
     private AIFiring firing;
 
+    // new serialized refs (or GetComponent in Awake):
+    [SerializeField]
+    private AINavMove navMove;
+
+    [SerializeField]
+    private AIPatrol patrol;
+
+    // new accessors, alongside Memory/Aiming/TickDelta:
+    public AINavMove NavMove => navMove;
+    public AIPatrol Patrol => patrol;
+
     [Header("Alert")]
     [SerializeField, Tooltip("Seconds of lost LOS before Alerted drops to Suspicious")]
     private float _losGraceTime = 2f;
@@ -55,6 +66,13 @@ public class AIBrain : MonoBehaviour, ITickable
         _alertMachine.RegisterState(AIMemory.AlertLevel.Suspicious, _suspiciousState);
         _alertMachine.RegisterState(AIMemory.AlertLevel.Alerted, new AlertedState(this));
         _alertMachine.Initialize(AIMemory.AlertLevel.Unaware);
+    }
+
+    private void Update()
+    {
+        if (navMove != null)
+            navMove.Tick();
+        _alertMachine?.CurrentState?.OnUpdate();
     }
 
     public void OnTick(float dt)
